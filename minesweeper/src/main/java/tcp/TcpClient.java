@@ -42,12 +42,12 @@ public class TcpClient extends Network {
     }
 
     @Override
-    public void send(short index) {
+    public void send(Object obj) {
         if (out == null)
             return;
-        Logger.getLogger(TcpClient.class.getName()).log(Level.INFO,"Sending index: " + index + " to server");
+        Logger.getLogger(TcpClient.class.getName()).log(Level.INFO,"Sending index: " + obj + " to server");
         try {
-            out.writeInt(index);
+            out.writeObject(obj);
             out.flush();
         } catch (IOException ex) {
             Logger.getLogger(TcpClient.class.getName()).log(Level.SEVERE,
@@ -77,7 +77,7 @@ public class TcpClient extends Network {
 
             try {
                 while (true) {
-                    playerController.indexReceived((short) in.readInt());
+                    playerController.indexReceived(in.readObject());
                 }
             } catch (Exception ex) {
                 Logger.getLogger(TcpClient.class.getName()).log(Level.SEVERE,

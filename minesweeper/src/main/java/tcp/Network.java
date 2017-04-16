@@ -14,5 +14,6 @@ public abstract class Network {
 
     abstract void disconnect();
 
-    public abstract void send(short index);
+    public abstract void send(Object obj);
+
 }

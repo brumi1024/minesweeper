@@ -6,7 +6,7 @@ package player;
 public class Player {
     Player() {}
 
-    public void indexReceived(short index) {
-        System.out.println(index);
+    public void indexReceived(Object obj) {
+        System.out.println(obj);
     }
 }

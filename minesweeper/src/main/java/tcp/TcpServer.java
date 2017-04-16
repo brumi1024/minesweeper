@@ -35,12 +35,12 @@ public class TcpServer extends Network {
     }
 
     @Override
-    public void send(short index) {
+    public void send(Object obj) {
         if (out == null)
             return;
-        System.out.println("Sending index: " + index + " to server");
+        System.out.println("Sending index: " + obj + " to server");
         try {
-            out.writeInt(index);
+            out.writeObject(obj);
             out.flush();
         } catch (IOException e) {
             Logger.getLogger(TcpServer.class.getName()).log(Level.SEVERE,"Error in sending.", e);
@@ -88,7 +88,7 @@ public class TcpServer extends Network {
 
             try {
                 while (true) {
-                    playerController.indexReceived((short) in.readInt());
+                    playerController.indexReceived(in.readObject());
                 }
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
