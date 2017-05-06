@@ -2,6 +2,7 @@ package minesweeperGuiPackage;
 
 public class HighScores {
 	//private int place;
+	//ide lehetne a helyezést is eltárolni, és akkor nem olyan bonyolult a táblázat megjelenítése
 	private String name;
 	private String time;
 	

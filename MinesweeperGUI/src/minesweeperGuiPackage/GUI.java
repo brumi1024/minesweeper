@@ -1,26 +1,9 @@
 package minesweeperGuiPackage;
-/**priority: kimenteni a legjobb játékosokat
- * high scores: helyezés, name, time, date,
- * és mondjuk difficulty szerint különbözõ fájlokba
- * isThisOnTheScore(time, difficulty): ha igen, tedd bele (a private insertNewPerson-nel),
- * és add vissza, hogy hanyadik hely;
- * ha nem, adj vissza (-1)-et
- * insertNewPerson(name, time, date)**/
 
-/*tudjon nehézrõl is közepesre váltani
- * nyerési feltételt beállítani
- * legjobb játékosoknál jelenítsen meg felugró ablakban egy táblázatot
- */
 
  /** többjátékosnál kijelölni, hogy épp ki aktív
- * táblázatban megjeleníteni a legjobb játékosokat
- * nézni, h bekerült-e a felhasználó a legjobbak közé, és ha igen, betenni a táblázatba
  * animáció: egymás után jelenjenek meg a bombák
  */
-
-/*meg kell megállapítani, hogy valaki nyert (a blokkos dolog most módosított rajta)
- */
-
 
 import java.util.*;
 import javafx.application.*;
@@ -51,9 +34,10 @@ public class GUI extends Application {
 	Label timeElapsedLabel;
 	Label flagsLeftLabel;
 	String difficulty;
-	int numOfFlagsLeft=10; //ez nem kell, a Board.mineLeft eleme
+	int numOfFlagsLeft; //ez nem kell, a Board.mineLeft eleme
 	StringProperty message;
 	boolean hasLostTheGame; //erre majd vigyázni kell, hogy új játék kezdésekor vissza kell állítani false-ra!
+	boolean hasWonTheGame;
 	int bombRowIndex, bombColIndex;
 	short revealedBlocks;
 	
@@ -61,18 +45,17 @@ public class GUI extends Application {
 	ImageView[] bombImageViews;
 	ImageView mineImageView;
 	
-	String timeElapsed = "30:13";
+	String timeElapsed = "01:05";
+	
+	Timer timer;
 
 	
 	public static void main(String[] args) {
 		launch(args); //start() meghívódik
 	}
 	
-	public void showTable() {	
-		HighScoresTestDrive h = new HighScoresTestDrive();
-		HighScores newHighScore = new HighScores("tényleg elsõ", "01:00");
-		h.insertData(newHighScore);
-		h.showTable();
+	public void showTable() {
+		HighScoresTestDrive.showTable(-1, null);
 	}
 	
 	//felugró ablakhoz megjelenítése
@@ -101,9 +84,11 @@ public class GUI extends Application {
 	
 	/*létrehoz kér egy új board-ot, és megjeleníti az új mezõket a táblán*/
 	public void startNewGame(String difficulty) {
+		timer = new Timer();
 		numOfFlagsLeft=board.numberOfMines;
 		revealedBlocks=0;
 		hasLostTheGame=false;
+		hasWonTheGame=false;
 		board.generateNewBoard(difficulty); //konstruktor?
 		boardTiles = null;
 		boardTiles = new Button[board.height][board.width];
@@ -266,8 +251,6 @@ public class GUI extends Application {
 		menuDifficulty = new Menu("Nehézségi szint");
 		menuDifficulty.getItems().addAll(menuItemEasy, menuItemMedium, menuItemHard);
 		
-		/** nem tud nehézrõl közepesre váltani!! BUG **/
-		
 		menuDifficulty.setOnAction(e ->
 				{
 					if((menuItemEasy.isSelected() == true) && (difficulty != "easy")) {
@@ -335,7 +318,7 @@ public class GUI extends Application {
 		primaryStage.show();
 		
 		stage.setOnCloseRequest(e-> {
-			if(!hasLostTheGame) {
+			if(!hasLostTheGame && (!hasWonTheGame)) {
 				String[] options = {"Igen", "Nem"};
 				String choice = showDialog("Kilépési szándék megerõsításe", "Biztos kilépsz?", options);
 				if(choice == "Igen") {
@@ -397,7 +380,7 @@ public class GUI extends Application {
 			int i=Integer.parseInt(coords[0]);
 			int j=Integer.parseInt(coords[1]);
 			
-			if (boardTiles[i][j].isDisable()==false && (!hasLostTheGame)) {
+			if (boardTiles[i][j].isDisable()==false && (!hasLostTheGame) && (!hasWonTheGame)) {
 				
 				if (buttonType) { //ha jobb gombbal kattintottunk még nem felfedett mezõre
 					//ha már van ott kérdõjel, vegyük le
@@ -419,6 +402,13 @@ public class GUI extends Application {
 					//és folyton frissíteni kell
 				} else {
 					if(boardTiles[i][j].getText()!="?") { //ha kérdõjel van már ott, nem nyúlunk semmihez
+						//ha normális kattintás történt bal egérgombbal
+						//ha az elsõ katt történt, indítsd el a timert
+						if(revealedBlocks==0) {
+							System.out.println("most kellene indítani a timert");
+							timer.setTimeFirstClick();
+						}
+						
 						if(board.isMine[i][j]!=1) {
 							boardTiles[i][j].setDisable(true);
 						}
@@ -465,10 +455,11 @@ public class GUI extends Application {
 					} else {
 						
 						revealBlock(i,j);
-
 						if((board.width*board.height - revealedBlocks) == board.numberOfMines) {
-							System.out.println(timeElapsed);
-							if(HighScoresTestDrive.insertData(new HighScores("Én",timeElapsed))==-1) {
+							timer.setTimeElapsed();
+							System.out.println(timer.getTimeElapsed());
+							hasWonTheGame=true;
+							if(!HighScoresTestDrive.isNewHighScore(timeElapsed, difficulty)) {
 								//nyert, de nem került be a legjobbak közé
 								String[] options = {"Igen", "Nem"};
 								String choice = showDialog("Nyertél!", "Gratulálunk! Nyertél.\n"
@@ -481,10 +472,22 @@ public class GUI extends Application {
 									//nem szeretnék új játékot kezdeni
 								}
 							} else {
-								//nyert, és bekerült a legjobbak közé
-								System.out.println("bekerültél a legjobbak közé!");
+								//bekerült a legjobbak közé
+								
+								//itt el lehetne tárolni a legutóbbi megadott nevet
+								TextInputDialog dialog = new TextInputDialog();
+								dialog.setTitle("Toplista");
+								dialog.setHeaderText("Gratulálunk! Felkerültél a toplistára.");
+								dialog.setGraphic(null);
+								dialog.setContentText("Add meg a neved:");
+
+								// Traditional way to get the response value.
+								Optional<String> result = dialog.showAndWait();
+								if (result.isPresent()){
+									int place=HighScoresTestDrive.insertData(new HighScores(result.get(), timeElapsed), difficulty);
+									HighScoresTestDrive.showTable(place-1, difficulty);
+								}
 							}
-							
 						}
 					}
 					} //end_ha nem volt ott már kérdõjel eleve
@@ -509,7 +512,7 @@ public class GUI extends Application {
 				}
 			}
 			if(event.getSource() == menuItemExit) {
-				if(!hasLostTheGame) {
+				if((!hasLostTheGame)&&(!hasWonTheGame)) {
 					String[] options = {"Igen", "Nem"};
 					String choice = showDialog("Kilépés", "Biztos kilépsz?", options);
 					if(choice == "Igen") {
