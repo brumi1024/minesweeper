@@ -14,9 +14,28 @@ public class Board {
 	private boolean isSingle; //egy vagy többjátékos mód
 	List<Cell> cells=new ArrayList<Cell>(); //ebben a listában lesznek a mezõk
 	
-	
-	public void createBoards(int boardWidth, int boardHeight,int numOfMines) //pályainicializálás
+	public void setBoardParameters(String difficulty)
 	{
+		if(difficulty == "easy")
+		{
+			this.setBoardSize(5,5);
+			this.setNumOfMines(4);		
+		}
+		if(difficulty == "medium")
+		{
+			this.setBoardSize(5,9);
+			this.setNumOfMines(5);
+		}
+		if(difficulty == "hard") 
+		{
+			this.setBoardSize(9,9);
+			this.setNumOfMines(10);
+		}
+	}
+	
+	public void createBoards(String difficulty) //pályainicializálás
+	{
+		setBoardParameters(difficulty); //kitölti a pályaadatokat a nehézség alapján
 		board=new short[boardWidth][boardHeight]; //tömb inicializálás
 		isMine=new boolean[boardWidth][boardHeight]; //tömb inicializálás
 		int i=0;
@@ -25,7 +44,7 @@ public class Board {
 		{
 			for(j=0; j<boardHeight; j++)
 			{
-				this.board[i][j]=(short) (j*boardWidth+i); //indextömb
+				this.board[i][j]=(short) (j*boardWidth+i); //indexmátrix
 			}
 		}
 		
@@ -33,36 +52,37 @@ public class Board {
 		{
 			for(j=0; j<boardHeight; j++)
 			{
-				this.isMine[i][j]=false; //indextömb
+				this.isMine[i][j]=false; //akna mátrix üres
 			}
 		}
 		
 		this.placeMines(numOfMines, isMine); //feltöltjük
+		this.createCells(); //megcsinálja a cellákat
 		
 	}
 	
-	public int getBoardWidth() {
+	public int getBoardWidth() { 
 		return boardWidth;
 	}
-	private void setBoardWidth(int boardWidth) {
+	private void setBoardWidth(int boardWidth) { 
 		this.boardWidth = boardWidth;
 	}
 	public int getBoardHeight() {
 		return boardHeight;
 	}
-	private void setBoardHeight(int boardHeight) {
+	private void setBoardHeight(int boardHeight) { 
 		this.boardHeight = boardHeight;
 	}
 	public int getNumOfMines() {
 		return numOfMines;
 	}
-	public void setNumOfMines(int numOfMines) {
+	public void setNumOfMines(int numOfMines) { 
 		this.numOfMines = numOfMines;
 	}
 	public int getMineLeft() {
 		return mineLeft;
 	}
-	public void setMineLeft(int mineLeft) {
+	public void setMineLeft(int mineLeft) { 
 		this.mineLeft = mineLeft;
 	}
 	public boolean isSingle() {
@@ -72,7 +92,7 @@ public class Board {
 		this.isSingle = isSingle;
 	}
 	
-	public void setBoardSize(int x, int y) {
+	public void setBoardSize(int x, int y) { 
 		setBoardHeight(x);
 		setBoardWidth(y);
 	}

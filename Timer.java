@@ -8,6 +8,7 @@ public class Timer {
 	private long timeFirstClick=0; //elsõ kattintás ideje
 
 	public String getTimeElapsed() {
+		this.setTimeElapsed();
 		return timeString(timeElapsed);
 	}
 
@@ -16,7 +17,7 @@ public class Timer {
 		this.timeFirstClick = System.currentTimeMillis(); //ezt kell meghívni játék indításkor
 	}
 
-	public void setTimeElapsed(long timeElapsed) {
+	public void setTimeElapsed() {
 		this.timeElapsed =System.currentTimeMillis()-this.timeFirstClick ;
 	}
 
