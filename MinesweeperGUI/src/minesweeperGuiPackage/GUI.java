@@ -38,41 +38,44 @@ import javafx.stage.*;
 public class GUI extends Application {
 	Control c;
 	Board board = new Board();
+	
 	Button[][] boardTiles;
+	MenuItem menuItemNewGame, menuItemHighScores, menuItemMode, menuItemExit;
+	MenuItem menuItemStartServer, menuItemStartClient;
+	Menu menuDifficulty, menuStart;
+	MenuBar menuBar;
+	GridPane gridPane;
+	BorderPane borderPane;
+	Stage stage;
+	
 	Label timeElapsedLabel;
 	Label flagsLeftLabel;
-	GridPane gridPane;
-	Stage stage;
-	MenuItem menuItemNewGame, menuItemHighScores, menuItemMode, menuItemExit, menuItemStartServer, menuItemStartClient;
-	MenuBar menuBar;
-	Menu menuDifficulty, menuStart;
 	String difficulty;
-	ImageView[] bombImageViews;
-	BorderPane borderPane;
-	
-	int numOfFlagsLeft=10;
+	int numOfFlagsLeft=10; //ez nem kell, a Board.mineLeft eleme
 	StringProperty message;
 	boolean hasLostTheGame; //erre majd vigyázni kell, hogy új játék kezdésekor vissza kell állítani false-ra!
-	ImageView mineImageView;
 	int bombRowIndex, bombColIndex;
+	short revealedBlocks;
 	
 	Image mineImage;
-
-	//visszaszámolunk, hogy megnyertem-e már a játékot.
-	int numOfEnabled;
+	ImageView[] bombImageViews;
+	ImageView mineImageView;
 	
-	//dummy data; ezt majd kapom valahonnan
-	String timeElapsed = "05:13";
+	String timeElapsed = "30:13";
 
+	
 	public static void main(String[] args) {
-		launch(args); //ennek hatására hívódik meg a start() fv
+		launch(args); //start() meghívódik
 	}
 	
-	public void showTable() {		
-		HighScoresTestDrive.showTable();		
+	public void showTable() {	
+		HighScoresTestDrive h = new HighScoresTestDrive();
+		HighScores newHighScore = new HighScores("tényleg elsõ", "01:00");
+		h.insertData(newHighScore);
+		h.showTable();
 	}
 	
-	//felugró ablakhoz ezt kell meghívni; lehetne valami utility-be is akár
+	//felugró ablakhoz megjelenítése
 	public String showDialog(String title, String text, String[] buttons) {
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle(title);
@@ -96,12 +99,14 @@ public class GUI extends Application {
 
 	}
 	
+	/*létrehoz kér egy új board-ot, és megjeleníti az új mezõket a táblán*/
 	public void startNewGame(String difficulty) {
+		numOfFlagsLeft=board.numberOfMines;
+		revealedBlocks=0;
+		hasLostTheGame=false;
 		board.generateNewBoard(difficulty); //konstruktor?
-		numOfEnabled = board.width*board.height;
 		boardTiles = null;
 		boardTiles = new Button[board.height][board.width];
-		hasLostTheGame=false;
 		
 		numOfFlagsLeft = board.numberOfMines;
 		
@@ -134,9 +139,8 @@ public class GUI extends Application {
 		
 		//inicializálás
 		difficulty = "easy";
-		
 		board.generateNewBoard("easy");
-		
+
 		mineImage = new Image("file:/C:/Users/Juhász%20Alexandra/workspace/MinesweeperAlexandra/bin/images/flower2.png");
 		ImageView mineImageView = new ImageView();
     	mineImageView.setImage(mineImage);
@@ -322,11 +326,7 @@ public class GUI extends Application {
 			}
 			stage.sizeToScene();
 		});
-		
-		//set the stage
-		
-		Image background = new Image("file:/C:/Users/Juhász%20Alexandra/workspace/MinesweeperAlexandra/bin/images/green_texture1.png");
-		
+			
 		borderPane.setStyle("-fx-background-image: url(\"file:/C:/Users/Juhász%20Alexandra/workspace/MinesweeperAlexandra/bin/images/orange_background2.jpg\"); -fx-background-position: center center; -fx-background-repeat: stretch;");
 		
 		
@@ -356,6 +356,7 @@ public class GUI extends Application {
 	}
 	
 	void revealBlock(int rowIndex, int colIndex) {
+		revealedBlocks++;
 		if(board.numberOfNeighbours[rowIndex][colIndex]!=0)
 			boardTiles[rowIndex][colIndex].setText(""+board.numberOfNeighbours[rowIndex][colIndex]);
 		boardTiles[rowIndex][colIndex].setDisable(true);
@@ -404,14 +405,12 @@ public class GUI extends Application {
 						numOfFlagsLeft++;
 						boardTiles[i][j].setStyle("-fx-background-color: #000000,linear-gradient(#7ebcea, #2f4b8f),linear-gradient(#426ab7, #263e75),linear-gradient(#395cab, #223768);"
 								+ " -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; "
-								//+ "-fx-focus-color:transparent; -fx-faint-focus-color:transparent; "
 								+ "-fx-background-radius: 0,0,0,0; -fx-background-insets: 0,0,0,0;");
 						boardTiles[i][j].setText("");
 					} else if (numOfFlagsLeft > 0) { //egyébként írjunk rá egy kérdõjelet
 						numOfFlagsLeft--;
 						boardTiles[i][j].setStyle("-fx-background-color: #000000,linear-gradient(#7ebcea, #2f4b8f),linear-gradient(#426ab7, #263e75),linear-gradient(#395cab, #223768);"
 								+ " -fx-text-fill: red; -fx-font-size: 15px; -fx-font-weight: bold; "
-								//+ "-fx-focus-color:transparent; -fx-faint-focus-color:transparent; "
 								+ "-fx-background-radius: 0,0,0,0; -fx-background-insets: 0,0,0,0;");
 						boardTiles[i][j].setText("?");
 					}
@@ -425,8 +424,6 @@ public class GUI extends Application {
 						}
 						
 					if(board.isMine[i][j]==1) {
-						//ha vesztett, az igazából csak GUI esemény, tehát display window, ilyesmi
-						System.out.println("You lost.");
 						hasLostTheGame=true;
 						bombImageViews = new ImageView[board.numberOfMines]; //csak akkora tömböt, amekkora tényleg kell
 						//csak hogy indexelek benne? bombImageViewsIndex++
@@ -441,7 +438,6 @@ public class GUI extends Application {
 						}
 						bombImageViewsIndex = 0; //!
 						for(int rowIndex=0; rowIndex<board.height; rowIndex++) {
-							System.out.println(bombImageViewsIndex);
 							for (int colIndex=0; colIndex<board.width; colIndex++) {
 								
 								if(board.isMine[rowIndex][colIndex]==1) {
@@ -460,31 +456,33 @@ public class GUI extends Application {
 						String[] options = {"Igen", "Nem"};
 						String choice = showDialog("Vesztettél.", "Sajnos vesztettél.\nSzeretnél új játékot kezdeni?", options);
 						if(choice == "Igen") {
-							System.out.println("Új játékot szeretnék kezdeni");
+							startNewGame(difficulty);
+							borderPane.setCenter(gridPane);
+							stage.sizeToScene();
 						}
 
 						
 					} else {
 						
 						revealBlock(i,j);
-						
-						/**ez már nem jó a revealBlock() miatt**/
-						//ha nem akna volt, meg kell nézni, hogy nyertem-e
-						//mikor nyertem? ha a nem felfordított gombok száma annyi, mint ahány akna van,
-						//és még nem vesztettem.
-						//kell: hány darab, még nem disabled cella van (numOfEnabled)
-						numOfEnabled--;
-						if(numOfEnabled == board.numberOfMines) {
-							//ha bekerült az idõeredmény alapján a legjobbak közé
-							
-							//ha nem került be
-							String[] options = {"Igen", "Nem"};
-							String choice = showDialog("Nyertél!", "Gratulálunk! Nyertél.\n"
-									+ "Szeretnél új játékot kezdeni?", options);
-							if(choice == "Igen") {
-								System.out.println("Szeretnék új játékot kezdeni.");
+
+						if((board.width*board.height - revealedBlocks) == board.numberOfMines) {
+							System.out.println(timeElapsed);
+							if(HighScoresTestDrive.insertData(new HighScores("Én",timeElapsed))==-1) {
+								//nyert, de nem került be a legjobbak közé
+								String[] options = {"Igen", "Nem"};
+								String choice = showDialog("Nyertél!", "Gratulálunk! Nyertél.\n"
+										+ "Szeretnél új játékot kezdeni?", options);
+								if(choice == "Igen") {
+									startNewGame(difficulty);
+									borderPane.setCenter(gridPane);
+									stage.sizeToScene();
+								} else {
+									//nem szeretnék új játékot kezdeni
+								}
 							} else {
-								System.out.println("Nem szeretnék új játékot kezdeni.");
+								//nyert, és bekerült a legjobbak közé
+								System.out.println("bekerültél a legjobbak közé!");
 							}
 							
 						}
