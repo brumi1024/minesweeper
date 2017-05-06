@@ -86,16 +86,17 @@ public class TcpServer extends Network {
                 return;
             }
 
-            try {
+            /*try {
                 while (true) {
-                    playerController.indexReceived(in.readObject());
+                    //playerController.indexReceived(in.readObject());
+
                 }
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
                 Logger.getLogger(TcpServer.class.getName()).log(Level.SEVERE,"Client disconnected.", ex);
             } finally {
                 disconnect();
-            }
+            }*/
         }
     }
 }

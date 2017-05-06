@@ -1,5 +1,6 @@
-package player;
+package main;
 
+import player.Player;
 import tcp.Network;
 import tcp.TcpClient;
 import tcp.TcpServer;

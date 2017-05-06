@@ -4,7 +4,7 @@ import player.Player;
 
 public abstract class Network {
 
-    protected Player playerController;
+    Player playerController;
 
     Network(Player c) {
         playerController = c;

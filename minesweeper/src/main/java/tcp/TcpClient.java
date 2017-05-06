@@ -77,7 +77,7 @@ public class TcpClient extends Network {
 
             try {
                 while (true) {
-                    playerController.indexReceived(in.readObject());
+                    //playerController.indexReceived(in.readObject());
                 }
             } catch (Exception ex) {
                 Logger.getLogger(TcpClient.class.getName()).log(Level.SEVERE,

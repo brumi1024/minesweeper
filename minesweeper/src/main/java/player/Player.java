@@ -1,12 +1,14 @@
 package player;
 
-/**
- * Created by ebentek on 4/16/2017.
- */
 public class Player {
-    Player() {}
+	private int MineMarked=0; // number of marked mines
 
-    public void indexReceived(Object obj) {
-        System.out.println(obj);
-    }
+	public int getMineMarked() {
+		return MineMarked;
+	}
+
+	public void setMineMarked(int mineMarked) {
+		MineMarked = mineMarked;
+	}
+	
 }
