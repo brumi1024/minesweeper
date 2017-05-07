@@ -167,11 +167,7 @@ public class HighScoresTestDrive extends Application {
 
     static boolean isNewHighScore(String timeElapsed, String difficulty) {
         ObservableList<HighScores> data = loadData(difficulty);
-        if (compareTimes(timeElapsed, data.get(data.size() - 1).getTime()) >= 0) {
-            return false;
-        } else {
-            return true;
-        }
+        return compareTimes(timeElapsed, data.get(data.size() - 1).getTime()) < 0;
     }
 
     static int insertData(HighScores newResult, String difficulty) {
@@ -232,16 +228,17 @@ public class HighScoresTestDrive extends Application {
         return 0;
     }
 
-    private static File checkDifficulty(String difficulty) throws Exception {
+    private static File checkDifficulty(String difficulty) throws NullPointerException {
+        ClassLoader loader = GUI.class.getClassLoader();
         switch (difficulty) {
             case "easy":
-                return new File("highScoresEasy.txt");
+                return new File(loader.getResource("highScoresEasy.txt").getFile());
             case "medium":
-                return new File("highScoresMedium.txt");
+                return new File(loader.getResource("highScoresMedium.txt").getFile());
             case "hard":
-                return new File("highScoresHard.txt");
+                return new File(loader.getResource("highScoresHard.txt").getFile());
             default:
-                return new File("highScoresHard.txt");
+                return new File(loader.getResource("highScoresEasy.txt").getFile());
         }
     }
 }
