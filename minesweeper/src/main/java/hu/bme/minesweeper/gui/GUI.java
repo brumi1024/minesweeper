@@ -9,11 +9,13 @@ import javafx.geometry.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.stage.*;
 import hu.bme.minesweeper.level.Board;
+import javafx.util.Pair;
 
 public class GUI extends Application {
     Control c;
@@ -46,6 +48,16 @@ public class GUI extends Application {
 
     Timer timer;
     
+    /*multiplayerhez*/
+    String serverName, clientName;
+    boolean amIActive;
+    boolean amIServer;
+    /*multiplayerhez vége*/
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     private void showTable() {
         HighScoresTestDrive.showTable(-1, null);
     }
@@ -139,6 +151,7 @@ public class GUI extends Application {
         Image serverImage = new Image("images/serverPerson.png");
         Image clientImage = new Image("images/clientPerson.png");
         ImageView serverImageView = new ImageView(serverImage);
+        serverImageView.setStyle("-fx-background-radius: 5; -fx-background-color: green");
         serverImageView.setFitWidth(100);
         serverImageView.setPreserveRatio(true);
         ImageView clientImageView = new ImageView(clientImage);
@@ -152,9 +165,13 @@ public class GUI extends Application {
         ImageView mineImageViewClient = new ImageView(mineImage);
         mineImageViewClient.setFitWidth(15);
         mineImageViewClient.setPreserveRatio(true);
+        
+        /***server köré border***/
+        HBox serverBorderBox = new HBox(serverImageView);
+        HBox clientBorderBox = new HBox(clientImageView);
 
-        VBox serverImageVBox = new VBox(serverImageView, serverSidePlayer);
-        VBox clientImageVBox = new VBox(clientImageView, clientSidePlayer);
+        VBox serverImageVBox = new VBox(serverBorderBox, serverSidePlayer);
+        VBox clientImageVBox = new VBox(clientBorderBox, clientSidePlayer);
 
         HBox serverMineFound = new HBox(mineImageViewServer, serverMinesFoundLabel);
         HBox clientMineFound = new HBox(mineImageViewClient, clientMinesFoundLabel);
@@ -175,12 +192,77 @@ public class GUI extends Application {
         menuItemStartServer = new MenuItem("Start server");
         menuItemStartServer.setOnAction(e ->
         {
-            System.out.println("szerver vagyok");
+        	//I am going to be a SERVER
+        		 TextInputDialog dialog = new TextInputDialog();
+                 dialog.setTitle("Starting server");
+                 dialog.setHeaderText("Starting server");
+                 dialog.setGraphic(null);
+                 dialog.setContentText("Your name:");
+                 Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK );
+                 okButton.setText("Start server...");
+
+                 Optional<String> result = dialog.showAndWait();
+                 if (result.isPresent()) {
+                	 serverName = result.get();
+                	 serverSidePlayer.setText(serverName);
+                	 amIServer=true;
+                 }
+                 if(true) { //ha amIActive && amIServer
+                	 clientBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 0;");
+                	 serverBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 3;");
+                 }
+                 
         });
         menuItemStartClient = new MenuItem("Start client");
         menuItemStartClient.setOnAction(e ->
         {
-            System.out.println("kliens vagyok");
+            //I am going to be a CLIENT
+            Dialog<Pair<String, String>> dialog = new Dialog<>();
+            dialog.setTitle("Client connecting");
+            dialog.setGraphic(null);
+            ButtonType loginButtonType = new ButtonType("Connecting...", ButtonData.OK_DONE);
+            dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+            GridPane grid = new GridPane();
+            grid.setHgap(10);
+            grid.setVgap(10);
+            grid.setPadding(new Insets(20, 150, 10, 10));
+
+            TextField IP = new TextField();
+            IP.setPromptText("IP address:");
+            TextField name = new TextField();
+            name.setPromptText("Your name:");
+
+            grid.add(new Label("IP address:"), 0, 0);
+            grid.add(IP, 1, 0);
+            grid.add(new Label("Your name:"), 0, 1);
+            grid.add(name, 1, 1);
+            
+            dialog.getDialogPane().setContent(grid);
+            
+            Platform.runLater(() -> IP.requestFocus());
+
+            dialog.setResultConverter(dialogButton -> {
+                if (dialogButton == loginButtonType) {
+                    return new Pair<>(IP.getText(), name.getText());
+                }
+                return null;
+            });
+
+            Optional<Pair<String, String>> result = dialog.showAndWait();
+
+            result.ifPresent(pair -> {
+            	String ipAddress = pair.getKey();
+            	
+           	 	clientName = pair.getValue();
+           	 	clientSidePlayer.setText(clientName);
+           	 	amIServer=false; //I am the client
+            	
+           	 	System.out.println(ipAddress);
+            });
+            if(true) { //ha amIActive && amIClient
+           	 clientBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 3;");
+           	 serverBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 0;");
+            }
         });
 
         menuStart.getItems().addAll(menuItemStartServer, menuItemStartClient);
@@ -325,13 +407,23 @@ public class GUI extends Application {
             boardTiles[rowIndex][colIndex].setText("" + board.cells.get(listIndex).step());
         boardTiles[rowIndex][colIndex].setDisable(true);
         if (board.cells.get(listIndex).step() == 0) {
-            for (int i = -1; i <= 1; i++) {
-                for (int j = -1; j <= 1; j++) {
-                    if (inBounds(rowIndex + i, colIndex + j, board.getBoardHeight(), board.getBoardWidth())
-                            && (!boardTiles[rowIndex + i][colIndex + j].isDisabled()))
-                        revealBlock(rowIndex + i, colIndex + j);
-                }
-            }
+            if (inBounds(rowIndex - 1, colIndex, board.getBoardHeight(), board.getBoardWidth()) && (!boardTiles[rowIndex - 1][colIndex].isDisabled()))
+                revealBlock(rowIndex - 1, colIndex);
+            if (inBounds(rowIndex, colIndex + 1, board.getBoardHeight(), board.getBoardWidth()) && (!boardTiles[rowIndex][colIndex + 1].isDisabled()))
+                revealBlock(rowIndex, colIndex + 1);
+            if (inBounds(rowIndex + 1, colIndex, board.getBoardHeight(), board.getBoardWidth()) && (!boardTiles[rowIndex + 1][colIndex].isDisabled()))
+                revealBlock(rowIndex + 1, colIndex);
+            if (inBounds(rowIndex, colIndex - 1, board.getBoardHeight(), board.getBoardWidth()) && (!boardTiles[rowIndex][colIndex - 1].isDisabled()))
+                revealBlock(rowIndex, colIndex - 1);
+
+            if (inBounds(rowIndex - 1, colIndex - 1, board.getBoardHeight(), board.getBoardWidth()) && (!boardTiles[rowIndex - 1][colIndex - 1].isDisabled()))
+                revealBlock(rowIndex - 1, colIndex - 1);
+            if (inBounds(rowIndex - 1, colIndex + 1, board.getBoardHeight(), board.getBoardWidth()) && (!boardTiles[rowIndex - 1][colIndex + 1].isDisabled()))
+                revealBlock(rowIndex - 1, colIndex + 1);
+            if (inBounds(rowIndex + 1, colIndex + 1, board.getBoardHeight(), board.getBoardWidth()) && (!boardTiles[rowIndex + 1][colIndex + 1].isDisabled()))
+                revealBlock(rowIndex + 1, colIndex + 1);
+            if (inBounds(rowIndex + 1, colIndex - 1, board.getBoardHeight(), board.getBoardWidth()) && (!boardTiles[rowIndex + 1][colIndex - 1].isDisabled()))
+                revealBlock(rowIndex + 1, colIndex - 1);
         }
     }
 
@@ -451,7 +543,6 @@ public class GUI extends Application {
                                     dialog.setGraphic(null);
                                     dialog.setContentText("Your name:");
 
-                                    // Traditional way to get the response value.
                                     Optional<String> result = dialog.showAndWait();
                                     if (result.isPresent()) {
                                         int place = HighScoresTestDrive.insertData(new HighScores(result.get(), timeElapsed), difficulty);
