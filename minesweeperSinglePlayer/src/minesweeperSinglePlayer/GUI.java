@@ -94,6 +94,7 @@ public class GUI extends Application {
 		boardTiles = new Button[board.getBoardHeight()][board.getBoardWidth()];
 		
 		numOfFlagsLeft = board.getNumOfMines();
+		message.set(Integer.toString(numOfFlagsLeft));
 		
 		gridPane = null;
 		gridPane = new GridPane();
