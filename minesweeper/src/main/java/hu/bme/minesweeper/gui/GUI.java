@@ -15,11 +15,6 @@ import javafx.scene.layout.*;
 import javafx.stage.*;
 import hu.bme.minesweeper.level.Board;
 
-/**
- * többjátékosnál kijelölni, hogy épp ki aktív
- * animáció: egymás után jelenjenek meg a bombák
- */
-
 public class GUI extends Application {
     Control c;
     Board board = new Board();
@@ -53,14 +48,14 @@ public class GUI extends Application {
 
 
     public static void main(String[] args) {
-        launch(args); //start() meghívódik
+        launch(args);
     }
 
     private void showTable() {
         HighScoresTestDrive.showTable(-1, null);
     }
 
-    //felugró ablakhoz megjelenítése
+    //show popup window
     private String showDialog(String title, String text, String[] buttons) {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle(title);
@@ -70,7 +65,6 @@ public class GUI extends Application {
 
         ButtonType buttonTypeYes = new ButtonType(buttons[0]);
         ButtonType buttonTypeNo = new ButtonType(buttons[1]);
-        //itt többet is fel lehet sorolni
 
         alert.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo);
 
@@ -84,7 +78,7 @@ public class GUI extends Application {
 
     }
 
-    /*létrehoz kér egy új board-ot, és megjeleníti az új mezõket a táblán*/
+    /*create a board, show the cells in a gridpane*/
     private void startNewGame(String difficulty) {
         timer = new Timer();
         revealedBlocks = 0;
@@ -124,7 +118,7 @@ public class GUI extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        //inicializálás
+        //initializating
         difficulty = "easy";
         board.createBoards(difficulty);
 
@@ -137,8 +131,8 @@ public class GUI extends Application {
         mineImageView.setCache(true);
 
 		/*creating multiplayer layout: left side and right side*/
-        Label serverSidePlayer = new Label("Szerver oldali játékos");
-        Label clientSidePlayer = new Label("Kliens oldali játékos");
+        Label serverSidePlayer = new Label("Server side player");
+        Label clientSidePlayer = new Label("Client side player");
         ProgressBar serverPB = new ProgressBar();
         ProgressBar clientPB = new ProgressBar();
         serverPB.setProgress(0.6666);
@@ -181,32 +175,25 @@ public class GUI extends Application {
         clientVBox.getChildren().addAll(clientImageVBox, clientPB, clientMineFound);
 		/*end of: creating multiplayer layout: left side and right side*/
 
-		/*menuStart: a multiplayer mód szerver és kliens indításának menüje*/
         menuStart = new Menu("Start");
 
-        menuItemStartServer = new MenuItem("Szerver indítása");
+        menuItemStartServer = new MenuItem("Start server");
         menuItemStartServer.setOnAction(e ->
         {
-            //eltárolni, hogy én vagyok a szerver
             System.out.println("szerver vagyok");
-            //szerver indítása
         });
-        menuItemStartClient = new MenuItem("Kliens indítása");
+        menuItemStartClient = new MenuItem("Start client");
         menuItemStartClient.setOnAction(e ->
         {
-            //eltárolni, hogy én vagyok a kliens
             System.out.println("kliens vagyok");
-            //kliens indítása
         });
 
         menuStart.getItems().addAll(menuItemStartServer, menuItemStartClient);
-		/*end of: menuStart: a multiplayer mód szerver és kliens indításának menüje*/
+		
 
         stage = primaryStage;
 
         Label timeElapsedLabel = new Label(timeElapsed);
-		/*a numOfFlagsLeft változó hozzákötése a minesLeftLabel-hez*/
-		/*ez a frissítõs izé pont csak az eltelt idõnek kell majd*/
         Label flagsLeftLabel = new Label(Integer.toString(numOfFlagsLeft));
         message = new SimpleStringProperty();
         flagsLeftLabel.textProperty().bind(message);
@@ -218,31 +205,29 @@ public class GUI extends Application {
         //hBox contains the south of the scene: the elapsed time and the number of remaining flags
         HBox hBox = new HBox();
         hBox.setPadding(new Insets(10));
-        Region spacer = new Region(); //hogy bal, ill. jobb szélre kerüljenek az eltelt idõ és a megmaradt flagek
+        Region spacer = new Region(); //so that elapsed time goes to the left, remaining flags go to the right
         HBox.setHgrow(spacer, Priority.ALWAYS);
         hBox.getChildren().addAll(timeElapsedLabel, spacer, flagsLeftLabel);
 
-		/*menü kialakítása*/
         menuBar = new MenuBar();
-        Menu menuGame = new Menu("Játék");
-        Menu menuHelp = new Menu("Súgó");
+        Menu menuGame = new Menu("Game");
 
         //create the menuItems and add listeners
-        menuItemNewGame = new MenuItem("Új játék");
+        menuItemNewGame = new MenuItem("New Game");
         menuItemNewGame.setOnAction(e -> {
             startNewGame(difficulty);
             borderPane.setCenter(gridPane);
             stage.sizeToScene();
         });
 
-        menuItemHighScores = new MenuItem("Legjobb eredmények");
+        menuItemHighScores = new MenuItem("High Scores");
         menuItemHighScores.setOnAction(e -> {
             showTable();
         });
 
-        RadioMenuItem menuItemEasy = new RadioMenuItem("Könnyû");
-        RadioMenuItem menuItemMedium = new RadioMenuItem("Közepes");
-        RadioMenuItem menuItemHard = new RadioMenuItem("Nehéz");
+        RadioMenuItem menuItemEasy = new RadioMenuItem("Easy");
+        RadioMenuItem menuItemMedium = new RadioMenuItem("Medium");
+        RadioMenuItem menuItemHard = new RadioMenuItem("Hard");
         ToggleGroup difficultyGroup = new ToggleGroup();
         menuItemEasy.setToggleGroup(difficultyGroup);
         menuItemMedium.setToggleGroup(difficultyGroup);
@@ -250,7 +235,7 @@ public class GUI extends Application {
 
         menuItemEasy.setSelected(true);
 
-        menuDifficulty = new Menu("Nehézségi szint");
+        menuDifficulty = new Menu("Difficulty level");
         menuDifficulty.getItems().addAll(menuItemEasy, menuItemMedium, menuItemHard);
 
         menuDifficulty.setOnAction(e ->
@@ -276,16 +261,16 @@ public class GUI extends Application {
         });
 
 
-        menuItemMode = new MenuItem("Váltás többjátékos módra");
+        menuItemMode = new MenuItem("Multiplayer");
         menuItemMode.setOnAction(new MenuItemHandler());
 
-        menuItemExit = new MenuItem("Kilépés");
+        menuItemExit = new MenuItem("Exit");
         menuItemExit.setOnAction(new MenuItemHandler());
 
         menuGame.getItems().addAll(menuItemNewGame, menuItemHighScores, menuDifficulty, menuItemMode, new SeparatorMenuItem(), menuItemExit);
         menuBar.getMenus().addAll(menuGame);
 
-		/*egyjátékos mód layoutja*/
+		/*layout of single player game*/
         borderPane = new BorderPane();
         borderPane.setTop(menuBar);
         borderPane.setCenter(gridPane);
@@ -293,17 +278,17 @@ public class GUI extends Application {
 
         Scene scene = new Scene(borderPane);
 
-		/*a menügomb hatására váltás az egyjátékos- és a többjátékos mód layoutja között*/
+		/*change between single- and multiplayer*/
         menuItemMode.setOnAction(e ->
         {
-            if (Objects.equals(menuItemMode.getText(), "Váltás egyjátékos módra")) {
-                menuItemMode.setText("Váltás többjátékos módra");
+            if (Objects.equals(menuItemMode.getText(), "Single player")) {
+                menuItemMode.setText("Multiplayer");
                 menuBar.getMenus().remove(menuStart);
                 borderPane.setLeft(null);
                 borderPane.setRight(null);
                 borderPane.setBottom(hBox);
-            } else if (Objects.equals(menuItemMode.getText(), "Váltás többjátékos módra")) {
-                menuItemMode.setText("Váltás egyjátékos módra");
+            } else if (Objects.equals(menuItemMode.getText(), "Multiplayer")) {
+                menuItemMode.setText("Single player");
                 menuBar.getMenus().addAll(menuStart);
                 borderPane.setLeft(serverVBox);
                 borderPane.setRight(clientVBox);
@@ -312,20 +297,20 @@ public class GUI extends Application {
             stage.sizeToScene();
         });
 
-        borderPane.setStyle("-fx-background-image: url(\"images/orange_background2.png\"); -fx-background-position: center center; -fx-background-repeat: stretch;");
+        borderPane.setStyle("-fx-background-image: url(\"images/orange_background2.jpg\"); -fx-background-position: center center; -fx-background-repeat: stretch;");
 
         primaryStage.setScene(scene);
-        primaryStage.setTitle("Aknakeresõ");
+        primaryStage.setTitle("Minesweeper");
         primaryStage.show();
 
         stage.setOnCloseRequest(e -> {
             if (!hasLostTheGame && (!hasWonTheGame)) {
-                String[] options = {"Igen", "Nem"};
-                String choice = showDialog("Kilépési szándék megerõsításe", "Biztos kilépsz?", options);
-                if (Objects.equals(choice, "Igen")) {
+                String[] options = {"Yes", "No"};
+                String choice = showDialog("Exit", "Are you sure you want to exit?", options);
+                if (Objects.equals(choice, "Yes")) {
                     stage.close();
                 }
-                if (Objects.equals(choice, "Nem")) {
+                if (Objects.equals(choice, "No")) {
                     e.consume();
                 }
             }
@@ -365,17 +350,17 @@ public class GUI extends Application {
         }
     }
 
-    //ha rákattintottunk valamelyik cellára
+    //when clicked on a cell
     private class ButtonClickedHandler implements EventHandler<MouseEvent> {
 
         @Override
         public void handle(MouseEvent event) {
-            //melyik egérgombbal kattintottunk a cellára?
+            //which mouse button?
             boolean buttonType = false; // false = left click; true = right click;
             if (event.getButton() == MouseButton.SECONDARY) {
                 buttonType = true;
             }
-            //melyik cellára kattintottunk?
+            //which cell?
             String coordsString = ((Button) event.getSource()).getId();
             String[] coords = coordsString.split("-");
             int i = Integer.parseInt(coords[0]);
@@ -383,28 +368,26 @@ public class GUI extends Application {
 
             if (!boardTiles[i][j].isDisable() && (!hasLostTheGame) && (!hasWonTheGame)) {
 
-                if (buttonType) { //ha jobb gombbal kattintottunk még nem felfedett mezõre
-                    //ha már van ott kérdõjel, vegyük le
+                if (buttonType) { //ha jobb gombbal kattintottunk meg nem felfedett mezore
+                    //ha mar van ott kerdojel, vegyuk le
                     if (boardTiles[i][j].getText() == "?") {
                         numOfFlagsLeft++;
                         boardTiles[i][j].setStyle("-fx-background-color: #000000,linear-gradient(#7ebcea, #2f4b8f),linear-gradient(#426ab7, #263e75),linear-gradient(#395cab, #223768);"
                                 + " -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; "
                                 + "-fx-background-radius: 0,0,0,0; -fx-background-insets: 0,0,0,0;");
                         boardTiles[i][j].setText("");
-                    } else if (numOfFlagsLeft > 0) { //egyébként írjunk rá egy kérdõjelet
+                    } else if (numOfFlagsLeft > 0) { //egyebkent irjunk ra kerdojelet
                         numOfFlagsLeft--;
                         boardTiles[i][j].setStyle("-fx-background-color: #000000,linear-gradient(#7ebcea, #2f4b8f),linear-gradient(#426ab7, #263e75),linear-gradient(#395cab, #223768);"
                                 + " -fx-text-fill: red; -fx-font-size: 15px; -fx-font-weight: bold; "
                                 + "-fx-background-radius: 0,0,0,0; -fx-background-insets: 0,0,0,0;");
                         boardTiles[i][j].setText("?");
                     }
-                    message.set(Integer.toString(numOfFlagsLeft)); //lehet ez így fölösleges propertyvel
-                    //igen, az, de bennehagyom; majd ilyen lesz jó az idõhöz, mert az folyton változik,
-                    //és folyton frissíteni kell
+                    message.set(Integer.toString(numOfFlagsLeft));
                 } else {
-                    if (!Objects.equals(boardTiles[i][j].getText(), "?")) { //ha kérdõjel van már ott, nem nyúlunk semmihez
-                        //ha normális kattintás történt bal egérgombbal
-                        //ha az elsõ katt történt, indítsd el a timert
+                    if (!Objects.equals(boardTiles[i][j].getText(), "?")) { //ha kerdojel van mar ott, nem nyulunk semmihez
+                        //ha normalis kattintas a bal egergombbal
+                        //ha az elso katt tortent, inditsd el a timert
                         if (revealedBlocks == 0) {
                             timer.setTimeFirstClick();
                         }
@@ -415,7 +398,7 @@ public class GUI extends Application {
 
                         if (board.minesMatrix[i][j]) {
                             hasLostTheGame = true;
-                            bombImageViews = new ImageView[board.getNumOfMines()]; //csak akkora tömböt, amekkora tényleg kell
+                            bombImageViews = new ImageView[board.getNumOfMines()];
                             //csak hogy indexelek benne? bombImageViewsIndex++
 
                             int bombImageViewsIndex = 0;
@@ -426,7 +409,7 @@ public class GUI extends Application {
                                 bombImageViews[k].setSmooth(true);
                                 bombImageViews[k].setCache(true);
                             }
-                            bombImageViewsIndex = 0; //!
+                            bombImageViewsIndex = 0;
                             for (int rowIndex = 0; rowIndex < board.getBoardHeight(); rowIndex++) {
                                 for (int colIndex = 0; colIndex < board.getBoardWidth(); colIndex++) {
 
@@ -442,10 +425,10 @@ public class GUI extends Application {
                                     }
                                 }
                             }
-                            //várni kellene kicsit, mielõtt felugrik az ablak
-                            String[] options = {"Igen", "Nem"};
-                            String choice = showDialog("Vesztettél.", "Sajnos vesztettél.\nSzeretnél új játékot kezdeni?", options);
-                            if (Objects.equals(choice, "Igen")) {
+                      
+                            String[] options = {"Yes", "No"};
+                            String choice = showDialog("Lost", "You lost.\nWould you like to start a new game?", options);
+                            if (Objects.equals(choice, "Yes")) {
                                 startNewGame(difficulty);
                                 borderPane.setCenter(gridPane);
                                 stage.sizeToScene();
@@ -463,26 +446,25 @@ public class GUI extends Application {
                                 timeElapsed = minSec[1] + ":" + minSec[2];
                                 hasWonTheGame = true;
                                 if (!HighScoresTestDrive.isNewHighScore(timeElapsed, difficulty)) {
-                                    //nyert, de nem került be a legjobbak közé
-                                    String[] options = {"Igen", "Nem"};
-                                    String choice = showDialog("Nyertél!", "Gratulálunk! Nyertél.\n"
-                                            + "Szeretnél új játékot kezdeni?", options);
-                                    if (choice == "Igen") {
+                                    //nyert, de nem kerult be a legjobbak koze
+                                    String[] options = {"Yes", "No"};
+                                    String choice = showDialog("You won!", "Congratulations! You won.\n"
+                                            + "Would you like to start a new game?", options);
+                                    if (choice == "Yes") {
                                         startNewGame(difficulty);
                                         borderPane.setCenter(gridPane);
                                         stage.sizeToScene();
                                     } else {
-                                        //nem szeretnék új játékot kezdeni
+                                        
                                     }
                                 } else {
-                                    //bekerült a legjobbak közé
+                                    //bekerult a legjobbak koze
 
-                                    //itt el lehetne tárolni a legutóbbi megadott nevet
                                     TextInputDialog dialog = new TextInputDialog();
-                                    dialog.setTitle("Toplista");
-                                    dialog.setHeaderText("Gratulálunk! Felkerültél a toplistára.");
+                                    dialog.setTitle("Best");
+                                    dialog.setHeaderText("Congratulations! It's a new record.");
                                     dialog.setGraphic(null);
-                                    dialog.setContentText("Add meg a neved:");
+                                    dialog.setContentText("Your name:");
 
                                     // Traditional way to get the response value.
                                     Optional<String> result = dialog.showAndWait();
@@ -493,7 +475,7 @@ public class GUI extends Application {
                                 }
                             }
                         }
-                    } //end_ha nem volt ott már kérdõjel eleve
+                    } //end_ha nem volt ott mar ott kerdojel eleve
                 } //end_if/else (buttonType)
             }
         }
@@ -505,19 +487,19 @@ public class GUI extends Application {
         @Override
         public void handle(ActionEvent event) {
             if (event.getSource() == menuItemMode) {
-                if (Objects.equals(menuItemMode.getText(), "Váltás egyjátékos módra")) {
-                    menuItemMode.setText("Váltás többjátékos módra");
+                if (Objects.equals(menuItemMode.getText(), "Single player")) {
+                    menuItemMode.setText("Multiplayer");
                     menuBar.getMenus().remove(menuStart);
-                } else if (Objects.equals(menuItemMode.getText(), "Váltás többjátékos módra")) {
-                    menuItemMode.setText("Váltás egyjátékos módra");
+                } else if (Objects.equals(menuItemMode.getText(), "Multiplayer")) {
+                    menuItemMode.setText("Single player");
                     menuBar.getMenus().addAll(menuStart);
                 }
             }
             if (event.getSource() == menuItemExit) {
                 if ((!hasLostTheGame) && (!hasWonTheGame)) {
-                    String[] options = {"Igen", "Nem"};
-                    String choice = showDialog("Kilépés", "Biztos kilépsz?", options);
-                    if (Objects.equals(choice, "Igen")) {
+                    String[] options = {"Yes", "No"};
+                    String choice = showDialog("Exit", "Are you sure you want to exit?", options);
+                    if (Objects.equals(choice, "Yes")) {
                         stage.close();
                     }
                 }

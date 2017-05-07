@@ -1,8 +1,5 @@
 package hu.bme.minesweeper.gui;
 
-/*((ki lehetne menteni az utolsó játékot))*/
-
-/*legyen a high scores-nál a táblázat egy felugró ablak, aminek egyetlen gombja van, "Vissza"**/
 
 import javafx.application.Application;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -74,18 +71,18 @@ public class HighScoresTestDrive extends Application {
         TableColumn<HighScores, String> colTitle = new TableColumn();
 
         if (difficulty == "easy") {
-            colTitle.setText("Könnyû");
+            colTitle.setText("Easy");
         } else if (difficulty == "medium") {
-            colTitle.setText("Közepes");
+            colTitle.setText("Medium");
         } else {
-            colTitle.setText("Nehéz");
+            colTitle.setText("Hard");
         }
 
         colTitle.setMinWidth(100);
         colTitle.setCellValueFactory(new PropertyValueFactory<HighScores, String>("Name"));
         colTitle.setSortable(false);
 
-        TableColumn<HighScores, String> colYear = new TableColumn("Idõ");
+        TableColumn<HighScores, String> colYear = new TableColumn("Time");
         //colYear.setMinWidth(50);
         colYear.setCellValueFactory(new PropertyValueFactory<HighScores, String>("Time"));
         colYear.setSortable(false);
@@ -96,14 +93,6 @@ public class HighScoresTestDrive extends Application {
     }
 
     static void showTable(int place, String difficulty) {
-        Label easyLabel = new Label("Könnyû");
-        easyLabel.setFont(new Font("Arial", 14));
-        Label mediumLabel = new Label("Közepes");
-        mediumLabel.setFont(new Font("Arial", 14));
-        Label hardLabel = new Label("Nehéz");
-        hardLabel.setFont(new Font("Arial", 14));
-
-        HBox labelBox = new HBox(easyLabel, mediumLabel, hardLabel);
 
         TableView easyTable = createTable("easy");
         TableView mediumTable = createTable("medium");
@@ -132,15 +121,14 @@ public class HighScoresTestDrive extends Application {
         hBox.getChildren().addAll(easyTable, mediumTable, hardTable);
 
         Alert alert = new Alert(AlertType.CONFIRMATION);
-        alert.setTitle("Legjobb eredmények");
+        alert.setTitle("High Scores");
         alert.setHeaderText(null);
 
         DialogPane dialogPane = alert.getDialogPane();
 
-        VBox container = new VBox(labelBox, hBox);
         dialogPane.setHeader(hBox);
 
-        ButtonType buttonTypeBack = new ButtonType("Vissza");
+        ButtonType buttonTypeBack = new ButtonType("Back");
         alert.getButtonTypes().setAll(buttonTypeBack);
 
         alert.showAndWait();
