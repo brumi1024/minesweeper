@@ -51,11 +51,6 @@ public class GUI extends Application {
 
     Timer timer;
 
-
-    public static void main(String[] args) {
-        launch(args); //start() meghívódik
-    }
-
     private void showTable() {
         HighScoresTestDrive.showTable(-1, null);
     }
@@ -345,23 +340,13 @@ public class GUI extends Application {
             boardTiles[rowIndex][colIndex].setText("" + board.cells.get(listIndex).step());
         boardTiles[rowIndex][colIndex].setDisable(true);
         if (board.cells.get(listIndex).step() == 0) {
-            if (inBounds(rowIndex - 1, colIndex, board.getBoardHeight(), board.getBoardWidth()) && (!boardTiles[rowIndex - 1][colIndex].isDisabled()))
-                revealBlock(rowIndex - 1, colIndex);
-            if (inBounds(rowIndex, colIndex + 1, board.getBoardHeight(), board.getBoardWidth()) && (!boardTiles[rowIndex][colIndex + 1].isDisabled()))
-                revealBlock(rowIndex, colIndex + 1);
-            if (inBounds(rowIndex + 1, colIndex, board.getBoardHeight(), board.getBoardWidth()) && (!boardTiles[rowIndex + 1][colIndex].isDisabled()))
-                revealBlock(rowIndex + 1, colIndex);
-            if (inBounds(rowIndex, colIndex - 1, board.getBoardHeight(), board.getBoardWidth()) && (!boardTiles[rowIndex][colIndex - 1].isDisabled()))
-                revealBlock(rowIndex, colIndex - 1);
-
-            if (inBounds(rowIndex - 1, colIndex - 1, board.getBoardHeight(), board.getBoardWidth()) && (!boardTiles[rowIndex - 1][colIndex - 1].isDisabled()))
-                revealBlock(rowIndex - 1, colIndex - 1);
-            if (inBounds(rowIndex - 1, colIndex + 1, board.getBoardHeight(), board.getBoardWidth()) && (!boardTiles[rowIndex - 1][colIndex + 1].isDisabled()))
-                revealBlock(rowIndex - 1, colIndex + 1);
-            if (inBounds(rowIndex + 1, colIndex + 1, board.getBoardHeight(), board.getBoardWidth()) && (!boardTiles[rowIndex + 1][colIndex + 1].isDisabled()))
-                revealBlock(rowIndex + 1, colIndex + 1);
-            if (inBounds(rowIndex + 1, colIndex - 1, board.getBoardHeight(), board.getBoardWidth()) && (!boardTiles[rowIndex + 1][colIndex - 1].isDisabled()))
-                revealBlock(rowIndex + 1, colIndex - 1);
+            for (int i = -1; i <= 1; i++) {
+                for (int j = -1; j <= 1; j++) {
+                    if (inBounds(rowIndex + i, colIndex + j, board.getBoardHeight(), board.getBoardWidth())
+                            && (!boardTiles[rowIndex + i][colIndex + j].isDisabled()))
+                        revealBlock(rowIndex + i, colIndex + j);
+                }
+            }
         }
     }
 

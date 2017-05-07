@@ -13,7 +13,6 @@ public class Board {
     private int mineLeft; //marad�k bomba
     private boolean isSingle; //egy vagy t�bbj�t�kos m�d
     public List<Cell> cells; //ebben a list�ban lesznek a mez�k
-    public short[][] board;
 
     public Board() {
         cells = new ArrayList<>();
@@ -35,21 +34,13 @@ public class Board {
     }
 
     //m⵲ix: BOARD.HEIGHT X BOARD.WIDTH!!!
-    public void createBoards(String difficulty) //p�lyainicializ�l�s
+    public void createBoards(String difficulty)
     {
-        setBoardParameters(difficulty); //kit�lti a p�lyaadatokat a neh�zs�g alapj�n
-        short[][] board = new short[boardHeight][boardWidth];
-        minesMatrix = new boolean[boardHeight][boardWidth]; //t�mb inicializ�l�s
-        int i = 0;
-        int j = 0;
-        for (i = 0; i < boardHeight; i++) {
-            for (j = 0; j < boardWidth; j++) {
-                board[i][j] = (short) (i * boardWidth + j); //indexm�trix
-            }
-        }
+        setBoardParameters(difficulty);
+        minesMatrix = new boolean[boardHeight][boardWidth];
 
-        for (i = 0; i < boardHeight; i++) {
-            for (j = 0; j < boardWidth; j++) {
+        for (int i = 0; i < boardHeight; i++) {
+            for (int j = 0; j < boardWidth; j++) {
                 this.minesMatrix[i][j] = false; //akna m�trix �res
             }
         }
@@ -115,7 +106,7 @@ public class Board {
             int rowIndex = k / boardWidth;
 
             if ((!this.minesMatrix[rowIndex][colIndex])) {
-                this.minesMatrix[rowIndex][colIndex] = true; //az adott helyet akna lesz
+                this.minesMatrix[rowIndex][colIndex] = true; //az adott helyen akna lesz
                 j++;
             }
         }
@@ -146,11 +137,7 @@ public class Board {
                     newCell.setAdjacentNum(adjacentMines(i, j)); //r�gt�n bele is �rjuk hogy h�ny szomsz�dja van
                     cells.add(i * boardWidth + j, newCell); //berakjuk a list�ba
                 }
-
             }
         }
-
     }
-
-
 }

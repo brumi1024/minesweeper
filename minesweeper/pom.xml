@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="CP1250"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -17,7 +17,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>hu.bme.minesweeper.gui.GUI</mainClass>
+                            <mainClass>hu.bme.minesweeper.main.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -42,7 +42,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>hu.bme.minesweeper.gui.GUI</mainClass>
+                    <mainClass>hu.bme.minesweeper.main.Main</mainClass>
                 </configuration>
             </plugin>
         </plugins>
