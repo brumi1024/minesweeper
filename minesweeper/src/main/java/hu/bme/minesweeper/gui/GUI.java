@@ -95,12 +95,12 @@ public class GUI extends Application {
     }
 
     /*create a board, show the cells in a gridpane*/
-    private void startNewGame(String difficulty) {
+    private void startNewGame(String difficulty, boolean[][] minesMatrix) {
         timer = new Timer();
         revealedBlocks = 0;
         hasLostTheGame = false;
         hasWonTheGame = false;
-        board.createBoards(difficulty);
+        board.createBoards(difficulty, (isMultiplayer && !thisPlayer.isServer()), minesMatrix);
         boardTiles = null;
         boardTiles = new Button[board.getBoardHeight()][board.getBoardWidth()];
 
@@ -127,6 +127,11 @@ public class GUI extends Application {
                 gridPane.add(boardTiles[i][j], j, i);
             }
         }
+
+        if (isMultiplayer && thisPlayer.isServer()) {
+            networkController.send(new Pair<>("level", new Pair<>(difficulty, board.getMinesMatrix())));
+        }
+
         stage.sizeToScene();
     }
 
@@ -136,7 +141,6 @@ public class GUI extends Application {
 
         //initializating
         difficulty = "easy";
-        board.createBoards(difficulty);
 
         mineImage = new Image("images/flower2.png");
         ImageView mineImageView = new ImageView();
@@ -197,8 +201,7 @@ public class GUI extends Application {
         menuStart = new Menu("Start");
 
         menuItemStartServer = new MenuItem("Start server");
-        menuItemStartServer.setOnAction((ActionEvent e) ->
-        {
+        menuItemStartServer.setOnAction((ActionEvent e) -> {
             //I am going to be a SERVER
             TextInputDialog dialog = new TextInputDialog();
             dialog.setTitle("Starting server");
@@ -327,7 +330,7 @@ public class GUI extends Application {
         message.set(Integer.toString(numOfFlagsLeft));
 
 
-        startNewGame("easy");
+        startNewGame("easy", new boolean[][]{});
 
         //hBox contains the south of the scene: the elapsed time and the number of remaining flags
         HBox hBox = new HBox();
@@ -342,15 +345,13 @@ public class GUI extends Application {
         //create the menuItems and add listeners
         menuItemNewGame = new MenuItem("New Game");
         menuItemNewGame.setOnAction(e -> {
-            startNewGame(difficulty);
+            startNewGame(difficulty, new boolean[][]{});
             borderPane.setCenter(gridPane);
             stage.sizeToScene();
         });
 
         menuItemHighScores = new MenuItem("High Scores");
-        menuItemHighScores.setOnAction(e -> {
-            showTable();
-        });
+        menuItemHighScores.setOnAction(e -> showTable());
 
         RadioMenuItem menuItemEasy = new RadioMenuItem("Easy");
         RadioMenuItem menuItemMedium = new RadioMenuItem("Medium");
@@ -369,19 +370,19 @@ public class GUI extends Application {
         {
             if ((menuItemEasy.isSelected()) && (!Objects.equals(difficulty, "easy"))) {
                 difficulty = "easy";
-                startNewGame("easy");
+                startNewGame("easy", new boolean[][]{});
                 borderPane.setCenter(gridPane);
                 stage.sizeToScene();
             }
             if ((menuItemMedium.isSelected()) && (!Objects.equals(difficulty, "medium"))) {
                 difficulty = "medium";
-                startNewGame("medium");
+                startNewGame("medium", new boolean[][]{});
                 borderPane.setCenter(gridPane);
                 stage.sizeToScene();
             }
             if ((menuItemHard.isSelected()) && (!Objects.equals(difficulty, "hard"))) {
                 difficulty = "hard";
-                startNewGame("hard");
+                startNewGame("hard",  new boolean[][]{});
                 borderPane.setCenter(gridPane);
                 stage.sizeToScene();
             }
@@ -512,8 +513,8 @@ public class GUI extends Application {
                 case "move":
                     revealBlock(((int[]) incomingData.getValue())[0], ((int[]) incomingData.getValue())[1]);
                     break;
-                case "level": // TODO palyadatok
-                    revealBlock(((int[]) incomingData.getValue())[0], ((int[]) incomingData.getValue())[1]);
+                case "level": //
+                    startNewGame((String) ((Pair) incomingData.getValue()).getKey(), ((boolean[][]) ((Pair) incomingData.getValue()).getValue()));
                     break;
             }
         }
@@ -602,7 +603,7 @@ public class GUI extends Application {
                             String[] options = {"Yes", "No"};
                             String choice = showDialog("Lost", "You lost.\nWould you like to start a new game?", options);
                             if (Objects.equals(choice, "Yes")) {
-                                startNewGame(difficulty);
+                                startNewGame(difficulty, new boolean[][]{});
                                 borderPane.setCenter(gridPane);
                                 stage.sizeToScene();
                             }
@@ -624,7 +625,7 @@ public class GUI extends Application {
                                     String choice = showDialog("You won!", "Congratulations! You won.\n"
                                             + "Would you like to start a new game?", options);
                                     if (choice == "Yes") {
-                                        startNewGame(difficulty);
+                                        startNewGame(difficulty, new boolean[][]{});
                                         borderPane.setCenter(gridPane);
                                         stage.sizeToScene();
                                     } else {

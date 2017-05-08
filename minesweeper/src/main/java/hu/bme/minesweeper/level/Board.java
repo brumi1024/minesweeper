@@ -34,18 +34,23 @@ public class Board {
     }
 
     //m⵲ix: BOARD.HEIGHT X BOARD.WIDTH!!!
-    public void createBoards(String difficulty)
+    public void createBoards(String difficulty, boolean client, boolean[][] minesMatrixParam)
     {
         setBoardParameters(difficulty);
         minesMatrix = new boolean[boardHeight][boardWidth];
 
-        for (int i = 0; i < boardHeight; i++) {
-            for (int j = 0; j < boardWidth; j++) {
-                this.minesMatrix[i][j] = false; //akna m�trix �res
+        if (client) {
+            minesMatrix = minesMatrixParam;
+        } else {
+            for (int i = 0; i < boardHeight; i++) {
+                for (int j = 0; j < boardWidth; j++) {
+                    minesMatrix[i][j] = false; //akna m�trix �res
+                }
             }
+
+            this.placeMines(numOfMines); //felt�ltj�k
         }
 
-        this.placeMines(numOfMines); //felt�ltj�k
         this.createCells(); //megcsin�lja a cell�kat
 
     }
@@ -94,6 +99,15 @@ public class Board {
         setBoardHeight(x);
         setBoardWidth(y);
     }
+
+    public boolean[][] getMinesMatrix() {
+        return minesMatrix;
+    }
+
+    public void setMinesMatrix(boolean[][] minesMatrix) {
+        this.minesMatrix = minesMatrix;
+    }
+
 
     private void placeMines(int numOfMines) {
         int j = 0;
