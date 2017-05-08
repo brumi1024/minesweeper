@@ -1,15 +1,38 @@
 package hu.bme.minesweeper.player;
 
 public class Player {
-    private int MineMarked = 0; // number of marked mines
-    public String name;
+    private String name;
+    private boolean active;
+    private boolean server;
 
-    public int getMineMarked() {
-        return MineMarked;
+    public Player(String name, boolean server) {
+        this.name = name;
+        this.server = server;
     }
 
-    public void setMineMarked(int mineMarked) {
-        MineMarked = mineMarked;
+    public String getName() {
+        return name;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public boolean isServer() {
+        return server;
+    }
+
+    public void setServer(boolean server) {
+        this.server = server;
+    }
+
 
 }

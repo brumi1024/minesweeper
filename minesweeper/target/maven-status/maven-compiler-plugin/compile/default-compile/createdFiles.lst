@@ -1,6 +1,7 @@
 hu\bme\minesweeper\gui\HighScoresTestDrive$1.class
 hu\bme\minesweeper\gui\HighScoresTestDrive$2$1.class
 hu\bme\minesweeper\tcp\TcpServer.class
+hu\bme\minesweeper\tcp\SocketListener.class
 hu\bme\minesweeper\tcp\TcpClient.class
 hu\bme\minesweeper\gui\HighScoresTestDrive$3.class
 hu\bme\minesweeper\gui\HighScores.class
@@ -20,5 +21,6 @@ hu\bme\minesweeper\level\Mine.class
 hu\bme\minesweeper\tcp\Network.class
 hu\bme\minesweeper\gui\HighScoresTestDrive.class
 hu\bme\minesweeper\tcp\TcpClient$ReceiverThread.class
+hu\bme\minesweeper\gui\GUI$FxSocketListener.class
 hu\bme\minesweeper\gui\GUI.class
 hu\bme\minesweeper\player\Player.class

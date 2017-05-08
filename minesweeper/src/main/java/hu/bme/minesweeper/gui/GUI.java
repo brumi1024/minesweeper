@@ -2,8 +2,14 @@ package hu.bme.minesweeper.gui;
 
 import java.util.*;
 
+import hu.bme.minesweeper.player.Player;
+import hu.bme.minesweeper.tcp.Network;
+import hu.bme.minesweeper.tcp.SocketListener;
+import hu.bme.minesweeper.tcp.TcpClient;
+import hu.bme.minesweeper.tcp.TcpServer;
 import javafx.application.*;
 import javafx.beans.property.*;
+import javafx.concurrent.Task;
 import javafx.event.*;
 import javafx.geometry.*;
 import javafx.scene.*;
@@ -13,6 +19,7 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
+import javafx.scene.text.Text;
 import javafx.stage.*;
 import hu.bme.minesweeper.level.Board;
 import javafx.util.Pair;
@@ -20,6 +27,8 @@ import javafx.util.Pair;
 public class GUI extends Application {
     Control c;
     Board board = new Board();
+    Player thisPlayer, otherPlayer;
+    Network networkController;
 
     Button[][] boardTiles;
     MenuItem menuItemNewGame, menuItemHighScores, menuItemMode, menuItemExit;
@@ -29,6 +38,8 @@ public class GUI extends Application {
     GridPane gridPane;
     BorderPane borderPane;
     Stage stage;
+    Label serverSidePlayer = new Label("Server side player");
+    Label clientSidePlayer = new Label("Client side player");
 
     Label timeElapsedLabel;
     Label flagsLeftLabel;
@@ -37,6 +48,7 @@ public class GUI extends Application {
     StringProperty message;
     boolean hasLostTheGame; //erre majd vigyázni kell, hogy új játék kezdésekor vissza kell állítani false-ra!
     boolean hasWonTheGame;
+    boolean isMultiplayer = false;
     int bombRowIndex, bombColIndex;
     short revealedBlocks;
 
@@ -49,9 +61,6 @@ public class GUI extends Application {
     Timer timer;
     
     /*multiplayerhez*/
-    String serverName, clientName;
-    boolean amIActive;
-    boolean amIServer;
     /*multiplayerhez v�ge*/
 
     public static void main(String[] args) {
@@ -138,8 +147,6 @@ public class GUI extends Application {
         mineImageView.setCache(true);
 
 		/*creating multiplayer layout: left side and right side*/
-        Label serverSidePlayer = new Label("Server side player");
-        Label clientSidePlayer = new Label("Client side player");
         ProgressBar serverPB = new ProgressBar();
         ProgressBar clientPB = new ProgressBar();
         serverPB.setProgress(0.6666);
@@ -165,7 +172,7 @@ public class GUI extends Application {
         ImageView mineImageViewClient = new ImageView(mineImage);
         mineImageViewClient.setFitWidth(15);
         mineImageViewClient.setPreserveRatio(true);
-        
+
         /***server k�r� border***/
         HBox serverBorderBox = new HBox(serverImageView);
         HBox clientBorderBox = new HBox(clientImageView);
@@ -185,33 +192,76 @@ public class GUI extends Application {
         clientVBox.setPadding(new Insets(30));
         clientVBox.setSpacing(20);
         clientVBox.getChildren().addAll(clientImageVBox, clientPB, clientMineFound);
-		/*end of: creating multiplayer layout: left side and right side*/
+        /*end of: creating multiplayer layout: left side and right side*/
 
         menuStart = new Menu("Start");
 
         menuItemStartServer = new MenuItem("Start server");
-        menuItemStartServer.setOnAction(e ->
+        menuItemStartServer.setOnAction((ActionEvent e) ->
         {
-        	//I am going to be a SERVER
-        		 TextInputDialog dialog = new TextInputDialog();
-                 dialog.setTitle("Starting server");
-                 dialog.setHeaderText("Starting server");
-                 dialog.setGraphic(null);
-                 dialog.setContentText("Your name:");
-                 Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK );
-                 okButton.setText("Start server...");
+            //I am going to be a SERVER
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Starting server");
+            dialog.setHeaderText("Starting server");
+            dialog.setGraphic(null);
+            dialog.setContentText("Your name:");
+            Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+            okButton.setText("Start server...");
 
-                 Optional<String> result = dialog.showAndWait();
-                 if (result.isPresent()) {
-                	 serverName = result.get();
-                	 serverSidePlayer.setText(serverName);
-                	 amIServer=true;
-                 }
-                 if(true) { //ha amIActive && amIServer
-                	 clientBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 0;");
-                	 serverBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 3;");
-                 }
-                 
+            Optional<String> result = dialog.showAndWait();
+            if (result.isPresent()) {
+                Alert alert = new Alert(AlertType.INFORMATION, "Waiting for connection", ButtonType.CANCEL);
+
+                thisPlayer = new Player(result.get(), true);
+                serverSidePlayer.setText(thisPlayer.getName());
+
+                networkController = new TcpServer(new FxSocketListener());
+
+                Task<Void> task = new Task<Void>() {
+                    @Override
+                    public Void call() throws Exception {
+                        networkController.connect("");
+
+                        while (!networkController.isConnected()) {
+                            try {
+                                Thread.sleep(200);
+                            } catch (InterruptedException ignored) {
+                            }
+
+                            if (isCancelled()) {
+                                networkController.disconnect();
+                                System.out.print("cancel");
+                                break;
+                            }
+                        }
+                        return null;
+                    }
+                };
+
+                task.setOnRunning(e1 -> {
+                    alert.setTitle("Information Dialog");
+                    alert.setHeaderText(null);
+                    Optional<ButtonType> cancelled = alert.showAndWait();
+
+                    if (cancelled.get() == ButtonType.CANCEL) {
+                        task.cancel();
+                    }
+
+                });
+
+                task.setOnSucceeded(e1 -> {
+                    alert.hide();
+
+                    networkController.send(new Pair<>("name", thisPlayer.getName()));
+                });
+
+                new Thread(task).start();
+            }
+            if (thisPlayer.isActive()) { //ha amIActive && amIServer
+                clientBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 0;");
+                serverBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 3;");
+            }
+
         });
         menuItemStartClient = new MenuItem("Start client");
         menuItemStartClient.setOnAction(e ->
@@ -236,9 +286,9 @@ public class GUI extends Application {
             grid.add(IP, 1, 0);
             grid.add(new Label("Your name:"), 0, 1);
             grid.add(name, 1, 1);
-            
+
             dialog.getDialogPane().setContent(grid);
-            
+
             Platform.runLater(() -> IP.requestFocus());
 
             dialog.setResultConverter(dialogButton -> {
@@ -251,22 +301,22 @@ public class GUI extends Application {
             Optional<Pair<String, String>> result = dialog.showAndWait();
 
             result.ifPresent(pair -> {
-            	String ipAddress = pair.getKey();
-            	
-           	 	clientName = pair.getValue();
-           	 	clientSidePlayer.setText(clientName);
-           	 	amIServer=false; //I am the client
-            	
-           	 	System.out.println(ipAddress);
+                String ipAddress = pair.getKey();
+
+                thisPlayer = new Player(pair.getValue(), false);
+                clientSidePlayer.setText(thisPlayer.getName());
+
+                networkController = new TcpClient(new FxSocketListener());
+                networkController.connect(ipAddress);
             });
-            if(true) { //ha amIActive && amIClient
-           	 clientBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 3;");
-           	 serverBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 0;");
+            if (thisPlayer.isActive()) { //ha amIActive && amIClient
+                clientBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 3;");
+                serverBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 0;");
             }
         });
 
         menuStart.getItems().addAll(menuItemStartServer, menuItemStartClient);
-		
+
 
         stage = primaryStage;
 
@@ -364,12 +414,18 @@ public class GUI extends Application {
                 borderPane.setLeft(null);
                 borderPane.setRight(null);
                 borderPane.setBottom(hBox);
+                isMultiplayer = false;
+
+                if (networkController != null && networkController.isConnected()) {
+                    networkController.disconnect();
+                }
             } else if (Objects.equals(menuItemMode.getText(), "Multiplayer")) {
                 menuItemMode.setText("Single player");
                 menuBar.getMenus().addAll(menuStart);
                 borderPane.setLeft(serverVBox);
                 borderPane.setRight(clientVBox);
                 borderPane.setBottom(null);
+                isMultiplayer = true;
             }
             stage.sizeToScene();
         });
@@ -395,6 +451,18 @@ public class GUI extends Application {
 
     }
 
+    class FxSocketListener implements SocketListener {
+
+        @Override
+        public void onMessage(Object data) {
+            if (data != null && thisPlayer.isServer()) {
+                handleServerData(data);
+            } else if (data != null && !thisPlayer.isServer()) {
+                handleClientData(data);
+            }
+        }
+    }
+
     private boolean inBounds(int rowIndex, int colIndex, int rowUpperBound, int colUpperBound) {
         return (rowIndex >= 0) && (colIndex >= 0) && (rowIndex < rowUpperBound) && (colIndex < colUpperBound);
     }
@@ -407,25 +475,50 @@ public class GUI extends Application {
             boardTiles[rowIndex][colIndex].setText("" + board.cells.get(listIndex).step());
         boardTiles[rowIndex][colIndex].setDisable(true);
         if (board.cells.get(listIndex).step() == 0) {
-            if (inBounds(rowIndex - 1, colIndex, board.getBoardHeight(), board.getBoardWidth()) && (!boardTiles[rowIndex - 1][colIndex].isDisabled()))
-                revealBlock(rowIndex - 1, colIndex);
-            if (inBounds(rowIndex, colIndex + 1, board.getBoardHeight(), board.getBoardWidth()) && (!boardTiles[rowIndex][colIndex + 1].isDisabled()))
-                revealBlock(rowIndex, colIndex + 1);
-            if (inBounds(rowIndex + 1, colIndex, board.getBoardHeight(), board.getBoardWidth()) && (!boardTiles[rowIndex + 1][colIndex].isDisabled()))
-                revealBlock(rowIndex + 1, colIndex);
-            if (inBounds(rowIndex, colIndex - 1, board.getBoardHeight(), board.getBoardWidth()) && (!boardTiles[rowIndex][colIndex - 1].isDisabled()))
-                revealBlock(rowIndex, colIndex - 1);
-
-            if (inBounds(rowIndex - 1, colIndex - 1, board.getBoardHeight(), board.getBoardWidth()) && (!boardTiles[rowIndex - 1][colIndex - 1].isDisabled()))
-                revealBlock(rowIndex - 1, colIndex - 1);
-            if (inBounds(rowIndex - 1, colIndex + 1, board.getBoardHeight(), board.getBoardWidth()) && (!boardTiles[rowIndex - 1][colIndex + 1].isDisabled()))
-                revealBlock(rowIndex - 1, colIndex + 1);
-            if (inBounds(rowIndex + 1, colIndex + 1, board.getBoardHeight(), board.getBoardWidth()) && (!boardTiles[rowIndex + 1][colIndex + 1].isDisabled()))
-                revealBlock(rowIndex + 1, colIndex + 1);
-            if (inBounds(rowIndex + 1, colIndex - 1, board.getBoardHeight(), board.getBoardWidth()) && (!boardTiles[rowIndex + 1][colIndex - 1].isDisabled()))
-                revealBlock(rowIndex + 1, colIndex - 1);
+            for (int i = -1; i <= 1; i++) {
+                for (int j = -1; j <= 1; j++) {
+                    if (inBounds(rowIndex + i, colIndex + j, board.getBoardHeight(), board.getBoardWidth())
+                            && (!boardTiles[rowIndex + i][colIndex + j].isDisabled()))
+                        revealBlock(rowIndex + i, colIndex + j);
+                }
+            }
         }
     }
+
+    private void handleServerData(Object data) {
+        if (data instanceof Pair) {
+            Pair<String, Object> incomingData = (Pair<String, Object>) data;
+            switch (incomingData.getKey()) {
+                case "name":
+                    otherPlayer = new Player((String) incomingData.getValue(), false);
+                    clientSidePlayer.setText(otherPlayer.getName());
+                    break;
+                case "move":
+                    revealBlock(((int[]) incomingData.getValue())[0], ((int[]) incomingData.getValue())[1]);
+                    break;
+            }
+
+        }
+    }
+
+    private void handleClientData(Object data) {
+        if (data instanceof Pair) {
+            Pair<String, Object> incomingData = (Pair<String, Object>) data;
+            switch (incomingData.getKey()) {
+                case "name":
+                    otherPlayer = new Player((String) incomingData.getValue(), true);
+                    serverSidePlayer.setText(otherPlayer.getName());
+                    break;
+                case "move":
+                    revealBlock(((int[]) incomingData.getValue())[0], ((int[]) incomingData.getValue())[1]);
+                    break;
+                case "level": // TODO palyadatok
+                    revealBlock(((int[]) incomingData.getValue())[0], ((int[]) incomingData.getValue())[1]);
+                    break;
+            }
+        }
+    }
+
 
     //when clicked on a cell
     private class ButtonClickedHandler implements EventHandler<MouseEvent> {
@@ -444,6 +537,9 @@ public class GUI extends Application {
             int j = Integer.parseInt(coords[1]);
 
             if (!boardTiles[i][j].isDisable() && (!hasLostTheGame) && (!hasWonTheGame)) {
+                if (isMultiplayer) {
+                    networkController.send(new Pair<>("move", new int[]{i, j}));
+                }
 
                 if (buttonType) { //ha jobb gombbal kattintottunk meg nem felfedett mezore
                     //ha mar van ott kerdojel, vegyuk le
@@ -502,7 +598,7 @@ public class GUI extends Application {
                                     }
                                 }
                             }
-                      
+
                             String[] options = {"Yes", "No"};
                             String choice = showDialog("Lost", "You lost.\nWould you like to start a new game?", options);
                             if (Objects.equals(choice, "Yes")) {
@@ -532,7 +628,7 @@ public class GUI extends Application {
                                         borderPane.setCenter(gridPane);
                                         stage.sizeToScene();
                                     } else {
-                                        
+
                                     }
                                 } else {
                                     //bekerult a legjobbak koze
@@ -562,15 +658,6 @@ public class GUI extends Application {
 
         @Override
         public void handle(ActionEvent event) {
-            if (event.getSource() == menuItemMode) {
-                if (Objects.equals(menuItemMode.getText(), "Single player")) {
-                    menuItemMode.setText("Multiplayer");
-                    menuBar.getMenus().remove(menuStart);
-                } else if (Objects.equals(menuItemMode.getText(), "Multiplayer")) {
-                    menuItemMode.setText("Single player");
-                    menuBar.getMenus().addAll(menuStart);
-                }
-            }
             if (event.getSource() == menuItemExit) {
                 if ((!hasLostTheGame) && (!hasWonTheGame)) {
                     String[] options = {"Yes", "No"};

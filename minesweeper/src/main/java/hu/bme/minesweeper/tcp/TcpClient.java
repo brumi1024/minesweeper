@@ -1,7 +1,5 @@
 package hu.bme.minesweeper.tcp;
 
-import hu.bme.minesweeper.player.Player;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -16,8 +14,8 @@ public class TcpClient extends Network {
     private ObjectOutputStream out = null;
     private ObjectInputStream in = null;
 
-    public TcpClient(Player c) {
-        super(c);
+    public TcpClient(SocketListener s) {
+        super(s);
     }
 
     @Override
@@ -32,6 +30,7 @@ public class TcpClient extends Network {
 
             Thread rec = new Thread(new ReceiverThread());
             rec.start();
+            super.setConnected(true);
         } catch (UnknownHostException e) {
             Logger.getLogger(TcpClient.class.getName()).log(Level.SEVERE,
                     "Client connection error: unknown host.", e);
@@ -56,7 +55,7 @@ public class TcpClient extends Network {
     }
 
     @Override
-    void disconnect() {
+    public void disconnect() {
         try {
             if (out != null)
                 out.close();
@@ -64,6 +63,8 @@ public class TcpClient extends Network {
                 in.close();
             if (socket != null)
                 socket.close();
+
+            super.setConnected(false);
         } catch (IOException ex) {
             Logger.getLogger(TcpClient.class.getName()).log(Level.SEVERE,
                     "Error while closing client connection.", ex);
@@ -77,7 +78,7 @@ public class TcpClient extends Network {
 
             try {
                 while (true) {
-                    //playerController.indexReceived(in.readObject());
+                    onMessage(in.readObject());
                 }
             } catch (Exception ex) {
                 Logger.getLogger(TcpClient.class.getName()).log(Level.SEVERE,

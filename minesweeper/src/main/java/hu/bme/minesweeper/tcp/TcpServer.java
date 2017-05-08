@@ -1,7 +1,5 @@
 package hu.bme.minesweeper.tcp;
 
-import hu.bme.minesweeper.player.Player;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -17,8 +15,8 @@ public class TcpServer extends Network {
     private ObjectOutputStream out = null;
     private ObjectInputStream in = null;
 
-    public TcpServer(Player c) {
-        super(c);
+    public TcpServer(SocketListener s) {
+        super(s);
     }
 
     @Override
@@ -48,7 +46,7 @@ public class TcpServer extends Network {
     }
 
     @Override
-    void disconnect() {
+    public void disconnect() {
         try {
             if (out != null)
                 out.close();
@@ -58,6 +56,8 @@ public class TcpServer extends Network {
                 clientSocket.close();
             if (serverSocket != null)
                 serverSocket.close();
+
+            super.setConnected(false);
         } catch (IOException e) {
             Logger.getLogger(TcpServer.class.getName()).log(Level.SEVERE,"Error while closing connection.", e);
         }
@@ -70,6 +70,7 @@ public class TcpServer extends Network {
                 Logger.getLogger(TcpServer.class.getName()).log(Level.INFO,"Waiting for client");
                 clientSocket = serverSocket.accept();
                 Logger.getLogger(TcpServer.class.getName()).log(Level.INFO,"Client connected.");
+                TcpServer.this.setConnected(true);
             } catch (IOException e) {
                 Logger.getLogger(TcpServer.class.getName()).log(Level.SEVERE,"Accept failed.", e);
                 disconnect();
@@ -86,17 +87,16 @@ public class TcpServer extends Network {
                 return;
             }
 
-            /*try {
+            try {
                 while (true) {
-                    //playerController.indexReceived(in.readObject());
-
+                    onMessage(in.readObject());
                 }
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
                 Logger.getLogger(TcpServer.class.getName()).log(Level.SEVERE,"Client disconnected.", ex);
             } finally {
                 disconnect();
-            }*/
+            }
         }
     }
 }
