@@ -19,49 +19,43 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
-import javafx.scene.text.Text;
 import javafx.stage.*;
 import hu.bme.minesweeper.level.Board;
 import javafx.util.Pair;
 
 public class GUI extends Application {
-    Control c;
-    Board board = new Board();
-    Player thisPlayer, otherPlayer;
-    Network networkController;
+    private Board board = new Board();
+    private Player thisPlayer, otherPlayer;
+    private Network networkController;
 
-    Button[][] boardTiles;
-    MenuItem menuItemNewGame, menuItemHighScores, menuItemMode, menuItemExit;
-    MenuItem menuItemStartServer, menuItemStartClient;
-    Menu menuDifficulty, menuStart;
-    MenuBar menuBar;
-    GridPane gridPane;
-    BorderPane borderPane;
-    Stage stage;
-    Label serverSidePlayer = new Label("Server side player");
-    Label clientSidePlayer = new Label("Client side player");
+    private Button[][] boardTiles;
+    private MenuItem menuItemMode;
+    private MenuItem menuItemExit;
+    private Menu menuStart;
+    private MenuBar menuBar;
+    private GridPane gridPane;
+    private BorderPane borderPane;
+    private Stage stage;
+    private Label serverSidePlayer = new Label("Server side player");
+    private Label clientSidePlayer = new Label("Client side player");
 
     Label timeElapsedLabel;
     Label flagsLeftLabel;
-    String difficulty;
-    int numOfFlagsLeft; //ez nem kell, a Board.mineLeft eleme
-    StringProperty message;
-    boolean hasLostTheGame; //erre majd vigyázni kell, hogy új játék kezdésekor vissza kell állítani false-ra!
-    boolean hasWonTheGame;
-    boolean isMultiplayer = false;
-    int bombRowIndex, bombColIndex;
-    short revealedBlocks;
+    private String difficulty;
+    private int numOfFlagsLeft; //ez nem kell, a Board.mineLeft eleme
+    private StringProperty message;
+    private boolean hasLostTheGame; //erre majd vigyázni kell, hogy új játék kezdésekor vissza kell állítani false-ra!
+    private boolean hasWonTheGame;
+    private boolean isMultiplayer = false;
+    private short revealedBlocks;
+    private short foundMines;
 
-    Image mineImage;
-    ImageView[] bombImageViews;
-    ImageView mineImageView;
+    private Image mineImage;
 
-    String timeElapsed = "00:00";
+    private String timeElapsed = "00:00";
 
-    Timer timer;
-    
-    /*multiplayerhez*/
-    /*multiplayerhez v�ge*/
+    private Timer timer;
+
 
     public static void main(String[] args) {
         launch(args);
@@ -91,13 +85,13 @@ public class GUI extends Application {
         } else {
             return buttons[1];
         }
-
     }
 
     /*create a board, show the cells in a gridpane*/
     private void startNewGame(String difficulty, boolean[][] minesMatrix) {
         timer = new Timer();
         revealedBlocks = 0;
+        foundMines = 0;
         hasLostTheGame = false;
         hasWonTheGame = false;
         board.createBoards(difficulty, (isMultiplayer && !thisPlayer.isServer()), minesMatrix);
@@ -128,20 +122,23 @@ public class GUI extends Application {
             }
         }
 
-        if (isMultiplayer && thisPlayer.isServer()) {
-            networkController.send(new Pair<>("level", new Pair<>(difficulty, board.getMinesMatrix())));
+        if (isMultiplayer) {
+            if (thisPlayer.isServer()) {
+                networkController.send(new Pair<>("level", new Pair<>(difficulty, board.getMinesMatrix())));
+                thisPlayer.setActive(true);
+            } else {
+                thisPlayer.setActive(false);
+            }
+
+            thisPlayer.setPoints(0);
+            otherPlayer.setPoints(0);
+
         }
 
         stage.sizeToScene();
     }
 
-
-    @Override
-    public void start(Stage primaryStage) {
-
-        //initializating
-        difficulty = "easy";
-
+    private void initializeGUI(Stage primaryStage) {
         mineImage = new Image("images/flower2.png");
         ImageView mineImageView = new ImageView();
         mineImageView.setImage(mineImage);
@@ -200,7 +197,7 @@ public class GUI extends Application {
 
         menuStart = new Menu("Start");
 
-        menuItemStartServer = new MenuItem("Start server");
+        MenuItem menuItemStartServer = new MenuItem("Start server");
         menuItemStartServer.setOnAction((ActionEvent e) -> {
             //I am going to be a SERVER
             TextInputDialog dialog = new TextInputDialog();
@@ -213,52 +210,10 @@ public class GUI extends Application {
 
             Optional<String> result = dialog.showAndWait();
             if (result.isPresent()) {
-                Alert alert = new Alert(AlertType.INFORMATION, "Waiting for connection", ButtonType.CANCEL);
-
                 thisPlayer = new Player(result.get(), true);
                 serverSidePlayer.setText(thisPlayer.getName());
-
                 networkController = new TcpServer(new FxSocketListener());
-
-                Task<Void> task = new Task<Void>() {
-                    @Override
-                    public Void call() throws Exception {
-                        networkController.connect("");
-
-                        while (!networkController.isConnected()) {
-                            try {
-                                Thread.sleep(200);
-                            } catch (InterruptedException ignored) {
-                            }
-
-                            if (isCancelled()) {
-                                networkController.disconnect();
-                                System.out.print("cancel");
-                                break;
-                            }
-                        }
-                        return null;
-                    }
-                };
-
-                task.setOnRunning(e1 -> {
-                    alert.setTitle("Information Dialog");
-                    alert.setHeaderText(null);
-                    Optional<ButtonType> cancelled = alert.showAndWait();
-
-                    if (cancelled.get() == ButtonType.CANCEL) {
-                        task.cancel();
-                    }
-
-                });
-
-                task.setOnSucceeded(e1 -> {
-                    alert.hide();
-
-                    networkController.send(new Pair<>("name", thisPlayer.getName()));
-                });
-
-                new Thread(task).start();
+                createWaitAlert("");
             }
             if (thisPlayer.isActive()) { //ha amIActive && amIServer
                 clientBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 0;");
@@ -266,7 +221,8 @@ public class GUI extends Application {
             }
 
         });
-        menuItemStartClient = new MenuItem("Start client");
+
+        MenuItem menuItemStartClient = new MenuItem("Start client");
         menuItemStartClient.setOnAction(e ->
         {
             //I am going to be a CLIENT
@@ -292,7 +248,7 @@ public class GUI extends Application {
 
             dialog.getDialogPane().setContent(grid);
 
-            Platform.runLater(() -> IP.requestFocus());
+            Platform.runLater(IP::requestFocus);
 
             dialog.setResultConverter(dialogButton -> {
                 if (dialogButton == loginButtonType) {
@@ -305,12 +261,11 @@ public class GUI extends Application {
 
             result.ifPresent(pair -> {
                 String ipAddress = pair.getKey();
-
                 thisPlayer = new Player(pair.getValue(), false);
                 clientSidePlayer.setText(thisPlayer.getName());
-
                 networkController = new TcpClient(new FxSocketListener());
-                networkController.connect(ipAddress);
+
+                createWaitAlert(ipAddress);
             });
             if (thisPlayer.isActive()) { //ha amIActive && amIClient
                 clientBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 3;");
@@ -320,7 +275,6 @@ public class GUI extends Application {
 
         menuStart.getItems().addAll(menuItemStartServer, menuItemStartClient);
 
-
         stage = primaryStage;
 
         Label timeElapsedLabel = new Label(timeElapsed);
@@ -328,7 +282,6 @@ public class GUI extends Application {
         message = new SimpleStringProperty();
         flagsLeftLabel.textProperty().bind(message);
         message.set(Integer.toString(numOfFlagsLeft));
-
 
         startNewGame("easy", new boolean[][]{});
 
@@ -343,14 +296,14 @@ public class GUI extends Application {
         Menu menuGame = new Menu("Game");
 
         //create the menuItems and add listeners
-        menuItemNewGame = new MenuItem("New Game");
+        MenuItem menuItemNewGame = new MenuItem("New Game");
         menuItemNewGame.setOnAction(e -> {
             startNewGame(difficulty, new boolean[][]{});
             borderPane.setCenter(gridPane);
             stage.sizeToScene();
         });
 
-        menuItemHighScores = new MenuItem("High Scores");
+        MenuItem menuItemHighScores = new MenuItem("High Scores");
         menuItemHighScores.setOnAction(e -> showTable());
 
         RadioMenuItem menuItemEasy = new RadioMenuItem("Easy");
@@ -363,7 +316,7 @@ public class GUI extends Application {
 
         menuItemEasy.setSelected(true);
 
-        menuDifficulty = new Menu("Difficulty level");
+        Menu menuDifficulty = new Menu("Difficulty level");
         menuDifficulty.getItems().addAll(menuItemEasy, menuItemMedium, menuItemHard);
 
         menuDifficulty.setOnAction(e ->
@@ -382,7 +335,7 @@ public class GUI extends Application {
             }
             if ((menuItemHard.isSelected()) && (!Objects.equals(difficulty, "hard"))) {
                 difficulty = "hard";
-                startNewGame("hard",  new boolean[][]{});
+                startNewGame("hard", new boolean[][]{});
                 borderPane.setCenter(gridPane);
                 stage.sizeToScene();
             }
@@ -452,6 +405,81 @@ public class GUI extends Application {
 
     }
 
+
+    @Override
+    public void start(Stage primaryStage) {
+
+        difficulty = "easy";
+
+        initializeGUI(primaryStage);
+
+    }
+
+    private void createWaitAlert(String ipAddress) {
+        String contentText = thisPlayer.isServer() ? "Waiting for connection..." : "Connecting...";
+        Alert alert = new Alert(AlertType.INFORMATION, contentText, ButtonType.CANCEL);
+
+        Task<Void> task = new Task<Void>() {
+            @Override
+            public Void call() throws Exception {
+                networkController.connect(ipAddress);
+
+                while (!networkController.isConnected()) {
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException ignored) {
+                    }
+
+                    if (isCancelled()) {
+                        networkController.disconnect();
+                        break;
+                    }
+                }
+                return null;
+            }
+        };
+
+        task.setOnRunning(e1 -> {
+            alert.setTitle("Information Dialog");
+            alert.setHeaderText(null);
+            Optional<ButtonType> cancelled = alert.showAndWait();
+
+            if (cancelled.get() == ButtonType.CANCEL) {
+                task.cancel();
+            }
+
+        });
+
+        task.setOnSucceeded(e1 -> {
+            alert.hide();
+            networkController.send(new Pair<>("name", thisPlayer.getName()));
+
+            if (thisPlayer.isServer()) {
+                thisPlayer.setActive(true);
+
+                startNewGame("easy", new boolean[][]{});
+                borderPane.setCenter(gridPane);
+                stage.sizeToScene();
+            } else {
+                thisPlayer.setActive(false);
+            }
+        });
+
+        new Thread(task).start();
+    }
+
+    private void setBombImage(int i, int j) {
+        ImageView bombImageView = new ImageView(mineImage);
+        bombImageView.setFitWidth(15);
+        bombImageView.setPreserveRatio(true);
+        bombImageView.setSmooth(true);
+        bombImageView.setCache(true);
+
+        boardTiles[i][j].setPadding(new Insets(5));
+
+        boardTiles[i][j].setGraphic(bombImageView);
+    }
+
     class FxSocketListener implements SocketListener {
 
         @Override
@@ -495,10 +523,9 @@ public class GUI extends Application {
                     clientSidePlayer.setText(otherPlayer.getName());
                     break;
                 case "move":
-                    revealBlock(((int[]) incomingData.getValue())[0], ((int[]) incomingData.getValue())[1]);
+                    handleOtherPlayerMovement(((int[]) incomingData.getValue())[0], ((int[]) incomingData.getValue())[1]);
                     break;
             }
-
         }
     }
 
@@ -511,15 +538,69 @@ public class GUI extends Application {
                     serverSidePlayer.setText(otherPlayer.getName());
                     break;
                 case "move":
-                    revealBlock(((int[]) incomingData.getValue())[0], ((int[]) incomingData.getValue())[1]);
+                    handleOtherPlayerMovement(((int[]) incomingData.getValue())[0], ((int[]) incomingData.getValue())[1]);
                     break;
                 case "level": //
-                    startNewGame((String) ((Pair) incomingData.getValue()).getKey(), ((boolean[][]) ((Pair) incomingData.getValue()).getValue()));
+                    startNewGame((String) ((Pair) incomingData.getValue()).getKey(),
+                            ((boolean[][]) ((Pair) incomingData.getValue()).getValue()));
+                    borderPane.setCenter(gridPane);
+                    stage.sizeToScene();
                     break;
             }
         }
     }
 
+    private void handleOtherPlayerMovement(int i, int j) {
+        if (board.minesMatrix[i][j]) {
+            otherPlayer.increasePoints();
+            boardTiles[i][j].setDisable(true);
+            setBombImage(i, j);
+
+            if (++foundMines >= 3) {
+                thisPlayer.setActive(true);
+                foundMines = 0;
+            }
+        } else {
+            thisPlayer.setActive(true);
+            foundMines = 0;
+        }
+
+        revealBlock(i, j);
+        handleMultiplayerGameEnding();
+    }
+
+    private void handleMultiplayerGameEnding() {
+        if ((board.getBoardWidth() * board.getBoardHeight() - revealedBlocks) == 0) {
+            timer.setTimeElapsed();
+            timeElapsed = timer.getTimeElapsed();
+
+            String[] minSec = timeElapsed.split(":");
+            timeElapsed = minSec[1] + ":" + minSec[2];
+
+            hasWonTheGame = thisPlayer.getPoints() > otherPlayer.getPoints();
+            if (thisPlayer.isServer()) {
+                String[] options = new String[]{"Yes", "No"};
+
+                String choice = hasWonTheGame ? showDialog("Game over", "Congratulations! You won.\n"
+                        + "Would you like to start a new game?", options) :
+                        showDialog("Game over", otherPlayer.getName() + " won.\n"
+                                + "Would you like to start a new game?", options);
+                if (Objects.equals(choice, "Yes")) {
+                    startNewGame(difficulty, new boolean[][]{});
+                    borderPane.setCenter(gridPane);
+                    stage.sizeToScene();
+                }
+            } else {
+                String contentText = hasWonTheGame ? "Congratulations! You won.\n" : otherPlayer.getName() + " won.\n";
+                Alert alert = new Alert(AlertType.INFORMATION, contentText, ButtonType.CANCEL);
+                alert.setHeaderText(null);
+                alert.setTitle("Game over");
+                alert.show();
+
+            }
+        }
+
+    }
 
     //when clicked on a cell
     private class ButtonClickedHandler implements EventHandler<MouseEvent> {
@@ -537,14 +618,22 @@ public class GUI extends Application {
             int i = Integer.parseInt(coords[0]);
             int j = Integer.parseInt(coords[1]);
 
-            if (!boardTiles[i][j].isDisable() && (!hasLostTheGame) && (!hasWonTheGame)) {
-                if (isMultiplayer) {
+            if (isMultiplayer) {
+                if (thisPlayer.isActive()) {
                     networkController.send(new Pair<>("move", new int[]{i, j}));
+                    handleMultiplayerClick(i, j);
                 }
+            } else {
+                handleSinglePlayerClick(buttonType, i, j);
+            }
+        }
 
+        private void handleSinglePlayerClick(boolean buttonType, int i, int j) {
+
+            if (!boardTiles[i][j].isDisable() && (!hasLostTheGame) && (!hasWonTheGame)) {
                 if (buttonType) { //ha jobb gombbal kattintottunk meg nem felfedett mezore
                     //ha mar van ott kerdojel, vegyuk le
-                    if (boardTiles[i][j].getText() == "?") {
+                    if (Objects.equals(boardTiles[i][j].getText(), "?")) {
                         numOfFlagsLeft++;
                         boardTiles[i][j].setStyle("-fx-background-color: #000000,linear-gradient(#7ebcea, #2f4b8f),linear-gradient(#426ab7, #263e75),linear-gradient(#395cab, #223768);"
                                 + " -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; "
@@ -558,7 +647,9 @@ public class GUI extends Application {
                         boardTiles[i][j].setText("?");
                     }
                     message.set(Integer.toString(numOfFlagsLeft));
+
                 } else {
+
                     if (!Objects.equals(boardTiles[i][j].getText(), "?")) { //ha kerdojel van mar ott, nem nyulunk semmihez
                         //ha normalis kattintas a bal egergombbal
                         //ha az elso katt tortent, inditsd el a timert
@@ -566,13 +657,9 @@ public class GUI extends Application {
                             timer.setTimeFirstClick();
                         }
 
-                        if (!board.minesMatrix[i][j]) {
-                            boardTiles[i][j].setDisable(true);
-                        }
-
                         if (board.minesMatrix[i][j]) {
                             hasLostTheGame = true;
-                            bombImageViews = new ImageView[board.getNumOfMines()];
+                            ImageView[] bombImageViews = new ImageView[board.getNumOfMines()];
                             //csak hogy indexelek benne? bombImageViewsIndex++
 
                             int bombImageViewsIndex = 0;
@@ -608,11 +695,9 @@ public class GUI extends Application {
                                 stage.sizeToScene();
                             }
 
-
                         } else {
-
                             revealBlock(i, j);
-                            if ((board.getBoardWidth() * board.getBoardHeight() - revealedBlocks) == board.getNumOfMines()) {
+                            if ((board.getBoardWidth() * board.getBoardHeight() - revealedBlocks) == 0) {
                                 timer.setTimeElapsed();
                                 timeElapsed = timer.getTimeElapsed();
 
@@ -624,12 +709,10 @@ public class GUI extends Application {
                                     String[] options = {"Yes", "No"};
                                     String choice = showDialog("You won!", "Congratulations! You won.\n"
                                             + "Would you like to start a new game?", options);
-                                    if (choice == "Yes") {
+                                    if (Objects.equals(choice, "Yes")) {
                                         startNewGame(difficulty, new boolean[][]{});
                                         borderPane.setCenter(gridPane);
                                         stage.sizeToScene();
-                                    } else {
-
                                     }
                                 } else {
                                     //bekerult a legjobbak koze
@@ -653,7 +736,36 @@ public class GUI extends Application {
             }
         }
 
+        private void handleMultiplayerClick(int i, int j) {
+
+            if (!boardTiles[i][j].isDisable() && (!hasWonTheGame)) {
+                if (!Objects.equals(boardTiles[i][j].getText(), "?")) { //ha kerdojel van mar ott, nem nyulunk semmihez
+                    //ha normalis kattintas a bal egergombbal
+                    //ha az elso katt tortent, inditsd el a timert
+                    if (revealedBlocks == 0) {
+                        timer.setTimeFirstClick();
+                    }
+
+                    if (board.minesMatrix[i][j]) {
+                        revealedBlocks++;
+                        thisPlayer.increasePoints();
+                        setBombImage(i, j);
+
+                        if (++foundMines >= 3) {
+                            thisPlayer.setActive(false);
+                            foundMines = 0;
+                        }
+                    } else {
+                        foundMines = 0;
+                        thisPlayer.setActive(false);
+                        revealBlock(i, j);
+                        handleMultiplayerGameEnding();
+                    }
+                }
+            }
+        }
     }
+
 
     private class MenuItemHandler implements EventHandler<ActionEvent> {
 

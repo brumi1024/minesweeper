@@ -4,10 +4,12 @@ public class Player {
     private String name;
     private boolean active;
     private boolean server;
+    private int points;
 
     public Player(String name, boolean server) {
         this.name = name;
         this.server = server;
+        this.points = 0;
     }
 
     public String getName() {
@@ -32,6 +34,18 @@ public class Player {
 
     public void setServer(boolean server) {
         this.server = server;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
+    public void increasePoints() {
+        this.points++;
     }
 
 
