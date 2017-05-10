@@ -27,8 +27,7 @@ public class GUI extends Application {
     private Board board = new Board();
     private Player thisPlayer, otherPlayer;
     private Network networkController;
-
-    private Button[][] boardTiles;
+    
     private MenuItem menuItemMode;
     private MenuItem menuItemExit;
     private Menu menuStart;
@@ -44,18 +43,19 @@ public class GUI extends Application {
     private String difficulty;
     private int numOfFlagsLeft; //ez nem kell, a Board.mineLeft eleme
     private StringProperty message;
-    private boolean hasLostTheGame; //erre majd vigyázni kell, hogy új játék kezdésekor vissza kell állítani false-ra!
+    private boolean hasLostTheGame; //erre majd vigyazni kell, hogy uj jatek kezdesekor vissza kell allitani false-ra!
     private boolean hasWonTheGame;
     private boolean isMultiplayer = false;
     private short revealedBlocks;
     private short foundMines;
+    private ProgressBar serverPB = new ProgressBar();
+    private ProgressBar clientPB = new ProgressBar();
 
     private Image mineImage;
 
     private String timeElapsed = "00:00";
 
     private Timer timer;
-
 
     public static void main(String[] args) {
         launch(args);
@@ -94,9 +94,10 @@ public class GUI extends Application {
         foundMines = 0;
         hasLostTheGame = false;
         hasWonTheGame = false;
+        serverPB.setProgress(0);
+        clientPB.setProgress(0);
+        board = new Board();
         board.createBoards(difficulty, (isMultiplayer && !thisPlayer.isServer()), minesMatrix);
-        boardTiles = null;
-        boardTiles = new Button[board.getBoardHeight()][board.getBoardWidth()];
 
         numOfFlagsLeft = board.getNumOfMines();
         message.set(Integer.toString(numOfFlagsLeft));
@@ -107,18 +108,21 @@ public class GUI extends Application {
         gridPane.setVgap(1);
         gridPane.setAlignment(Pos.CENTER);
         gridPane.setPadding(new Insets(10));
+        
+        for (int i = 0; i<(board.getBoardHeight()*board.getBoardWidth()); i++) {
+        	board.cells.get(i).getButton().setDisable(false);
+        	board.cells.get(i).getButton().setId("" + i);
+        	board.cells.get(i).getButton().setStyle("-fx-background-color: #000000,linear-gradient(#7ebcea, #2f4b8f),linear-gradient(#426ab7, #263e75),linear-gradient(#395cab, #223768);"
+                    + " -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold;"
+                    + " -fx-background-radius: 0,0,0,0; -fx-background-insets: 0,0,0,0;");
+        	board.cells.get(i).getButton().setMinWidth(30);
+        	board.cells.get(i).getButton().setMinHeight(30);
+        	board.cells.get(i).getButton().setOnMouseClicked(new ButtonClickedHandler());
+        }
+        
         for (int i = 0; i < board.getBoardHeight(); i++) {
             for (int j = 0; j < board.getBoardWidth(); j++) {
-                boardTiles[i][j] = new Button();
-                boardTiles[i][j].setDisable(false);
-                boardTiles[i][j].setId(i + "-" + j);
-                boardTiles[i][j].setStyle("-fx-background-color: #000000,linear-gradient(#7ebcea, #2f4b8f),linear-gradient(#426ab7, #263e75),linear-gradient(#395cab, #223768);"
-                        + " -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold;"
-                        + " -fx-background-radius: 0,0,0,0; -fx-background-insets: 0,0,0,0;");
-                boardTiles[i][j].setMinWidth(30);
-                boardTiles[i][j].setMinHeight(30);
-                boardTiles[i][j].setOnMouseClicked(new ButtonClickedHandler());
-                gridPane.add(boardTiles[i][j], j, i);
+            	gridPane.add(board.cells.get(i*board.getBoardWidth() + j).getButton(), j, i);
             }
         }
 
@@ -148,8 +152,8 @@ public class GUI extends Application {
         mineImageView.setCache(true);
 
 		/*creating multiplayer layout: left side and right side*/
-        ProgressBar serverPB = new ProgressBar();
-        ProgressBar clientPB = new ProgressBar();
+        serverPB = new ProgressBar();
+        clientPB = new ProgressBar();
         serverPB.setProgress(0.6666);
         clientPB.setProgress(0);
         Label serverMinesFoundLabel = new Label(" " + "2");
@@ -468,18 +472,6 @@ public class GUI extends Application {
         new Thread(task).start();
     }
 
-    private void setBombImage(int i, int j) {
-        ImageView bombImageView = new ImageView(mineImage);
-        bombImageView.setFitWidth(15);
-        bombImageView.setPreserveRatio(true);
-        bombImageView.setSmooth(true);
-        bombImageView.setCache(true);
-
-        boardTiles[i][j].setPadding(new Insets(5));
-
-        boardTiles[i][j].setGraphic(bombImageView);
-    }
-
     class FxSocketListener implements SocketListener {
 
         @Override
@@ -492,28 +484,19 @@ public class GUI extends Application {
         }
     }
 
-    private boolean inBounds(int rowIndex, int colIndex, int rowUpperBound, int colUpperBound) {
-        return (rowIndex >= 0) && (colIndex >= 0) && (rowIndex < rowUpperBound) && (colIndex < colUpperBound);
-    }
-
-    private void revealBlock(int rowIndex, int colIndex) {
+    private void revealBlock(int index) {
         revealedBlocks++;
-        int listIndex = rowIndex * board.getBoardWidth() + colIndex;
-
-        if (board.cells.get(listIndex).step() != 0)
-            boardTiles[rowIndex][colIndex].setText("" + board.cells.get(listIndex).step());
-        boardTiles[rowIndex][colIndex].setDisable(true);
-        if (board.cells.get(listIndex).step() == 0) {
-            for (int i = -1; i <= 1; i++) {
-                for (int j = -1; j <= 1; j++) {
-                    if (inBounds(rowIndex + i, colIndex + j, board.getBoardHeight(), board.getBoardWidth())
-                            && (!boardTiles[rowIndex + i][colIndex + j].isDisabled()))
-                        revealBlock(rowIndex + i, colIndex + j);
-                }
-            }
+        board.cells.get(index).draw();
+        if (board.cells.get(index).step()==0) {
+        	for(hu.bme.minesweeper.level.Cell element : board.cells.get(index).getNeighbours()) { //minden szomszedra
+        		//ha nem disabled
+        		if(!board.cells.get(board.cells.indexOf(element)).getButton().isDisabled()) {
+        			revealBlock(board.cells.indexOf(element));
+        		}
+        	}
         }
     }
-
+        
     private void handleServerData(Object data) {
         if (data instanceof Pair) {
             Pair<String, Object> incomingData = (Pair<String, Object>) data;
@@ -549,12 +532,12 @@ public class GUI extends Application {
             }
         }
     }
-
+    
     private void handleOtherPlayerMovement(int i, int j) {
+    	int index = i*board.getBoardWidth() + j;
         if (board.minesMatrix[i][j]) {
             otherPlayer.increasePoints();
-            boardTiles[i][j].setDisable(true);
-            setBombImage(i, j);
+            board.cells.get(index).draw();
 
             if (++foundMines >= 3) {
                 thisPlayer.setActive(true);
@@ -565,7 +548,7 @@ public class GUI extends Application {
             foundMines = 0;
         }
 
-        revealBlock(i, j);
+        revealBlock(index);
         handleMultiplayerGameEnding();
     }
 
@@ -612,81 +595,54 @@ public class GUI extends Application {
             if (event.getButton() == MouseButton.SECONDARY) {
                 buttonType = true;
             }
-            //which cell?
-            String coordsString = ((Button) event.getSource()).getId();
-            String[] coords = coordsString.split("-");
-            int i = Integer.parseInt(coords[0]);
-            int j = Integer.parseInt(coords[1]);
-
+            //which cell was clicked?
+            int clickedIndex = Integer.parseInt(((Button) event.getSource()).getId());
+            
+            int j = clickedIndex % board.getBoardWidth();
+            int i = clickedIndex / board.getBoardWidth();
             if (isMultiplayer) {
                 if (thisPlayer.isActive()) {
                     networkController.send(new Pair<>("move", new int[]{i, j}));
                     handleMultiplayerClick(i, j);
                 }
             } else {
-                handleSinglePlayerClick(buttonType, i, j);
+                handleSinglePlayerClick(buttonType, clickedIndex);
             }
         }
+    }
+                
+        private void handleSinglePlayerClick(boolean buttonType, int clickedIndex) {
 
-        private void handleSinglePlayerClick(boolean buttonType, int i, int j) {
-
-            if (!boardTiles[i][j].isDisable() && (!hasLostTheGame) && (!hasWonTheGame)) {
+            if (!board.cells.get(clickedIndex).getButton().isDisable() && (!hasLostTheGame) && (!hasWonTheGame)) {
                 if (buttonType) { //ha jobb gombbal kattintottunk meg nem felfedett mezore
-                    //ha mar van ott kerdojel, vegyuk le
-                    if (Objects.equals(boardTiles[i][j].getText(), "?")) {
-                        numOfFlagsLeft++;
-                        boardTiles[i][j].setStyle("-fx-background-color: #000000,linear-gradient(#7ebcea, #2f4b8f),linear-gradient(#426ab7, #263e75),linear-gradient(#395cab, #223768);"
-                                + " -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; "
-                                + "-fx-background-radius: 0,0,0,0; -fx-background-insets: 0,0,0,0;");
-                        boardTiles[i][j].setText("");
-                    } else if (numOfFlagsLeft > 0) { //egyebkent irjunk ra kerdojelet
-                        numOfFlagsLeft--;
-                        boardTiles[i][j].setStyle("-fx-background-color: #000000,linear-gradient(#7ebcea, #2f4b8f),linear-gradient(#426ab7, #263e75),linear-gradient(#395cab, #223768);"
-                                + " -fx-text-fill: red; -fx-font-size: 15px; -fx-font-weight: bold; "
-                                + "-fx-background-radius: 0,0,0,0; -fx-background-insets: 0,0,0,0;");
-                        boardTiles[i][j].setText("?");
-                    }
+                	board.cells.get(clickedIndex).mark();
+                	if(board.cells.get(clickedIndex).getMarked()) {
+                		numOfFlagsLeft--;
+                	} else {
+                		numOfFlagsLeft++;
+                	}
+                	
                     message.set(Integer.toString(numOfFlagsLeft));
 
                 } else {
 
-                    if (!Objects.equals(boardTiles[i][j].getText(), "?")) { //ha kerdojel van mar ott, nem nyulunk semmihez
+                    if (!board.cells.get(clickedIndex).getMarked()) { //ha kerdojel van mar ott, nem nyulunk semmihez
                         //ha normalis kattintas a bal egergombbal
                         //ha az elso katt tortent, inditsd el a timert
                         if (revealedBlocks == 0) {
                             timer.setTimeFirstClick();
                         }
 
-                        if (board.minesMatrix[i][j]) {
+                        if (board.cells.get(clickedIndex).step() == -1) {
                             hasLostTheGame = true;
-                            ImageView[] bombImageViews = new ImageView[board.getNumOfMines()];
-                            //csak hogy indexelek benne? bombImageViewsIndex++
 
-                            int bombImageViewsIndex = 0;
-                            for (int k = 0; k < board.getNumOfMines(); k++) {
-                                bombImageViews[k] = new ImageView(mineImage);
-                                bombImageViews[k].setFitWidth(15);
-                                bombImageViews[k].setPreserveRatio(true);
-                                bombImageViews[k].setSmooth(true);
-                                bombImageViews[k].setCache(true);
+                            for(hu.bme.minesweeper.level.Cell element : board.cells) {
+                            	if(element.step() == -1) {
+                            		if(element.getMarked()) element.mark(); //ha volt kerdojel, leszedjuk, akna megy helyette
+                            		element.draw();
+                            	}
                             }
-                            bombImageViewsIndex = 0;
-                            for (int rowIndex = 0; rowIndex < board.getBoardHeight(); rowIndex++) {
-                                for (int colIndex = 0; colIndex < board.getBoardWidth(); colIndex++) {
-
-                                    if (board.minesMatrix[rowIndex][colIndex]) {
-                                        if (Objects.equals(boardTiles[rowIndex][colIndex].getText(), "?")) {
-                                            boardTiles[rowIndex][colIndex].setText("");
-                                        }
-
-                                        boardTiles[rowIndex][colIndex].setPadding(new Insets(5));
-
-                                        boardTiles[rowIndex][colIndex].setGraphic(bombImageViews[bombImageViewsIndex]);
-                                        bombImageViewsIndex++;
-                                    }
-                                }
-                            }
-
+                           
                             String[] options = {"Yes", "No"};
                             String choice = showDialog("Lost", "You lost.\nWould you like to start a new game?", options);
                             if (Objects.equals(choice, "Yes")) {
@@ -696,15 +652,16 @@ public class GUI extends Application {
                             }
 
                         } else {
-                            revealBlock(i, j);
-                            if ((board.getBoardWidth() * board.getBoardHeight() - revealedBlocks) == 0) {
+                            revealBlock(clickedIndex);
+                            if ((board.getBoardWidth() * board.getBoardHeight() - revealedBlocks) == board.getNumOfMines()) {
                                 timer.setTimeElapsed();
                                 timeElapsed = timer.getTimeElapsed();
 
                                 String[] minSec = timeElapsed.split(":");
                                 timeElapsed = minSec[1] + ":" + minSec[2];
                                 hasWonTheGame = true;
-                                if (!HighScoresTestDrive.isNewHighScore(timeElapsed, difficulty)) {
+                                /**ez a resz nem mukodik, mert nem talalja a High Score-okat tartalmazo fajlt**/
+                                if (false/*!HighScoresTestDrive.isNewHighScore(timeElapsed, difficulty)*/) {
                                     //nyert, de nem kerult be a legjobbak koze
                                     String[] options = {"Yes", "No"};
                                     String choice = showDialog("You won!", "Congratulations! You won.\n"
@@ -737,9 +694,11 @@ public class GUI extends Application {
         }
 
         private void handleMultiplayerClick(int i, int j) {
-
-            if (!boardTiles[i][j].isDisable() && (!hasWonTheGame)) {
-                if (!Objects.equals(boardTiles[i][j].getText(), "?")) { //ha kerdojel van mar ott, nem nyulunk semmihez
+        	System.out.println("handleMultiplayerClick");
+        	int index = i*board.getBoardWidth() + j;
+        	
+            if (!board.cells.get(index).getButton().isDisable() && (!hasWonTheGame)) {
+            	 if (!board.cells.get(index).getMarked()) { //ha kerdojel van mar ott, nem nyulunk semmihez
                     //ha normalis kattintas a bal egergombbal
                     //ha az elso katt tortent, inditsd el a timert
                     if (revealedBlocks == 0) {
@@ -747,9 +706,10 @@ public class GUI extends Application {
                     }
 
                     if (board.minesMatrix[i][j]) {
+
                         revealedBlocks++;
                         thisPlayer.increasePoints();
-                        setBombImage(i, j);
+                        board.cells.get(index).draw();
 
                         if (++foundMines >= 3) {
                             thisPlayer.setActive(false);
@@ -758,12 +718,11 @@ public class GUI extends Application {
                     } else {
                         foundMines = 0;
                         thisPlayer.setActive(false);
-                        revealBlock(i, j);
+                        revealBlock(index);
                         handleMultiplayerGameEnding();
                     }
                 }
             }
-        }
     }
 
 
