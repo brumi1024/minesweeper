@@ -2,6 +2,7 @@ package hu.bme.minesweeper.gui;
 
 import java.util.*;
 
+import hu.bme.minesweeper.datamodel.HighScores;
 import hu.bme.minesweeper.player.Player;
 import hu.bme.minesweeper.tcp.Network;
 import hu.bme.minesweeper.tcp.SocketListener;
@@ -21,13 +22,14 @@ import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.stage.*;
 import hu.bme.minesweeper.level.Board;
+import hu.bme.minesweeper.level.Cell;
 import javafx.util.Pair;
 
 public class GUI extends Application {
     private Board board = new Board();
     private Player thisPlayer, otherPlayer;
     private Network networkController;
-    
+
     private MenuItem menuItemMode;
     private MenuItem menuItemExit;
     private Menu menuStart;
@@ -51,9 +53,7 @@ public class GUI extends Application {
     private ProgressBar serverPB = new ProgressBar();
     private ProgressBar clientPB = new ProgressBar();
 
-    private Image mineImage;
-
-    private String timeElapsed = "00:00";
+    private int timeElapsed = 0;
 
     private Timer timer;
 
@@ -88,7 +88,7 @@ public class GUI extends Application {
     }
 
     /*create a board, show the cells in a gridpane*/
-    private void startNewGame(String difficulty, boolean[][] minesMatrix) {
+    private void startNewGame(String difficulty, Set<Integer> mineIndices) {
         timer = new Timer();
         revealedBlocks = 0;
         foundMines = 0;
@@ -97,7 +97,7 @@ public class GUI extends Application {
         serverPB.setProgress(0);
         clientPB.setProgress(0);
         board = new Board();
-        board.createBoards(difficulty, (isMultiplayer && !thisPlayer.isServer()), minesMatrix);
+        board.createBoards(difficulty, (isMultiplayer && !thisPlayer.isServer()), mineIndices);
 
         numOfFlagsLeft = board.getNumOfMines();
         message.set(Integer.toString(numOfFlagsLeft));
@@ -108,27 +108,27 @@ public class GUI extends Application {
         gridPane.setVgap(1);
         gridPane.setAlignment(Pos.CENTER);
         gridPane.setPadding(new Insets(10));
-        
-        for (int i = 0; i<(board.getBoardHeight()*board.getBoardWidth()); i++) {
-        	board.cells.get(i).getButton().setDisable(false);
-        	board.cells.get(i).getButton().setId("" + i);
-        	board.cells.get(i).getButton().setStyle("-fx-background-color: #000000,linear-gradient(#7ebcea, #2f4b8f),linear-gradient(#426ab7, #263e75),linear-gradient(#395cab, #223768);"
+
+        for (int i = 0; i < (board.getBoardHeight() * board.getBoardWidth()); i++) {
+            board.cells.get(i).getButton().setDisable(false);
+            board.cells.get(i).getButton().setId("" + i);
+            board.cells.get(i).getButton().setStyle("-fx-background-color: #000000,linear-gradient(#7ebcea, #2f4b8f),linear-gradient(#426ab7, #263e75),linear-gradient(#395cab, #223768);"
                     + " -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold;"
                     + " -fx-background-radius: 0,0,0,0; -fx-background-insets: 0,0,0,0;");
-        	board.cells.get(i).getButton().setMinWidth(30);
-        	board.cells.get(i).getButton().setMinHeight(30);
-        	board.cells.get(i).getButton().setOnMouseClicked(new ButtonClickedHandler());
+            board.cells.get(i).getButton().setMinWidth(30);
+            board.cells.get(i).getButton().setMinHeight(30);
+            board.cells.get(i).getButton().setOnMouseClicked(new ButtonClickedHandler());
         }
-        
+
         for (int i = 0; i < board.getBoardHeight(); i++) {
             for (int j = 0; j < board.getBoardWidth(); j++) {
-            	gridPane.add(board.cells.get(i*board.getBoardWidth() + j).getButton(), j, i);
+                gridPane.add(board.cells.get(i * board.getBoardWidth() + j).getButton(), j, i);
             }
         }
 
         if (isMultiplayer) {
             if (thisPlayer.isServer()) {
-                networkController.send(new Pair<>("level", new Pair<>(difficulty, board.getMinesMatrix())));
+                networkController.send(new Pair<>("level", new Pair<>(difficulty, board.getMineIndices())));
                 thisPlayer.setActive(true);
             } else {
                 thisPlayer.setActive(false);
@@ -136,14 +136,12 @@ public class GUI extends Application {
 
             thisPlayer.setPoints(0);
             otherPlayer.setPoints(0);
-
         }
-
         stage.sizeToScene();
     }
 
     private void initializeGUI(Stage primaryStage) {
-        mineImage = new Image("images/flower2.png");
+        Image mineImage = new Image("images/flower2.png");
         ImageView mineImageView = new ImageView();
         mineImageView.setImage(mineImage);
         mineImageView.setFitWidth(12);
@@ -178,7 +176,7 @@ public class GUI extends Application {
         mineImageViewClient.setFitWidth(15);
         mineImageViewClient.setPreserveRatio(true);
 
-        /***server köré border***/
+        /***server kore border***/
         HBox serverBorderBox = new HBox(serverImageView);
         HBox clientBorderBox = new HBox(clientImageView);
 
@@ -281,13 +279,13 @@ public class GUI extends Application {
 
         stage = primaryStage;
 
-        Label timeElapsedLabel = new Label(timeElapsed);
+        Label timeElapsedLabel = new Label(convertTime(timeElapsed));
         Label flagsLeftLabel = new Label(Integer.toString(numOfFlagsLeft));
         message = new SimpleStringProperty();
         flagsLeftLabel.textProperty().bind(message);
         message.set(Integer.toString(numOfFlagsLeft));
 
-        startNewGame("easy", new boolean[][]{});
+        startNewGame("easy", new HashSet<>());
 
         //hBox contains the south of the scene: the elapsed time and the number of remaining flags
         HBox hBox = new HBox();
@@ -302,7 +300,7 @@ public class GUI extends Application {
         //create the menuItems and add listeners
         MenuItem menuItemNewGame = new MenuItem("New Game");
         menuItemNewGame.setOnAction(e -> {
-            startNewGame(difficulty, new boolean[][]{});
+            startNewGame(difficulty, new HashSet<>());
             borderPane.setCenter(gridPane);
             stage.sizeToScene();
         });
@@ -327,19 +325,19 @@ public class GUI extends Application {
         {
             if ((menuItemEasy.isSelected()) && (!Objects.equals(difficulty, "easy"))) {
                 difficulty = "easy";
-                startNewGame("easy", new boolean[][]{});
+                startNewGame("easy", new HashSet<>());
                 borderPane.setCenter(gridPane);
                 stage.sizeToScene();
             }
             if ((menuItemMedium.isSelected()) && (!Objects.equals(difficulty, "medium"))) {
                 difficulty = "medium";
-                startNewGame("medium", new boolean[][]{});
+                startNewGame("medium", new HashSet<>());
                 borderPane.setCenter(gridPane);
                 stage.sizeToScene();
             }
             if ((menuItemHard.isSelected()) && (!Objects.equals(difficulty, "hard"))) {
                 difficulty = "hard";
-                startNewGame("hard", new boolean[][]{});
+                startNewGame("hard", new HashSet<>());
                 borderPane.setCenter(gridPane);
                 stage.sizeToScene();
             }
@@ -406,17 +404,16 @@ public class GUI extends Application {
                 }
             }
         });
-
     }
-
 
     @Override
     public void start(Stage primaryStage) {
-
         difficulty = "easy";
-
         initializeGUI(primaryStage);
+    }
 
+    String convertTime(int sec) {
+        return String.format("%02d:%02d", sec / 60, sec % 60);
     }
 
     private void createWaitAlert(String ipAddress) {
@@ -461,7 +458,7 @@ public class GUI extends Application {
             if (thisPlayer.isServer()) {
                 thisPlayer.setActive(true);
 
-                startNewGame("easy", new boolean[][]{});
+                startNewGame("easy", new HashSet<>());
                 borderPane.setCenter(gridPane);
                 stage.sizeToScene();
             } else {
@@ -487,16 +484,16 @@ public class GUI extends Application {
     private void revealBlock(int index) {
         revealedBlocks++;
         board.cells.get(index).draw();
-        if (board.cells.get(index).step()==0) {
-        	for(hu.bme.minesweeper.level.Cell element : board.cells.get(index).getNeighbours()) { //minden szomszedra
-        		//ha nem disabled
-        		if(!board.cells.get(board.cells.indexOf(element)).getButton().isDisabled()) {
-        			revealBlock(board.cells.indexOf(element));
-        		}
-        	}
+        if (board.cells.get(index).step() == 0) {
+            for (Cell element : board.cells.get(index).getNeighbours()) { //minden szomszedra
+                //ha nem disabled
+                if (!board.cells.get(board.cells.indexOf(element)).getButton().isDisabled()) {
+                    revealBlock(board.cells.indexOf(element));
+                }
+            }
         }
     }
-        
+
     private void handleServerData(Object data) {
         if (data instanceof Pair) {
             Pair<String, Object> incomingData = (Pair<String, Object>) data;
@@ -506,7 +503,7 @@ public class GUI extends Application {
                     clientSidePlayer.setText(otherPlayer.getName());
                     break;
                 case "move":
-                    handleOtherPlayerMovement(((int[]) incomingData.getValue())[0], ((int[]) incomingData.getValue())[1]);
+                    handleOtherPlayerMovement((int) incomingData.getValue());
                     break;
             }
         }
@@ -521,23 +518,24 @@ public class GUI extends Application {
                     serverSidePlayer.setText(otherPlayer.getName());
                     break;
                 case "move":
-                    handleOtherPlayerMovement(((int[]) incomingData.getValue())[0], ((int[]) incomingData.getValue())[1]);
+                    handleOtherPlayerMovement((int) incomingData.getValue());
                     break;
                 case "level": //
                     startNewGame((String) ((Pair) incomingData.getValue()).getKey(),
-                            ((boolean[][]) ((Pair) incomingData.getValue()).getValue()));
+                            ((HashSet<Integer>) ((Pair) incomingData.getValue()).getValue()));
                     borderPane.setCenter(gridPane);
                     stage.sizeToScene();
                     break;
             }
         }
     }
-    
-    private void handleOtherPlayerMovement(int i, int j) {
-    	int index = i*board.getBoardWidth() + j;
-        if (board.minesMatrix[i][j]) {
+
+    private void handleOtherPlayerMovement(int clickedIndex) {
+        if (board.cells.get(clickedIndex).step() == -1) {
+            Cell activeCell = board.cells.get(clickedIndex);
             otherPlayer.increasePoints();
-            board.cells.get(index).draw();
+            activeCell.draw();
+            activeCell.getButton().setDisable(true);
 
             if (++foundMines >= 3) {
                 thisPlayer.setActive(true);
@@ -548,20 +546,17 @@ public class GUI extends Application {
             foundMines = 0;
         }
 
-        revealBlock(index);
+        revealBlock(clickedIndex);
         handleMultiplayerGameEnding();
     }
 
     private void handleMultiplayerGameEnding() {
-    	//ha van 9 akna, de valaki megtalalt 5-ot, akkor ne jatsszuk tovabb; vagy ha lehet paros akna, akkor dontetlennel
-    	if ((thisPlayer.getPoints()>(board.getNumOfMines()/2)) || (otherPlayer.getPoints()>(board.getNumOfMines()/2))
-    			|| (board.getBoardWidth() * board.getBoardHeight() - revealedBlocks) == board.getNumOfMines()) {
-    		
+        //ha van 9 akna, de valaki megtalalt 5-ot, akkor ne jatsszuk tovabb; vagy ha lehet paros akna, akkor dontetlennel
+        if ((thisPlayer.getPoints() > (board.getNumOfMines() / 2)) || (otherPlayer.getPoints() > (board.getNumOfMines() / 2))
+                || (board.getBoardWidth() * board.getBoardHeight() - revealedBlocks) == 0) {
+
             timer.setTimeElapsed();
             timeElapsed = timer.getTimeElapsed();
-
-            String[] minSec = timeElapsed.split(":");
-            timeElapsed = minSec[1] + ":" + minSec[2];
 
             hasWonTheGame = thisPlayer.getPoints() > otherPlayer.getPoints();
             if (thisPlayer.isServer()) {
@@ -572,7 +567,7 @@ public class GUI extends Application {
                         showDialog("Game over", otherPlayer.getName() + " won.\n"
                                 + "Would you like to start a new game?", options);
                 if (Objects.equals(choice, "Yes")) {
-                    startNewGame(difficulty, new boolean[][]{});
+                    startNewGame(difficulty, new HashSet<>());
                     borderPane.setCenter(gridPane);
                     stage.sizeToScene();
                 }
@@ -600,132 +595,115 @@ public class GUI extends Application {
             }
             //which cell was clicked?
             int clickedIndex = Integer.parseInt(((Button) event.getSource()).getId());
-            
-            int j = clickedIndex % board.getBoardWidth();
-            int i = clickedIndex / board.getBoardWidth();
+
             if (isMultiplayer) {
                 if (thisPlayer.isActive()) {
-                    networkController.send(new Pair<>("move", new int[]{i, j}));
-                    handleMultiplayerClick(i, j);
+                    networkController.send(new Pair<>("move", clickedIndex));
+                    handleMultiplayerClick(clickedIndex);
                 }
             } else {
                 handleSinglePlayerClick(buttonType, clickedIndex);
             }
         }
     }
-                
-        private void handleSinglePlayerClick(boolean buttonType, int clickedIndex) {
 
-            if (!board.cells.get(clickedIndex).getButton().isDisable() && (!hasLostTheGame) && (!hasWonTheGame)) {
-                if (buttonType) { //ha jobb gombbal kattintottunk meg nem felfedett mezore
-                	board.cells.get(clickedIndex).mark();
-                	if(board.cells.get(clickedIndex).getMarked()) {
-                		numOfFlagsLeft--;
-                	} else {
-                		numOfFlagsLeft++;
-                	}
-                	
-                    message.set(Integer.toString(numOfFlagsLeft));
+    private void handleSinglePlayerClick(boolean buttonType, int clickedIndex) {
 
+        if (!board.cells.get(clickedIndex).getButton().isDisable() && (!hasLostTheGame) && (!hasWonTheGame)) {
+            if (buttonType) { //ha jobb gombbal kattintottunk meg nem felfedett mezore
+                board.cells.get(clickedIndex).mark();
+                if (board.cells.get(clickedIndex).getMarked()) {
+                    numOfFlagsLeft--;
                 } else {
+                    numOfFlagsLeft++;
+                }
+                message.set(Integer.toString(numOfFlagsLeft));
+            } else {
 
-                    if (!board.cells.get(clickedIndex).getMarked()) { //ha kerdojel van mar ott, nem nyulunk semmihez
-                        //ha normalis kattintas a bal egergombbal
-                        //ha az elso katt tortent, inditsd el a timert
-                        if (revealedBlocks == 0) {
-                            timer.setTimeFirstClick();
-                        }
-
-                        if (board.cells.get(clickedIndex).step() == -1) {
-                            hasLostTheGame = true;
-
-                            for(hu.bme.minesweeper.level.Cell element : board.cells) {
-                            	if(element.step() == -1) {
-                            		if(element.getMarked()) element.mark(); //ha volt kerdojel, leszedjuk, akna megy helyette
-                            		element.draw();
-                            	}
-                            }
-                           
-                            String[] options = {"Yes", "No"};
-                            String choice = showDialog("Lost", "You lost.\nWould you like to start a new game?", options);
-                            if (Objects.equals(choice, "Yes")) {
-                                startNewGame(difficulty, new boolean[][]{});
-                                borderPane.setCenter(gridPane);
-                                stage.sizeToScene();
-                            }
-
-                        } else {
-                            revealBlock(clickedIndex);
-                            if ((board.getBoardWidth() * board.getBoardHeight() - revealedBlocks) == board.getNumOfMines()) {
-                                timer.setTimeElapsed();
-                                timeElapsed = timer.getTimeElapsed();
-
-                                String[] minSec = timeElapsed.split(":");
-                                timeElapsed = minSec[1] + ":" + minSec[2];
-                                hasWonTheGame = true;
-                                /**ez a resz nem mukodik, mert nem talalja a High Score-okat tartalmazo fajlt**/
-                                if (false/*!HighScoresTestDrive.isNewHighScore(timeElapsed, difficulty)*/) {
-                                    //nyert, de nem kerult be a legjobbak koze
-                                    String[] options = {"Yes", "No"};
-                                    String choice = showDialog("You won!", "Congratulations! You won.\n"
-                                            + "Would you like to start a new game?", options);
-                                    if (Objects.equals(choice, "Yes")) {
-                                        startNewGame(difficulty, new boolean[][]{});
-                                        borderPane.setCenter(gridPane);
-                                        stage.sizeToScene();
-                                    }
-                                } else {
-                                    //bekerult a legjobbak koze
-
-                                    TextInputDialog dialog = new TextInputDialog();
-                                    dialog.setTitle("Best");
-                                    dialog.setHeaderText("Congratulations! It's a new record.");
-                                    dialog.setGraphic(null);
-                                    dialog.setContentText("Your name:");
-
-                                    Optional<String> result = dialog.showAndWait();
-                                    if (result.isPresent()) {
-                                        int place = HighScoresTestDrive.insertData(new HighScores(result.get(), timeElapsed), difficulty);
-                                        HighScoresTestDrive.showTable(place - 1, difficulty);
-                                    }
-                                }
-                            }
-                        }
-                    } //end_ha nem volt ott mar ott kerdojel eleve
-                } //end_if/else (buttonType)
-            }
-        }
-
-        private void handleMultiplayerClick(int i, int j) {
-        	System.out.println("handleMultiplayerClick");
-        	int index = i*board.getBoardWidth() + j;
-        	
-            if (!board.cells.get(index).getButton().isDisable() && (!hasWonTheGame)) {
-            	 if (!board.cells.get(index).getMarked()) { //ha kerdojel van mar ott, nem nyulunk semmihez
+                if (!board.cells.get(clickedIndex).getMarked()) { //ha kerdojel van mar ott, nem nyulunk semmihez
                     //ha normalis kattintas a bal egergombbal
                     //ha az elso katt tortent, inditsd el a timert
                     if (revealedBlocks == 0) {
                         timer.setTimeFirstClick();
                     }
 
-                    if (board.minesMatrix[i][j]) {
+                    if (board.cells.get(clickedIndex).step() == -1) {
+                        hasLostTheGame = true;
 
-                        revealedBlocks++;
-                        thisPlayer.increasePoints();
-                        board.cells.get(index).draw();
-
-                        if (++foundMines >= 3) {
-                            thisPlayer.setActive(false);
-                            foundMines = 0;
+                        for (Cell element : board.cells) {
+                            if (element.step() == -1) {
+                                if (element.getMarked())
+                                    element.mark(); //ha volt kerdojel, leszedjuk, akna megy helyette
+                                element.draw();
+                            }
                         }
+
+                        String[] options = {"Yes", "No"};
+                        String choice = showDialog("Lost", "You lost.\nWould you like to start a new game?", options);
+                        if (Objects.equals(choice, "Yes")) {
+                            startNewGame(difficulty, new HashSet<>());
+                            borderPane.setCenter(gridPane);
+                            stage.sizeToScene();
+                        }
+
                     } else {
-                        foundMines = 0;
-                        thisPlayer.setActive(false);
-                        revealBlock(index);
-                        handleMultiplayerGameEnding();
+                        revealBlock(clickedIndex);
+                        if ((board.getBoardWidth() * board.getBoardHeight() - revealedBlocks) == board.getNumOfMines()) {
+                            timer.setTimeElapsed();
+                            timeElapsed = timer.getTimeElapsed();
+
+                            hasWonTheGame = true;
+                            if (!HighScoresTestDrive.isNewHighScore(timeElapsed, difficulty)) {
+                                //nyert, de nem kerult be a legjobbak koze
+                                String[] options = {"Yes", "No"};
+                                String choice = showDialog("You won!", "Congratulations! You won.\n"
+                                        + "Would you like to start a new game?", options);
+                                if (Objects.equals(choice, "Yes")) {
+                                    startNewGame(difficulty, new HashSet<>());
+                                    borderPane.setCenter(gridPane);
+                                    stage.sizeToScene();
+                                }
+                            } else {
+                                TextInputDialog dialog = new TextInputDialog();
+                                dialog.setTitle("Best");
+                                dialog.setHeaderText("Congratulations! It's a new record.");
+                                dialog.setGraphic(null);
+                                dialog.setContentText("Your name:");
+
+                                Optional<String> result = dialog.showAndWait();
+                                if (result.isPresent()) {
+                                    int place = HighScoresTestDrive.insertData(new HighScores(result.get(), timeElapsed, difficulty));
+                                    HighScoresTestDrive.showTable(place - 1, difficulty);
+                                }
+                            }
+                        }
                     }
-                }
+                } //end_ha nem volt ott mar ott kerdojel eleve
+            } //end_if/else (buttonType)
+        }
+    }
+
+    private void handleMultiplayerClick(int clickedIndex) {
+        if (!board.cells.get(clickedIndex).getButton().isDisable() && (!hasWonTheGame)) {
+            if (revealedBlocks == 0) {
+                timer.setTimeFirstClick();
             }
+
+            if (board.cells.get(clickedIndex).step() == -1) {
+                thisPlayer.increasePoints();
+
+                if (++foundMines >= 3) {
+                    thisPlayer.setActive(false);
+                    foundMines = 0;
+                }
+            } else {
+                foundMines = 0;
+                thisPlayer.setActive(false);
+
+            }
+            revealBlock(clickedIndex);
+            handleMultiplayerGameEnding();
+        }
     }
 
 

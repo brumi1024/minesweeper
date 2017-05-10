@@ -8,10 +8,10 @@ public abstract class Cell {
     private boolean marked = false; //megjelolt-e
     private int[] coordinates;
     private ArrayList<Cell> neighbours;
-    protected Button button;
+    Button button;
     
     Cell() {
-    	neighbours = new ArrayList<Cell>();
+    	neighbours = new ArrayList<>();
     	button = new Button();
     }
     
@@ -48,11 +48,10 @@ public abstract class Cell {
     	return neighbours;
     }
     
-    protected int numberOfNeighbouringMines() {
+    int numberOfNeighbouringMines() {
     	int numOfNeighbours=0;
     	for (Cell myNeighbour: neighbours) {
-    		String[] className = myNeighbour.getClass().getName().split("\\.");
-    		if(className[className.length-1].equals("Mine")) {
+    		if(myNeighbour instanceof Mine) {
     			numOfNeighbours++;
     		}
     	}

@@ -11,9 +11,9 @@ class Timer {
     private long firstClickTimestamp = 0; //
 
 
-    String getTimeElapsed() {
+    int getTimeElapsed() {
         this.setTimeElapsed();
-        return createTimeString(timeElapsed);
+        return (int) timeElapsed / 1000;
     }
 
 

@@ -1,10 +1,9 @@
 hu\bme\minesweeper\gui\HighScoresTestDrive$1.class
 hu\bme\minesweeper\gui\HighScoresTestDrive$2$1.class
 hu\bme\minesweeper\tcp\TcpServer.class
+hu\bme\minesweeper\datamodel\HighScores.class
 hu\bme\minesweeper\tcp\SocketListener.class
 hu\bme\minesweeper\tcp\TcpClient.class
-hu\bme\minesweeper\gui\HighScoresTestDrive$3.class
-hu\bme\minesweeper\gui\HighScores.class
 hu\bme\minesweeper\tcp\TcpClient$1.class
 hu\bme\minesweeper\tcp\TcpServer$1.class
 hu\bme\minesweeper\gui\Timer.class
@@ -16,6 +15,7 @@ hu\bme\minesweeper\tcp\TcpServer$ReceiverThread.class
 hu\bme\minesweeper\gui\HighScoresTestDrive$2.class
 hu\bme\minesweeper\gui\GUI$ButtonClickedHandler.class
 hu\bme\minesweeper\level\Board.class
+hu\bme\minesweeper\datamodel\DatabaseConnection.class
 hu\bme\minesweeper\gui\GUI$1.class
 hu\bme\minesweeper\level\Mine.class
 hu\bme\minesweeper\tcp\Network.class

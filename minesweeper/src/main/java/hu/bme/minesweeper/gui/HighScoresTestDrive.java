@@ -1,6 +1,8 @@
 package hu.bme.minesweeper.gui;
 
 
+import hu.bme.minesweeper.datamodel.DatabaseConnection;
+import hu.bme.minesweeper.datamodel.HighScores;
 import javafx.application.Application;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ObservableValue;
@@ -12,17 +14,18 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.io.*;
+import java.sql.SQLException;
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class HighScoresTestDrive extends Application {
-
+    private final static Logger LOGGER = Logger.getLogger(HighScoresTestDrive.class.getName());
 
     public static void main(String[] args) throws FileNotFoundException {
         launch(args);
@@ -138,41 +141,37 @@ public class HighScoresTestDrive extends Application {
     private static ObservableList<HighScores> loadData(String difficulty) {
         ObservableList<HighScores> data = FXCollections.observableArrayList();
         try {
-            File file = checkDifficulty(difficulty);
-            FileReader fileReader = new FileReader(file);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                String[] items = line.split(","); //meg nem engedett karakter kell legyen majd a név beolvasásánál!!!
-                data.add(new HighScores(items[0], items[1]));
+            if (DatabaseConnection.isConnected()) {
+                data.setAll(DatabaseConnection.readAll(difficulty));
             }
-            bufferedReader.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (SQLException s) {
+            LOGGER.log(Level.SEVERE, "Could read from DB. {0}", s.toString());
         }
+
         return data;
     }
 
-    static boolean isNewHighScore(String timeElapsed, String difficulty) {
-        ObservableList<HighScores> data = loadData(difficulty);
-        return compareTimes(timeElapsed, data.get(data.size() - 1).getTime()) < 0;
+    static boolean isNewHighScore(int timeElapsed, String difficulty) {
+        try {
+            int highScoreTime = DatabaseConnection.readLastValue(difficulty);
+
+            return highScoreTime == 0 || timeElapsed < highScoreTime;
+        } catch (SQLException s) {
+            LOGGER.log(Level.SEVERE, "Could not read from DB. {0}", s.toString());
+            return false;
+        }
     }
 
-    static int insertData(HighScores newResult, String difficulty) {
+    static int insertData(HighScores newResult) {
         //ha nem került fel a listára, return -1,
         //ha felkerült, frissítjük a legjobb eredményeket tartalmazó fájlt,
         //és return, hogy hanyadik helyezés lett
         //ezt csak akkor hívjuk meg, ha bekerült a legjobbak közé
-        ObservableList<HighScores> data = loadData(difficulty);
+        ObservableList<HighScores> data = loadData(newResult.getDifficulty());
 
         data.add(newResult);
 
-        Comparator<HighScores> highScoresComparator = new Comparator<HighScores>() {
-            @Override
-            public int compare(HighScores hS1, HighScores hS2) {
-                return compareTimes(hS1.getTime(), hS2.getTime());
-            }
-        };
+        Comparator<HighScores> highScoresComparator = (hS1, hS2) -> hS1.getSec() > hS2.getSec() ? 1 : hS1.getTime() == hS2.getTime() ? 0 : -1;
         FXCollections.sort(data, highScoresComparator);
 
         if (data.size() > 8) {
@@ -180,53 +179,11 @@ public class HighScoresTestDrive extends Application {
         }
 
         try {
-            File file = checkDifficulty(difficulty);
-            FileWriter fileWriter = new FileWriter(file);
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            String line;
-            for (HighScores highScoreItem : data) {
-                line = highScoreItem.getName() + "," + highScoreItem.getTime();
-                bufferedWriter.write(line);
-                bufferedWriter.newLine();
-            }
-            bufferedWriter.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            DatabaseConnection.writeOne(newResult);
+        } catch (SQLException s) {
+            LOGGER.log(Level.SEVERE, "Could not write to DB. {0}", s.toString());
         }
         return (data.lastIndexOf(newResult) + 1);
 
-    }
-
-    private static int compareTimes(String time1, String time2) {
-        //return -1, ha time1<time2
-        //return 1, ha time1>time2
-        //return 0, ha a két idõ megegyezik
-        String[] timeMinSec1 = time1.split(":");
-        String[] timeMinSec2 = time2.split(":");
-
-        int min1 = Integer.parseInt(timeMinSec1[0]);
-        int sec1 = Integer.parseInt(timeMinSec1[1]);
-        int min2 = Integer.parseInt(timeMinSec2[0]);
-        int sec2 = Integer.parseInt(timeMinSec2[1]);
-
-        if (min1 > min2) return 1;
-        if (min1 < min2) return -1;
-        if (sec1 > sec2) return 1;
-        if (sec1 < sec2) return -1;
-        return 0;
-    }
-
-    private static File checkDifficulty(String difficulty) throws NullPointerException {
-        ClassLoader loader = GUI.class.getClassLoader();
-        switch (difficulty) {
-            case "easy":
-                return new File(loader.getResource("highScoresEasy.txt").getFile());
-            case "medium":
-                return new File(loader.getResource("highScoresMedium.txt").getFile());
-            case "hard":
-                return new File(loader.getResource("highScoresHard.txt").getFile());
-            default:
-                return new File(loader.getResource("highScoresEasy.txt").getFile());
-        }
     }
 }
