@@ -553,7 +553,8 @@ public class GUI extends Application {
     }
 
     private void handleMultiplayerGameEnding() {
-        if ((board.getBoardWidth() * board.getBoardHeight() - revealedBlocks) == 0) {
+    	//paratlan szamu akna van
+    	if ((thisPlayer.getPoints()>(board.getNumOfMines()/2)) || (otherPlayer.getPoints()>(board.getNumOfMines()/2))) {
             timer.setTimeElapsed();
             timeElapsed = timer.getTimeElapsed();
 
