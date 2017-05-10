@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.*;
 
 public class Board {
-
-    public boolean[][] minesMatrix; //bomb�k helye
-    private int boardWidth; //sz�less�g
-    private int boardHeight; //magass�g
-    private int numOfMines; //aknasz�m
-    private int mineLeft; //marad�k bomba
-    private boolean isSingle; //egy vagy t�bbj�t�kos m�d
-    public List<Cell> cells; //ebben a list�ban lesznek a mez�k
+	
+	public boolean[][] minesMatrix;
+    private int boardWidth; //szelesseg
+    private int boardHeight; //magassag
+    private int numOfMines; //aknaszam
+    private int mineLeft; //maradek bomba (lehet ez inkabb csak gui)
+    private boolean isSingle; //egy- vagy tobbjatekos mod
+    public ArrayList<Cell> cells; //ebben a listaban lesznek a mezok
 
     public Board() {
         cells = new ArrayList<>();
@@ -33,7 +33,7 @@ public class Board {
         }
     }
 
-    //m⵲ix: BOARD.HEIGHT X BOARD.WIDTH!!!
+    //matrix: BOARD.HEIGHT X BOARD.WIDTH!!!
     public void createBoards(String difficulty, boolean client, boolean[][] minesMatrixParam)
     {
         setBoardParameters(difficulty);
@@ -48,10 +48,10 @@ public class Board {
                 }
             }
 
-            this.placeMines(numOfMines); //felt�ltj�k
+            this.placeMines(numOfMines); //fetoltjuk
         }
 
-        this.createCells(); //megcsin�lja a cell�kat
+        this.createCells(); //megcsinalja a cellakat + be is linkeli a szomszedokat
 
     }
 
@@ -126,32 +126,33 @@ public class Board {
         }
     }
 
-    private int adjacentMines(int x, int y) {
-        int adjacentMinesNum = 0;
-        for (int i = -1; i <= 1; i++) {
-            for (int j = -1; j <= 1; j++) {
-                if (x + i >= 0 && x + i < boardHeight && y + j >= 0 && y + j < boardWidth) {
-                    if (minesMatrix[x + i][y + j]) {
-                        adjacentMinesNum++;
-                    }
-                }
-            }
-        }
-        return adjacentMinesNum;
-    }
-
     private void createCells() {
         for (int i = 0; i < boardHeight; i++) { //height, then width! height = number of rows
             for (int j = 0; j < boardWidth; j++) {
                 if (this.minesMatrix[i][j]) {
-                    Mine newCell = new Mine();
-                    cells.add(i * boardWidth + j, newCell); //berakjuk a list�ba
+                    cells.add(i * boardWidth + j, new Mine()); //berakjuk a listaba
                 } else {
-                    Nothing newCell = new Nothing();
-                    newCell.setAdjacentNum(adjacentMines(i, j)); //r�gt�n bele is �rjuk hogy h�ny szomsz�dja van
-                    cells.add(i * boardWidth + j, newCell); //berakjuk a list�ba
+                    cells.add(i * boardWidth + j, new Nothing()); //berakjuk a listaba
                 }
             }
         }
+        
+        //fel van toltve elemekkel az ArrayList<Cell> cells; mar csak be kell linkelgetni a szomszedokat
+        
+        for (int rowIndex = 0; rowIndex < boardHeight; rowIndex++) {
+        	for (int colIndex = 0; colIndex < boardWidth; colIndex++) {
+                for (int i = -1; i <= 1; i++) {
+                    for (int j = -1; j <= 1; j++) {
+                        if (rowIndex + i >= 0 && rowIndex + i < boardHeight && colIndex + j >= 0 && colIndex + j < boardWidth) {
+                            //ha leteznek ezek a szomszedok
+                        	if(!((i==0)&&(j==0))) {
+                        		cells.get(rowIndex*boardWidth + colIndex).getNeighbours().add(cells.get((rowIndex+i)*boardWidth + (colIndex+j)));
+                        	}
+                        }
+                    }
+                }
+        	}
+        }
     }
+
 }
