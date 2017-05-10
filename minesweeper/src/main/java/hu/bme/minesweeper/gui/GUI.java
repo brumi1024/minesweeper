@@ -553,8 +553,10 @@ public class GUI extends Application {
     }
 
     private void handleMultiplayerGameEnding() {
-    	//paratlan szamu akna van
-    	if ((thisPlayer.getPoints()>(board.getNumOfMines()/2)) || (otherPlayer.getPoints()>(board.getNumOfMines()/2))) {
+    	//ha van 9 akna, de valaki megtalalt 5-ot, akkor ne jatsszuk tovabb; vagy ha lehet paros akna, akkor dontetlennel
+    	if ((thisPlayer.getPoints()>(board.getNumOfMines()/2)) || (otherPlayer.getPoints()>(board.getNumOfMines()/2))
+    			|| (board.getBoardWidth() * board.getBoardHeight() - revealedBlocks) == board.getNumOfMines()) {
+    		
             timer.setTimeElapsed();
             timeElapsed = timer.getTimeElapsed();
 
