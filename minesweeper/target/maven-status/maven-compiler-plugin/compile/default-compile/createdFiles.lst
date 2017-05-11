@@ -12,6 +12,7 @@ hu\bme\minesweeper\level\Cell.class
 hu\bme\minesweeper\gui\GUI$MenuItemHandler.class
 hu\bme\minesweeper\level\Nothing.class
 hu\bme\minesweeper\tcp\TcpServer$ReceiverThread.class
+hu\bme\minesweeper\gui\GUI$2.class
 hu\bme\minesweeper\gui\HighScoresTestDrive$2.class
 hu\bme\minesweeper\gui\GUI$ButtonClickedHandler.class
 hu\bme\minesweeper\level\Board.class

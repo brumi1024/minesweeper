@@ -6,7 +6,7 @@ import javafx.scene.image.ImageView;
 
 public class Mine extends Cell {
 	
-	ImageView mineImageView;
+	private ImageView mineImageView;
 	
 	Mine() {
 		Image mineImage = new Image("images/flower2.png");

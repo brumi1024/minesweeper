@@ -17,10 +17,8 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
-import javax.xml.crypto.Data;
-import java.io.*;
+import java.io.FileNotFoundException;
 import java.sql.SQLException;
-import java.util.Comparator;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,12 +28,6 @@ public class HighScoresTestDrive extends Application {
 
     public static void main(String[] args) throws FileNotFoundException {
         launch(args);
-    }
-
-
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-
     }
 
     private static TableView<HighScores> createTable(String difficulty) {
@@ -72,7 +64,7 @@ public class HighScoresTestDrive extends Application {
             }
         });
 
-        TableColumn<HighScores, String> colName = new TableColumn();
+        TableColumn<HighScores, String> colName = new TableColumn<>();
 
         if (difficulty == "easy") {
             colName.setText("Easy");
@@ -86,7 +78,7 @@ public class HighScoresTestDrive extends Application {
         colName.setCellValueFactory(new PropertyValueFactory<HighScores, String>("Name"));
         colName.setSortable(false);
 
-        TableColumn<HighScores, String> colTime = new TableColumn("Time");
+        TableColumn<HighScores, String> colTime = new TableColumn<>("Time");
         //colTime.setMinWidth(50);
         colTime.setCellValueFactory(new PropertyValueFactory<HighScores, String>("Time"));
         colTime.setSortable(false);
@@ -138,7 +130,6 @@ public class HighScoresTestDrive extends Application {
         alert.showAndWait();
     }
 
-
     private static ObservableList<HighScores> loadData(String difficulty) {
         ObservableList<HighScores> data = FXCollections.observableArrayList();
         try {
@@ -179,6 +170,11 @@ public class HighScoresTestDrive extends Application {
             LOGGER.log(Level.SEVERE, "Could not write to DB. {0}", s.toString());
         }
         return (data.lastIndexOf(newResult) + 1);
+
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
 
     }
 }

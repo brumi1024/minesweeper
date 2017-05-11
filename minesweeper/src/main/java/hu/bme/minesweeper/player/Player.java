@@ -32,10 +32,6 @@ public class Player {
         return server;
     }
 
-    public void setServer(boolean server) {
-        this.server = server;
-    }
-
     public int getPoints() {
         return points;
     }

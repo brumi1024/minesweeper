@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class TcpServer extends Network implements SocketListener{
+public class TcpServer extends Network implements SocketListener {
 
     private ServerSocket serverSocket = null;
     private Socket clientSocket = null;
@@ -28,7 +28,7 @@ public class TcpServer extends Network implements SocketListener{
             Thread rec = new Thread(new ReceiverThread());
             rec.start();
         } catch (IOException e) {
-            Logger.getLogger(TcpServer.class.getName()).log(Level.SEVERE,"Could not listen on port: 6569.", e);
+            Logger.getLogger(TcpServer.class.getName()).log(Level.SEVERE, "Could not listen on port: 6569.", e);
             disconnect();
         }
     }
@@ -37,12 +37,12 @@ public class TcpServer extends Network implements SocketListener{
     public void send(Object obj) {
         if (out == null)
             return;
-        System.out.println("Sending index: " + obj + " to server");
+        Logger.getLogger(TcpServer.class.getName()).log(Level.INFO,("Sending index: " + obj + " to server"));
         try {
             out.writeObject(obj);
             out.flush();
         } catch (IOException e) {
-            Logger.getLogger(TcpServer.class.getName()).log(Level.SEVERE,"Error in sending.", e);
+            Logger.getLogger(TcpServer.class.getName()).log(Level.SEVERE, "Error in sending.", e);
         }
     }
 
@@ -59,7 +59,7 @@ public class TcpServer extends Network implements SocketListener{
                 serverSocket.close();
             super.setConnected(false);
         } catch (IOException e) {
-            Logger.getLogger(TcpServer.class.getName()).log(Level.SEVERE,"Error while closing connection.", e);
+            Logger.getLogger(TcpServer.class.getName()).log(Level.SEVERE, "Error while closing connection.", e);
         }
     }
 
@@ -67,12 +67,12 @@ public class TcpServer extends Network implements SocketListener{
 
         public void run() {
             try {
-                Logger.getLogger(TcpServer.class.getName()).log(Level.INFO,"Waiting for client");
+                Logger.getLogger(TcpServer.class.getName()).log(Level.INFO, "Waiting for client");
                 clientSocket = serverSocket.accept();
-                Logger.getLogger(TcpServer.class.getName()).log(Level.INFO,"Client connected.");
+                Logger.getLogger(TcpServer.class.getName()).log(Level.INFO, "Client connected.");
                 TcpServer.this.setConnected(true);
             } catch (IOException e) {
-                Logger.getLogger(TcpServer.class.getName()).log(Level.SEVERE,"Accept failed.", e);
+                Logger.getLogger(TcpServer.class.getName()).log(Level.SEVERE, "Accept failed.", e);
                 disconnect();
                 return;
             }
@@ -82,7 +82,7 @@ public class TcpServer extends Network implements SocketListener{
                 in = new ObjectInputStream(clientSocket.getInputStream());
                 out.flush();
             } catch (IOException e) {
-                Logger.getLogger(TcpServer.class.getName()).log(Level.SEVERE,"Error while getting streams.", e);
+                Logger.getLogger(TcpServer.class.getName()).log(Level.SEVERE, "Error while getting streams.", e);
                 disconnect();
                 return;
             }
@@ -92,8 +92,7 @@ public class TcpServer extends Network implements SocketListener{
                     onMessage(in.readObject());
                 }
             } catch (Exception ex) {
-                System.out.println(ex.getMessage());
-                Logger.getLogger(TcpServer.class.getName()).log(Level.SEVERE,"Client disconnected.", ex);
+                Logger.getLogger(TcpServer.class.getName()).log(Level.SEVERE, "Client disconnected.", ex);
                 disconnect();
             } finally {
                 disconnect();

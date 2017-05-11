@@ -1,30 +1,39 @@
 package hu.bme.minesweeper.gui;
 
-import java.util.*;
-
 import hu.bme.minesweeper.datamodel.HighScores;
+import hu.bme.minesweeper.level.Board;
+import hu.bme.minesweeper.level.Cell;
 import hu.bme.minesweeper.player.Player;
 import hu.bme.minesweeper.tcp.Network;
 import hu.bme.minesweeper.tcp.SocketListener;
 import hu.bme.minesweeper.tcp.TcpClient;
 import hu.bme.minesweeper.tcp.TcpServer;
 import javafx.animation.AnimationTimer;
-import javafx.application.*;
-import javafx.beans.property.*;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.concurrent.Task;
-import javafx.event.*;
-import javafx.geometry.*;
-import javafx.scene.*;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.image.*;
-import javafx.scene.input.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.stage.*;
-import hu.bme.minesweeper.level.Board;
-import hu.bme.minesweeper.level.Cell;
+import javafx.stage.Stage;
 import javafx.util.Pair;
+
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 public class GUI extends Application {
     private Board board = new Board();
@@ -33,21 +42,16 @@ public class GUI extends Application {
 
     private MenuItem menuItemMode;
     private MenuItem menuItemExit;
-    Menu menuDifficulty;
-    MenuItem menuItemNewGame;
-    private MenuBar menuBar;
+    private Menu menuDifficulty;
+    private MenuItem menuItemNewGame;
     private GridPane gridPane;
     private BorderPane borderPane;
     private Stage stage;
     private Label serverSidePlayer = new Label("Server side player");
     private Label clientSidePlayer = new Label("Client side player");
-    HBox serverBorderBox;
-    HBox clientBorderBox;
-    VBox serverImageVBox;
-    VBox clientImageVBox;
+    private HBox serverBorderBox;
+    private HBox clientBorderBox;
 
-    Label timeElapsedLabel;
-    Label flagsLeftLabel;
     private String difficulty;
     private int numOfFlagsLeft; //ez nem kell, a Board.mineLeft eleme
     private StringProperty message;
@@ -59,8 +63,8 @@ public class GUI extends Application {
     private short foundMines;
     private ProgressBar serverPB = new ProgressBar();
     private ProgressBar clientPB = new ProgressBar();
-    Label serverMinesFoundLabel;
-    Label clientMinesFoundLabel;
+    private Label serverMinesFoundLabel;
+    private Label clientMinesFoundLabel;
     private AnimationTimer animationTimer;
 
     private int timeElapsed = 0;
@@ -88,7 +92,7 @@ public class GUI extends Application {
 
         Optional<ButtonType> result = alert.showAndWait();
 
-        if (result.get() == buttonTypeYes) {
+        if (result.isPresent() && result.get() == buttonTypeYes) {
             return buttons[0];
         } else {
             return buttons[1];
@@ -97,7 +101,7 @@ public class GUI extends Application {
 
     /*create a board, show the cells in a gridpane*/
     private void startNewGame(String difficulty, Set<Integer> mineIndices) {
-    	        
+
         animationTimer.stop();
         revealedBlocks = 0;
         foundMines = 0;
@@ -155,7 +159,7 @@ public class GUI extends Application {
     }
 
     private void initializeGUI(Stage primaryStage) {
-    	initializeTimer();
+        initializeTimer();
 
         Image mineImage = new Image("images/flower2.png");
         ImageView mineImageView = new ImageView();
@@ -195,12 +199,12 @@ public class GUI extends Application {
         mineImageViewClient.setFitWidth(15);
         mineImageViewClient.setPreserveRatio(true);
 
-        /***server kore border***/
+        /*server kore border*/
         serverBorderBox = new HBox(serverImageView);
         clientBorderBox = new HBox(clientImageView);
 
-        serverImageVBox = new VBox(serverBorderBox, serverSidePlayer);
-        clientImageVBox = new VBox(clientBorderBox, clientSidePlayer);
+        VBox serverImageVBox = new VBox(serverBorderBox, serverSidePlayer);
+        VBox clientImageVBox = new VBox(clientBorderBox, clientSidePlayer);
 
         HBox serverMineFound = new HBox(mineImageViewServer, serverMinesFoundLabel);
         HBox clientMineFound = new HBox(mineImageViewClient, clientMinesFoundLabel);
@@ -223,24 +227,22 @@ public class GUI extends Application {
         message = new SimpleStringProperty();
         flagsLeftLabel.textProperty().bind(message);
         message.set(Integer.toString(numOfFlagsLeft));
-        
+
         elapsedTimeString = new SimpleStringProperty();
         timeElapsedLabel.textProperty().bind(elapsedTimeString);
         elapsedTimeString.set(convertTime(timeElapsed));
 
         startNewGame("easy", new HashSet<>());
 
-        //hBox contains the south of the scene: the elapsed time and the number of remaining flags
         HBox hBox = new HBox();
         hBox.setPadding(new Insets(10));
-        Region spacer = new Region(); //so that elapsed time goes to the left, remaining flags go to the right
+        Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
         hBox.getChildren().addAll(timeElapsedLabel, spacer, flagsLeftLabel);
 
-        menuBar = new MenuBar();
+        MenuBar menuBar = new MenuBar();
         Menu menuGame = new Menu("Game");
 
-        //create the menuItems and add listeners
         menuItemNewGame = new MenuItem("New Game");
         menuItemNewGame.setOnAction(e -> {
             startNewGame(difficulty, new HashSet<>());
@@ -311,7 +313,7 @@ public class GUI extends Application {
         menuItemMode.setOnAction(e ->
         {
             if (Objects.equals(menuItemMode.getText(), "Single player")) {
-            	stage.setTitle("Minesweeper");
+                stage.setTitle("Minesweeper");
                 menuItemMode.setText("Multiplayer");
                 borderPane.setLeft(null);
                 borderPane.setRight(null);
@@ -325,8 +327,7 @@ public class GUI extends Application {
                     networkController.disconnect();
                 }
             } else if (Objects.equals(menuItemMode.getText(), "Multiplayer")) {
-            	animationTimer.stop();
-                //kliens vagy szerver?
+                animationTimer.stop();
                 menuItemMode.setText("Single player");
                 borderPane.setBottom(null);
                 isMultiplayer = true;
@@ -335,7 +336,7 @@ public class GUI extends Application {
                 String choice = showDialog("Starting a multiplayer game", "Are you gonna be a server or a client?", options);
                 if (Objects.equals(choice, "I'm gonna be a server!")) {
                     if (handleStartServer()) {
-                    	stage.setTitle("Minesweeper - SERVER");
+                        stage.setTitle("Minesweeper - SERVER");
                         borderPane.setLeft(serverVBox);
                         borderPane.setRight(clientVBox);
                     }
@@ -343,10 +344,9 @@ public class GUI extends Application {
                 }
                 if (Objects.equals(choice, "I'm gonna be a client!")) {
                     if (handleStartClient()) {
-                    	stage.setTitle("Minesweeper - CLIENT");
+                        stage.setTitle("Minesweeper - CLIENT");
                         borderPane.setLeft(clientVBox);
                         borderPane.setRight(serverVBox);
-                        //kliens nem kezdhet uj jatekot es nem valtoztathat nehezseget
                         menuItemNewGame.setDisable(true);
                         menuDifficulty.setDisable(true);
                     }
@@ -550,36 +550,6 @@ public class GUI extends Application {
         }
     }
 
-    class FxSocketListener implements SocketListener {
-
-        @Override
-        public void onMessage(Object data) {
-            if (data != null && thisPlayer.isServer()) {
-                handleServerData(data);
-            } else if (data != null && !thisPlayer.isServer()) {
-                handleClientData(data);
-            }
-        }
-
-        @Override
-        public void onDisconnectedStatus(boolean isClosed) {
-            if (isClosed) {
-                Alert alert = new Alert(AlertType.INFORMATION,
-                        "Connection to the other party is lost.", ButtonType.OK);
-                alert.setHeaderText(null);
-                alert.setTitle("Connection error");
-
-                Optional<ButtonType> ack = alert.showAndWait();
-
-                if (ack.get() == ButtonType.OK) {
-                    menuItemMode.fire();
-                }
-
-
-            }
-        }
-    }
-
     private void revealBlock(int index) {
         revealedBlocks++;
         board.cells.get(index).draw();
@@ -660,7 +630,6 @@ public class GUI extends Application {
     }
 
     private void handleMultiplayerGameEnding() {
-        //ha van 9 akna, de valaki megtalalt 5-ot, akkor ne jatsszuk tovabb; csak paratlan szamu akna lehet
         if ((thisPlayer.getPoints() > (board.getNumOfMines() / 2)) || (otherPlayer.getPoints() > (board.getNumOfMines() / 2))) {
 
             hasWonTheGame = thisPlayer.getPoints() > otherPlayer.getPoints();
@@ -687,34 +656,10 @@ public class GUI extends Application {
         }
     }
 
-    //when clicked on a cell
-    private class ButtonClickedHandler implements EventHandler<MouseEvent> {
-
-        @Override
-        public void handle(MouseEvent event) {
-            //which mouse button?
-            boolean buttonType = false; // false = left click; true = right click;
-            if (event.getButton() == MouseButton.SECONDARY) {
-                buttonType = true;
-            }
-            //which cell was clicked?
-            int clickedIndex = Integer.parseInt(((Button) event.getSource()).getId());
-
-            if (isMultiplayer) {
-                if (thisPlayer.isActive()) {
-                    networkController.send(new Pair<>("move", clickedIndex));
-                    handleMultiplayerClick(clickedIndex);
-                }
-            } else {
-                handleSinglePlayerClick(buttonType, clickedIndex);
-            }
-        }
-    }
-
     private void handleSinglePlayerClick(boolean buttonType, int clickedIndex) {
 
         if (!board.cells.get(clickedIndex).getButton().isDisable() && (!hasLostTheGame) && (!hasWonTheGame)) {
-            if (buttonType) { //ha jobb gombbal kattintottunk meg nem felfedett mezore
+            if (buttonType) {
                 board.cells.get(clickedIndex).mark();
                 if (board.cells.get(clickedIndex).getMarked()) {
                     numOfFlagsLeft--;
@@ -724,21 +669,19 @@ public class GUI extends Application {
                 message.set(Integer.toString(numOfFlagsLeft));
             } else {
 
-                if (!board.cells.get(clickedIndex).getMarked()) { //ha kerdojel van mar ott, nem nyulunk semmihez
-                    //ha normalis kattintas a bal egergombbal
-                    //ha az elso katt tortent, inditsd el a timert
+                if (!board.cells.get(clickedIndex).getMarked()) {
                     if (revealedBlocks == 0) {
-                    	animationTimer.start();
+                        animationTimer.start();
                     }
 
                     if (board.cells.get(clickedIndex).step() == -1) {
                         hasLostTheGame = true;
                         animationTimer.stop();
-                        
+
                         for (Cell element : board.cells) {
                             if (element.step() == -1) {
                                 if (element.getMarked())
-                                    element.mark(); //ha volt kerdojel, leszedjuk, akna megy helyette
+                                    element.mark();
                                 element.draw();
                             }
                         }
@@ -754,7 +697,7 @@ public class GUI extends Application {
                     } else {
                         revealBlock(clickedIndex);
                         if ((board.getBoardWidth() * board.getBoardHeight() - revealedBlocks) == board.getNumOfMines()) {
-                        	int winTime = timeElapsed;
+                            int winTime = timeElapsed;
                             animationTimer.stop(); //animationTimer lenullazza
 
                             hasWonTheGame = true;
@@ -783,8 +726,8 @@ public class GUI extends Application {
                             }
                         }
                     }
-                } //end_ha nem volt ott mar ott kerdojel eleve
-            } //end_if/else (buttonType)
+                }
+            }
         }
     }
 
@@ -818,6 +761,83 @@ public class GUI extends Application {
         }
     }
 
+    private void initializeTimer() {
+        animationTimer = new AnimationTimer() {
+            private long firstClickTimestamp;
+
+            @Override
+            public void start() {
+                firstClickTimestamp = System.currentTimeMillis();
+                super.start();
+            }
+
+            @Override
+            public void stop() {
+                timeElapsed = 0;
+                elapsedTimeString.set(convertTime(timeElapsed));
+                super.stop();
+            }
+
+            @Override
+            public void handle(long timestamp) {
+                long now = System.currentTimeMillis();
+                timeElapsed = (int) ((now - firstClickTimestamp) / 1000 + 1);
+                elapsedTimeString.set(convertTime(timeElapsed));
+            }
+        };
+    }
+
+    class FxSocketListener implements SocketListener {
+
+        @Override
+        public void onMessage(Object data) {
+            if (data != null && thisPlayer.isServer()) {
+                handleServerData(data);
+            } else if (data != null && !thisPlayer.isServer()) {
+                handleClientData(data);
+            }
+        }
+
+        @Override
+        public void onDisconnectedStatus(boolean isClosed) {
+            if (isClosed) {
+                Alert alert = new Alert(AlertType.INFORMATION,
+                        "Connection to the other party is lost.", ButtonType.OK);
+                alert.setHeaderText(null);
+                alert.setTitle("Connection error");
+
+                Optional<ButtonType> ack = alert.showAndWait();
+
+                if (ack.get() == ButtonType.OK) {
+                    menuItemMode.fire();
+                }
+
+
+            }
+        }
+    }
+
+    //when clicked on a cell
+    private class ButtonClickedHandler implements EventHandler<MouseEvent> {
+
+        @Override
+        public void handle(MouseEvent event) {
+            boolean buttonType = false; // false = left click; true = right click;
+            if (event.getButton() == MouseButton.SECONDARY) {
+                buttonType = true;
+            }
+            int clickedIndex = Integer.parseInt(((Button) event.getSource()).getId());
+
+            if (isMultiplayer) {
+                if (thisPlayer.isActive()) {
+                    networkController.send(new Pair<>("move", clickedIndex));
+                    handleMultiplayerClick(clickedIndex);
+                }
+            } else {
+                handleSinglePlayerClick(buttonType, clickedIndex);
+            }
+        }
+    }
 
     private class MenuItemHandler implements EventHandler<ActionEvent> {
 
@@ -833,31 +853,6 @@ public class GUI extends Application {
                 }
             }
         }
-    }
-    
-    public void initializeTimer() {
-        animationTimer = new AnimationTimer() {
-            private long firstClickTimestamp;
-            @Override
-            public void start() {
-            	firstClickTimestamp = System.currentTimeMillis();
-                super.start();
-            }
-
-            @Override
-            public void stop() {
-            	timeElapsed = 0;
-                elapsedTimeString.set(convertTime(timeElapsed));
-                super.stop();
-            }
-            
-            @Override
-            public void handle(long timestamp) {
-                long now = System.currentTimeMillis();
-                timeElapsed = (int) ((now - firstClickTimestamp)/ 1000 + 1);
-                elapsedTimeString.set(convertTime(timeElapsed));
-            }
-        };
     }
 
 }

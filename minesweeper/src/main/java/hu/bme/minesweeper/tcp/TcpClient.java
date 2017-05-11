@@ -8,7 +8,7 @@ import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class TcpClient extends Network implements SocketListener{
+public class TcpClient extends Network implements SocketListener {
 
     private Socket socket = null;
     private ObjectOutputStream out = null;
@@ -34,12 +34,11 @@ public class TcpClient extends Network implements SocketListener{
         } catch (UnknownHostException e) {
             Logger.getLogger(TcpClient.class.getName()).log(Level.SEVERE,
                     "Client connection error: unknown host.", e);
-            disconnect();
         } catch (IOException ex) {
             Logger.getLogger(TcpClient.class.getName()).log(Level.SEVERE,
                     "Client connection error: error getting streams.", ex);
+        } finally {
             disconnect();
-
         }
     }
 
@@ -47,7 +46,7 @@ public class TcpClient extends Network implements SocketListener{
     public void send(Object obj) {
         if (out == null)
             return;
-        Logger.getLogger(TcpClient.class.getName()).log(Level.INFO,"Sending index: " + obj + " to server");
+        Logger.getLogger(TcpClient.class.getName()).log(Level.INFO, "Sending index: " + obj + " to server");
         try {
             out.writeObject(obj);
             out.flush();
@@ -77,7 +76,7 @@ public class TcpClient extends Network implements SocketListener{
     private class ReceiverThread implements Runnable {
 
         public void run() {
-            Logger.getLogger(TcpClient.class.getName()).log(Level.INFO,"Waiting for indices...");
+            Logger.getLogger(TcpClient.class.getName()).log(Level.INFO, "Waiting for indices...");
 
             try {
                 while (true) {

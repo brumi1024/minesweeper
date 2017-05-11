@@ -1,18 +1,16 @@
 package hu.bme.minesweeper.level;
 
-import java.util.List;
-
 import java.util.*;
 
 public class Board {
 
+    public ArrayList<Cell> cells; //ebben a listaban lesznek a mezok
     private Set<Integer> mineIndices;
     private int boardWidth; //szelesseg
     private int boardHeight; //magassag
     private int numOfMines; //aknaszam
     private int mineLeft; //maradek bomba (lehet ez inkabb csak gui)
     private boolean isSingle; //egy- vagy tobbjatekos mod
-    public ArrayList<Cell> cells; //ebben a listaban lesznek a mezok
 
     public Board() {
         cells = new ArrayList<>();
@@ -69,22 +67,6 @@ public class Board {
 
     private void setNumOfMines(int numOfMines) {
         this.numOfMines = numOfMines;
-    }
-
-    public int getMineLeft() {
-        return mineLeft;
-    }
-
-    public void setMineLeft(int mineLeft) {
-        this.mineLeft = mineLeft;
-    }
-
-    public boolean isSingle() {
-        return isSingle;
-    }
-
-    public void setSingle(boolean isSingle) {
-        this.isSingle = isSingle;
     }
 
     private void setBoardSize(int x, int y) {
