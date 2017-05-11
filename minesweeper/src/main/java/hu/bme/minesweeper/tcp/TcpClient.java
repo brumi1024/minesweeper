@@ -8,7 +8,7 @@ import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class TcpClient extends Network {
+public class TcpClient extends Network implements SocketListener{
 
     private Socket socket = null;
     private ObjectOutputStream out = null;
@@ -34,9 +34,12 @@ public class TcpClient extends Network {
         } catch (UnknownHostException e) {
             Logger.getLogger(TcpClient.class.getName()).log(Level.SEVERE,
                     "Client connection error: unknown host.", e);
+            disconnect();
         } catch (IOException ex) {
             Logger.getLogger(TcpClient.class.getName()).log(Level.SEVERE,
                     "Client connection error: error getting streams.", ex);
+            disconnect();
+
         }
     }
 
@@ -51,6 +54,7 @@ public class TcpClient extends Network {
         } catch (IOException ex) {
             Logger.getLogger(TcpClient.class.getName()).log(Level.SEVERE,
                     "Client sending error: cannot send index.", ex);
+            disconnect();
         }
     }
 
@@ -63,7 +67,6 @@ public class TcpClient extends Network {
                 in.close();
             if (socket != null)
                 socket.close();
-
             super.setConnected(false);
         } catch (IOException ex) {
             Logger.getLogger(TcpClient.class.getName()).log(Level.SEVERE,
@@ -83,6 +86,7 @@ public class TcpClient extends Network {
             } catch (Exception ex) {
                 Logger.getLogger(TcpClient.class.getName()).log(Level.SEVERE,
                         "Server disconnected.", ex);
+                disconnect();
             } finally {
                 disconnect();
             }

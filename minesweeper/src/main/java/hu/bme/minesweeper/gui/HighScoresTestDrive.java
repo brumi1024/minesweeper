@@ -17,6 +17,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
+import javax.xml.crypto.Data;
 import java.io.*;
 import java.sql.SQLException;
 import java.util.Comparator;
@@ -151,11 +152,10 @@ public class HighScoresTestDrive extends Application {
         return data;
     }
 
-    static boolean isNewHighScore(int timeElapsed, String difficulty) {
+    static boolean isOnTheList(int timeElapsed, String difficulty) {
         try {
-            int highScoreTime = DatabaseConnection.readLastValue(difficulty);
-
-            return highScoreTime == 0 || timeElapsed < highScoreTime;
+            return DatabaseConnection.readCount(difficulty) < 8 ||
+                    timeElapsed < DatabaseConnection.readLastTime(difficulty);
         } catch (SQLException s) {
             LOGGER.log(Level.SEVERE, "Could not read from DB. {0}", s.toString());
             return false;
@@ -163,22 +163,17 @@ public class HighScoresTestDrive extends Application {
     }
 
     static int insertData(HighScores newResult) {
-        //ha nem került fel a listára, return -1,
-        //ha felkerült, frissítjük a legjobb eredményeket tartalmazó fájlt,
-        //és return, hogy hanyadik helyezés lett
-        //ezt csak akkor hívjuk meg, ha bekerült a legjobbak közé
         ObservableList<HighScores> data = loadData(newResult.getDifficulty());
 
         data.add(newResult);
 
-        Comparator<HighScores> highScoresComparator = (hS1, hS2) -> hS1.getSec() > hS2.getSec() ? 1 : hS1.getTime() == hS2.getTime() ? 0 : -1;
-        FXCollections.sort(data, highScoresComparator);
-
         if (data.size() > 8) {
             data.remove(data.size() - 1);
         }
-
         try {
+            if (DatabaseConnection.readCount(newResult.getDifficulty()) > 7) {
+                DatabaseConnection.deleteLastOne(newResult.getDifficulty());
+            }
             DatabaseConnection.writeOne(newResult);
         } catch (SQLException s) {
             LOGGER.log(Level.SEVERE, "Could not write to DB. {0}", s.toString());

@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class TcpServer extends Network {
+public class TcpServer extends Network implements SocketListener{
 
     private ServerSocket serverSocket = null;
     private Socket clientSocket = null;
@@ -29,6 +29,7 @@ public class TcpServer extends Network {
             rec.start();
         } catch (IOException e) {
             Logger.getLogger(TcpServer.class.getName()).log(Level.SEVERE,"Could not listen on port: 6569.", e);
+            disconnect();
         }
     }
 
@@ -56,7 +57,6 @@ public class TcpServer extends Network {
                 clientSocket.close();
             if (serverSocket != null)
                 serverSocket.close();
-
             super.setConnected(false);
         } catch (IOException e) {
             Logger.getLogger(TcpServer.class.getName()).log(Level.SEVERE,"Error while closing connection.", e);
@@ -94,6 +94,7 @@ public class TcpServer extends Network {
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
                 Logger.getLogger(TcpServer.class.getName()).log(Level.SEVERE,"Client disconnected.", ex);
+                disconnect();
             } finally {
                 disconnect();
             }

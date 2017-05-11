@@ -26,4 +26,9 @@ public abstract class Network implements SocketListener {
     public void onMessage(final Object data) {
         javafx.application.Platform.runLater(() -> fxListener.onMessage(data));
     }
+
+    @Override
+    public void onDisconnectedStatus(final boolean isClosed) {
+        javafx.application.Platform.runLater(() -> fxListener.onDisconnectedStatus(isClosed));
+    }
 }

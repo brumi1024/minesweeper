@@ -13,7 +13,7 @@ class Timer {
 
     int getTimeElapsed() {
         this.setTimeElapsed();
-        return (int) timeElapsed / 1000;
+        return (int) timeElapsed / 1000 + 1;
     }
 
 

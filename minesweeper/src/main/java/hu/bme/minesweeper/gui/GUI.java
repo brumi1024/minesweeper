@@ -31,6 +31,7 @@ public class GUI extends Application {
     private Network networkController;
 
     private MenuItem menuItemMode;
+    private MenuItem singleplayerButton;
     private MenuItem menuItemExit;
     Menu menuDifficulty;
     MenuItem menuItemNewGame;
@@ -103,7 +104,7 @@ public class GUI extends Application {
         hasWonTheGame = false;
         serverPB.setProgress(0);
         clientPB.setProgress(0);
-        
+
         board = new Board();
         board.createBoards(difficulty, (isMultiplayer && !thisPlayer.isServer()), mineIndices);
 
@@ -135,8 +136,8 @@ public class GUI extends Application {
         }
 
         if (isMultiplayer) {
-        	serverMinesFoundLabel.setText("0");
-        	clientMinesFoundLabel.setText("0");
+            serverMinesFoundLabel.setText("0");
+            clientMinesFoundLabel.setText("0");
             if (thisPlayer.isServer()) {
                 networkController.send(new Pair<>("level", new Pair<>(difficulty, board.getMineIndices())));
                 thisPlayer.setActive(true);
@@ -145,7 +146,7 @@ public class GUI extends Application {
             }
 
             changeBorder();
-            
+
             thisPlayer.setPoints(0);
             otherPlayer.setPoints(0);
         }
@@ -165,12 +166,12 @@ public class GUI extends Application {
 
         serverMinesFoundLabel = new Label(" " + "0");
         clientMinesFoundLabel = new Label(" " + "0");
-             
+
         serverPB = new ProgressBar();
         clientPB = new ProgressBar();
         serverPB.setProgress(0);
         clientPB.setProgress(0);
-        
+
         serverMinesFoundLabel.setStyle("-fx-font-weight: bold");
         clientMinesFoundLabel.setStyle("-fx-font-weight: bold");
         Image serverImage = new Image("images/serverPerson.png");
@@ -211,14 +212,6 @@ public class GUI extends Application {
         clientVBox.setSpacing(20);
         clientVBox.getChildren().addAll(clientImageVBox, clientPB, clientMineFound);
         /*end of: creating multiplayer layout: left side and right side*/
-
-
-        MenuItem menuItemStartClient = new MenuItem("Start client");
-        menuItemStartClient.setOnAction(e ->
-        {
-        	
-
-        });
 
         stage = primaryStage;
 
@@ -314,29 +307,35 @@ public class GUI extends Application {
                 borderPane.setBottom(hBox);
                 isMultiplayer = false;
 
+                menuItemNewGame.setDisable(false);
+                menuDifficulty.setDisable(false);
+
                 if (networkController != null && networkController.isConnected()) {
                     networkController.disconnect();
                 }
             } else if (Objects.equals(menuItemMode.getText(), "Multiplayer")) {
-            	//kliens vagy szerver?
+                //kliens vagy szerver?
                 menuItemMode.setText("Single player");
                 borderPane.setBottom(null);
                 isMultiplayer = true;
-                
-            	String[] options = {"I'm gonna be a server!", "I'm gonna be a client!"};
+
+                String[] options = {"I'm gonna be a server!", "I'm gonna be a client!"};
                 String choice = showDialog("Starting a multiplayer game", "Are you gonna be a server or a client?", options);
                 if (Objects.equals(choice, "I'm gonna be a server!")) {
-                	handleStartServer();
-                    borderPane.setLeft(serverVBox);
-                    borderPane.setRight(clientVBox);
+                    if (handleStartServer()) {
+                        borderPane.setLeft(serverVBox);
+                        borderPane.setRight(clientVBox);
+                    }
+
                 }
                 if (Objects.equals(choice, "I'm gonna be a client!")) {
-                    handleStartClient();
-                    borderPane.setLeft(clientVBox);
-                    borderPane.setRight(serverVBox);
-                    //kliens nem kezdhet uj jatekot es nem valtoztathat nehezseget
-                    menuItemNewGame.setDisable(true);
-                    menuDifficulty.setDisable(true);
+                    if (handleStartClient()) {
+                        borderPane.setLeft(clientVBox);
+                        borderPane.setRight(serverVBox);
+                        //kliens nem kezdhet uj jatekot es nem valtoztathat nehezseget
+                        menuItemNewGame.setDisable(true);
+                        menuDifficulty.setDisable(true);
+                    }
                 }
             }
             stage.sizeToScene();
@@ -368,7 +367,7 @@ public class GUI extends Application {
         initializeGUI(primaryStage);
     }
 
-    String convertTime(int sec) {
+    private String convertTime(int sec) {
         return String.format("%02d:%02d", sec / 60, sec % 60);
     }
 
@@ -403,6 +402,7 @@ public class GUI extends Application {
 
             if (cancelled.get() == ButtonType.CANCEL) {
                 task.cancel();
+                menuItemMode.fire();
             }
 
         });
@@ -420,11 +420,120 @@ public class GUI extends Application {
             } else {
                 thisPlayer.setActive(false);
             }
-            
+
             changeBorder();
         });
 
         new Thread(task).start();
+    }
+
+    private boolean handleStartServer() {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Starting server");
+        dialog.setHeaderText("Starting server");
+        dialog.setGraphic(null);
+        dialog.setContentText("Your name:");
+        Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+        okButton.setText("Start server...");
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            thisPlayer = new Player(result.get(), true);
+            serverSidePlayer.setText(thisPlayer.getName());
+            otherPlayer = new Player("", false);
+            networkController = new TcpServer(new FxSocketListener());
+            createWaitAlert("");
+
+            if (thisPlayer.isActive()) { //ha amIActive && amIServer
+                clientBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 0;");
+                serverBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 3;");
+            }
+
+            return true;
+        } else {
+            menuItemMode.fire();
+            return false;
+        }
+    }
+
+    private boolean handleStartClient() {
+        //I am going to be a CLIENT
+        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        dialog.setTitle("Client connecting");
+        dialog.setGraphic(null);
+        ButtonType loginButtonType = new ButtonType("Connecting...", ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField IP = new TextField();
+        IP.setPromptText("IP address:");
+        TextField name = new TextField();
+        name.setPromptText("Your name:");
+
+        grid.add(new Label("IP address:"), 0, 0);
+        grid.add(IP, 1, 0);
+        grid.add(new Label("Your name:"), 0, 1);
+        grid.add(name, 1, 1);
+
+        dialog.getDialogPane().setContent(grid);
+
+        Platform.runLater(IP::requestFocus);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == loginButtonType) {
+                return new Pair<>(IP.getText(), name.getText());
+            }
+            return null;
+        });
+
+        Optional<Pair<String, String>> result = dialog.showAndWait();
+
+        if (!result.isPresent()) {
+            menuItemMode.fire();
+            return false;
+        } else {
+            result.ifPresent(pair -> {
+                String ipAddress = pair.getKey();
+                thisPlayer = new Player(pair.getValue(), false);
+                clientSidePlayer.setText(thisPlayer.getName());
+                otherPlayer = new Player("", true);
+                networkController = new TcpClient(new FxSocketListener());
+
+                createWaitAlert(ipAddress);
+
+                if (thisPlayer.isActive()) { //ha amIActive && amIClient
+                    clientBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 3;");
+                    serverBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 0;");
+                }
+            });
+
+            return true;
+        }
+    }
+
+    private void changeBorder() {
+        //amiRE tesszuk, az az aktiv most, az elozot levesszuk 0-ra
+        if (thisPlayer.isActive()) {
+            if (thisPlayer.isServer()) {
+                clientBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 0;");
+                serverBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 3;");
+            } else {
+                clientBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 3;");
+                serverBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 0;");
+            }
+        } else {
+            if (otherPlayer.isServer()) {
+                clientBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 0;");
+                serverBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 3;");
+            } else {
+                clientBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 3;");
+                serverBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 0;");
+            }
+
+        }
     }
 
     class FxSocketListener implements SocketListener {
@@ -435,6 +544,24 @@ public class GUI extends Application {
                 handleServerData(data);
             } else if (data != null && !thisPlayer.isServer()) {
                 handleClientData(data);
+            }
+        }
+
+        @Override
+        public void onDisconnectedStatus(boolean isClosed) {
+            if (isClosed) {
+                Alert alert = new Alert(AlertType.INFORMATION,
+                        "Connection to the other party is lost.", ButtonType.OK);
+                alert.setHeaderText(null);
+                alert.setTitle("Connection error");
+
+                Optional<ButtonType> ack = alert.showAndWait();
+
+                if (ack.get() == ButtonType.OK) {
+                    menuItemMode.fire();
+                }
+
+
             }
         }
     }
@@ -457,7 +584,7 @@ public class GUI extends Application {
             Pair<String, Object> incomingData = (Pair<String, Object>) data;
             switch (incomingData.getKey()) {
                 case "name":
-                    otherPlayer = new Player((String) incomingData.getValue(), false);
+                    otherPlayer.setName((String) incomingData.getValue());
                     clientSidePlayer.setText(otherPlayer.getName());
                     break;
                 case "move":
@@ -472,7 +599,7 @@ public class GUI extends Application {
             Pair<String, Object> incomingData = (Pair<String, Object>) data;
             switch (incomingData.getKey()) {
                 case "name":
-                    otherPlayer = new Player((String) incomingData.getValue(), true);
+                    otherPlayer.setName((String) incomingData.getValue());
                     serverSidePlayer.setText(otherPlayer.getName());
                     break;
                 case "move":
@@ -492,7 +619,7 @@ public class GUI extends Application {
         if (board.cells.get(clickedIndex).step() == -1) {
             Cell activeCell = board.cells.get(clickedIndex);
             otherPlayer.increasePoints();
-            if(otherPlayer.isServer()) serverMinesFoundLabel.setText(Integer.toString(otherPlayer.getPoints()));
+            if (otherPlayer.isServer()) serverMinesFoundLabel.setText(Integer.toString(otherPlayer.getPoints()));
             else clientMinesFoundLabel.setText(Integer.toString(otherPlayer.getPoints()));
             activeCell.draw();
             activeCell.getButton().setDisable(true);
@@ -505,13 +632,13 @@ public class GUI extends Application {
             thisPlayer.setActive(true);
             foundMines = 0;
         }
-        
-        if(otherPlayer.isServer()) {
-        	serverPB.setProgress(((double)foundMines)/3);
+
+        if (otherPlayer.isServer()) {
+            serverPB.setProgress(((double) foundMines) / 3);
         } else {
-        	clientPB.setProgress(((double)foundMines)/3);
+            clientPB.setProgress(((double) foundMines) / 3);
         }
-        
+
         changeBorder();
 
         revealBlock(clickedIndex);
@@ -547,7 +674,6 @@ public class GUI extends Application {
 
             }
         }
-
     }
 
     //when clicked on a cell
@@ -620,7 +746,7 @@ public class GUI extends Application {
                             timeElapsed = timer.getTimeElapsed();
 
                             hasWonTheGame = true;
-                            if (!HighScoresTestDrive.isNewHighScore(timeElapsed, difficulty)) {
+                            if (!HighScoresTestDrive.isOnTheList(timeElapsed, difficulty)) {
                                 //nyert, de nem kerult be a legjobbak koze
                                 String[] options = {"Yes", "No"};
                                 String choice = showDialog("You won!", "Congratulations! You won.\n"
@@ -633,7 +759,7 @@ public class GUI extends Application {
                             } else {
                                 TextInputDialog dialog = new TextInputDialog();
                                 dialog.setTitle("Best");
-                                dialog.setHeaderText("Congratulations! It's a new record.");
+                                dialog.setHeaderText("Congratulations! You've made it to the toplist");
                                 dialog.setGraphic(null);
                                 dialog.setContentText("Your name:");
 
@@ -658,7 +784,7 @@ public class GUI extends Application {
 
             if (board.cells.get(clickedIndex).step() == -1) {
                 thisPlayer.increasePoints();
-                if(thisPlayer.isServer()) serverMinesFoundLabel.setText(Integer.toString(thisPlayer.getPoints())); /**modositott**/
+                if (thisPlayer.isServer()) serverMinesFoundLabel.setText(Integer.toString(thisPlayer.getPoints()));
                 else clientMinesFoundLabel.setText(Integer.toString(thisPlayer.getPoints()));
 
                 if (++foundMines >= 3) {
@@ -673,10 +799,10 @@ public class GUI extends Application {
             revealBlock(clickedIndex);
             handleMultiplayerGameEnding();
 
-            if(thisPlayer.isServer()) {
-            	serverPB.setProgress(((double)foundMines)/3);
+            if (thisPlayer.isServer()) {
+                serverPB.setProgress(((double) foundMines) / 3);
             } else {
-            	clientPB.setProgress(((double)foundMines)/3);
+                clientPB.setProgress(((double) foundMines) / 3);
             }
 
             changeBorder();
@@ -698,103 +824,7 @@ public class GUI extends Application {
                 }
             }
         }
-
-
     }
-    
-	public void handleStartServer() {
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Starting server");
-        dialog.setHeaderText("Starting server");
-        dialog.setGraphic(null);
-        dialog.setContentText("Your name:");
-        Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-        okButton.setText("Start server...");
-
-        Optional<String> result = dialog.showAndWait();
-        if (result.isPresent()) {
-            thisPlayer = new Player(result.get(), true);
-            serverSidePlayer.setText(thisPlayer.getName());
-            networkController = new TcpServer(new FxSocketListener());
-            createWaitAlert("");
-        }
-        if (thisPlayer.isActive()) { //ha amIActive && amIServer
-            clientBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 0;");
-            serverBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 3;");
-        }
-	}
-	
-	public void handleStartClient() {
-        //I am going to be a CLIENT
-        Dialog<Pair<String, String>> dialog = new Dialog<>();
-        dialog.setTitle("Client connecting");
-        dialog.setGraphic(null);
-        ButtonType loginButtonType = new ButtonType("Connecting...", ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(20, 150, 10, 10));
-
-        TextField IP = new TextField();
-        IP.setPromptText("IP address:");
-        TextField name = new TextField();
-        name.setPromptText("Your name:");
-
-        grid.add(new Label("IP address:"), 0, 0);
-        grid.add(IP, 1, 0);
-        grid.add(new Label("Your name:"), 0, 1);
-        grid.add(name, 1, 1);
-
-        dialog.getDialogPane().setContent(grid);
-
-        Platform.runLater(IP::requestFocus);
-
-        dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == loginButtonType) {
-                return new Pair<>(IP.getText(), name.getText());
-            }
-            return null;
-        });
-
-        Optional<Pair<String, String>> result = dialog.showAndWait();
-
-        result.ifPresent(pair -> {
-            String ipAddress = pair.getKey();
-            thisPlayer = new Player(pair.getValue(), false);
-            clientSidePlayer.setText(thisPlayer.getName());
-            networkController = new TcpClient(new FxSocketListener());
-
-            createWaitAlert(ipAddress);
-        });
-        if (thisPlayer.isActive()) { //ha amIActive && amIClient
-            clientBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 3;");
-            serverBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 0;");
-        }
-	}
-	
-	public void changeBorder() {
-		//amiRE tesszuk, az az aktiv most, az elozot levesszuk 0-ra
-		if(thisPlayer.isActive()) {
-			if(thisPlayer.isServer()) {
-				clientBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 0;");
-		        serverBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 3;");
-			} else {
-				clientBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 3;");
-		        serverBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 0;");
-			}
-		} else {
-			if(otherPlayer.isServer()) {
-				clientBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 0;");
-		        serverBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 3;");
-			} else {
-				clientBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 3;");
-		        serverBorderBox.setStyle("-fx-border-color: limegreen; -fx-border-width: 0;");
-			}
-				
-		}
-		
-	}
 
 }
 

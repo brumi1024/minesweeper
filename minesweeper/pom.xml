@@ -56,6 +56,12 @@
                 </executions>
                 <configuration>
                     <mainClass>hu.bme.minesweeper.main.Main</mainClass>
+                    <systemProperties>
+                        <systemProperty>
+                            <key>java.util.logging.config.file</key>
+                            <value>resources/logging.properties</value>
+                        </systemProperty>
+                    </systemProperties>
                 </configuration>
             </plugin>
         </plugins>

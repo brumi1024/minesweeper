@@ -4,9 +4,16 @@ package hu.bme.minesweeper.datamodel;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.stmt.DeleteBuilder;
+import com.j256.ormlite.stmt.PreparedQuery;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
+import com.j256.ormlite.stmt.query.OrderBy;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.DatabaseTableConfig;
 import com.j256.ormlite.table.TableUtils;
+
+import java.lang.Long;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -63,6 +70,50 @@ public class DatabaseConnection {
     }
 
     /**
+     * Write out the data to the database.
+     *
+     * @throws SQLException throws an exception if an SQL error occured
+     */
+    public static void deleteLastOne(String difficulty) throws SQLException {
+        DeleteBuilder<HighScores, Integer> deleteBuilder = highscoreDao.deleteBuilder();
+        deleteBuilder.where().eq("time", readLastTime(difficulty));
+        deleteBuilder.delete();
+
+        LOGGER.log(Level.FINE, "Delete data from the database is successful.");
+    }
+
+    /**
+     * Read the slowest recorded completion time based on difficulty.
+     *
+     * @return slowest time of the database
+     * @throws SQLException throws an exception if an SQL error occurred
+     */
+    public static int readCount(String difficulty) throws SQLException {
+        QueryBuilder<HighScores, Integer> qb = highscoreDao.queryBuilder();
+        Where where = qb.where();
+        where.eq("difficulty", difficulty);
+        qb.setCountOf(true);
+        PreparedQuery<HighScores> preparedQuery = qb.prepare();
+
+        return (int) highscoreDao.countOf(preparedQuery);
+    }
+
+    /**
+     * Read the slowest recorded completion time based on difficulty.
+     *
+     * @return slowest time of the database
+     * @throws SQLException throws an exception if an SQL error occurred
+     */
+    public static int readLastTime(String difficulty) throws SQLException {
+        LOGGER.log(Level.FINE, "Reading last value from the database.");
+
+        String tableName = DatabaseTableConfig.extractTableName(HighScores.class);
+        String selectQuery = "SELECT MAX(time) FROM " + tableName + " WHERE difficulty = '" + difficulty + "';";
+
+        return (int) highscoreDao.queryRawValue(selectQuery);
+    }
+
+    /**
      * Read all the data from the database.
      *
      * @return an List<HighScores> that contains the rows.
@@ -71,24 +122,15 @@ public class DatabaseConnection {
     public static List<HighScores> readAll(String difficulty) throws SQLException {
         LOGGER.log(Level.FINE, "Reading the values from the database.");
 
-        return highscoreDao.queryForEq("difficulty", difficulty);
+        QueryBuilder<HighScores, Integer> qb = highscoreDao.queryBuilder();
+        Where where = qb.where();
+        where.eq("difficulty", difficulty);
+        qb.orderBy("time", true);
+
+        PreparedQuery<HighScores> preparedQuery = qb.prepare();
+
+        return highscoreDao.query(preparedQuery);
     }
-
-    /**
-     * Read the fastest recorded completion time based on difficulty.
-     *
-     * @return slowest time of the database
-     * @throws SQLException throws an exception if an SQL error occurred
-     */
-    public static int readLastValue(String difficulty) throws SQLException {
-        LOGGER.log(Level.FINE, "Reading last value from the database.");
-
-        String tableName = DatabaseTableConfig.extractTableName(HighScores.class);
-        String selectQuery = "SELECT MIN(time) FROM " + tableName + " WHERE difficulty = '" + difficulty + "';";
-
-        return  (int) highscoreDao.queryRawValue(selectQuery);
-    }
-
 
     /**
      * Checks if the connection is open to the database.
