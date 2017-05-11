@@ -20,20 +20,19 @@ public class Board {
 
     private void setBoardParameters(String difficulty) {
         if (Objects.equals(difficulty, "easy")) {
-            this.setBoardSize(5, 5);
+            this.setBoardSize(5, 8);
             this.setNumOfMines(5);
         }
         if (Objects.equals(difficulty, "medium")) {
-            this.setBoardSize(5, 9);
-            this.setNumOfMines(7);
+            this.setBoardSize(8, 8);
+            this.setNumOfMines(9);
         }
         if (Objects.equals(difficulty, "hard")) {
-            this.setBoardSize(9, 9);
-            this.setNumOfMines(11);
+            this.setBoardSize(8, 15);
+            this.setNumOfMines(19);
         }
     }
 
-    //matrix: BOARD.HEIGHT X BOARD.WIDTH!!!
     public void createBoards(String difficulty, boolean client, Set<Integer> mineIndicesParam) {
         setBoardParameters(difficulty);
 
