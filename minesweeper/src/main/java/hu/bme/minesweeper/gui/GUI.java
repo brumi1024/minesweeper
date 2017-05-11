@@ -8,6 +8,7 @@ import hu.bme.minesweeper.tcp.Network;
 import hu.bme.minesweeper.tcp.SocketListener;
 import hu.bme.minesweeper.tcp.TcpClient;
 import hu.bme.minesweeper.tcp.TcpServer;
+import javafx.animation.AnimationTimer;
 import javafx.application.*;
 import javafx.beans.property.*;
 import javafx.concurrent.Task;
@@ -31,7 +32,6 @@ public class GUI extends Application {
     private Network networkController;
 
     private MenuItem menuItemMode;
-    private MenuItem singleplayerButton;
     private MenuItem menuItemExit;
     Menu menuDifficulty;
     MenuItem menuItemNewGame;
@@ -51,6 +51,7 @@ public class GUI extends Application {
     private String difficulty;
     private int numOfFlagsLeft; //ez nem kell, a Board.mineLeft eleme
     private StringProperty message;
+    private StringProperty elapsedTimeString;
     private boolean hasLostTheGame; //erre majd vigyazni kell, hogy uj jatek kezdesekor vissza kell allitani false-ra!
     private boolean hasWonTheGame;
     private boolean isMultiplayer = false;
@@ -60,10 +61,9 @@ public class GUI extends Application {
     private ProgressBar clientPB = new ProgressBar();
     Label serverMinesFoundLabel;
     Label clientMinesFoundLabel;
+    private AnimationTimer animationTimer;
 
     private int timeElapsed = 0;
-
-    private Timer timer;
 
     public static void main(String[] args) {
         launch(args);
@@ -97,7 +97,8 @@ public class GUI extends Application {
 
     /*create a board, show the cells in a gridpane*/
     private void startNewGame(String difficulty, Set<Integer> mineIndices) {
-        timer = new Timer();
+    	        
+        animationTimer.stop();
         revealedBlocks = 0;
         foundMines = 0;
         hasLostTheGame = false;
@@ -154,6 +155,8 @@ public class GUI extends Application {
     }
 
     private void initializeGUI(Stage primaryStage) {
+    	initializeTimer();
+
         Image mineImage = new Image("images/flower2.png");
         ImageView mineImageView = new ImageView();
         mineImageView.setImage(mineImage);
@@ -220,6 +223,10 @@ public class GUI extends Application {
         message = new SimpleStringProperty();
         flagsLeftLabel.textProperty().bind(message);
         message.set(Integer.toString(numOfFlagsLeft));
+        
+        elapsedTimeString = new SimpleStringProperty();
+        timeElapsedLabel.textProperty().bind(elapsedTimeString);
+        elapsedTimeString.set(convertTime(timeElapsed));
 
         startNewGame("easy", new HashSet<>());
 
@@ -261,18 +268,21 @@ public class GUI extends Application {
         {
             if ((menuItemEasy.isSelected()) && (!Objects.equals(difficulty, "easy"))) {
                 difficulty = "easy";
+                animationTimer.stop();
                 startNewGame("easy", new HashSet<>());
                 borderPane.setCenter(gridPane);
                 stage.sizeToScene();
             }
             if ((menuItemMedium.isSelected()) && (!Objects.equals(difficulty, "medium"))) {
                 difficulty = "medium";
+                animationTimer.stop();
                 startNewGame("medium", new HashSet<>());
                 borderPane.setCenter(gridPane);
                 stage.sizeToScene();
             }
             if ((menuItemHard.isSelected()) && (!Objects.equals(difficulty, "hard"))) {
                 difficulty = "hard";
+                animationTimer.stop();
                 startNewGame("hard", new HashSet<>());
                 borderPane.setCenter(gridPane);
                 stage.sizeToScene();
@@ -301,6 +311,7 @@ public class GUI extends Application {
         menuItemMode.setOnAction(e ->
         {
             if (Objects.equals(menuItemMode.getText(), "Single player")) {
+            	stage.setTitle("Minesweeper");
                 menuItemMode.setText("Multiplayer");
                 borderPane.setLeft(null);
                 borderPane.setRight(null);
@@ -314,6 +325,7 @@ public class GUI extends Application {
                     networkController.disconnect();
                 }
             } else if (Objects.equals(menuItemMode.getText(), "Multiplayer")) {
+            	animationTimer.stop();
                 //kliens vagy szerver?
                 menuItemMode.setText("Single player");
                 borderPane.setBottom(null);
@@ -323,6 +335,7 @@ public class GUI extends Application {
                 String choice = showDialog("Starting a multiplayer game", "Are you gonna be a server or a client?", options);
                 if (Objects.equals(choice, "I'm gonna be a server!")) {
                     if (handleStartServer()) {
+                    	stage.setTitle("Minesweeper - SERVER");
                         borderPane.setLeft(serverVBox);
                         borderPane.setRight(clientVBox);
                     }
@@ -330,6 +343,7 @@ public class GUI extends Application {
                 }
                 if (Objects.equals(choice, "I'm gonna be a client!")) {
                     if (handleStartClient()) {
+                    	stage.setTitle("Minesweeper - CLIENT");
                         borderPane.setLeft(clientVBox);
                         borderPane.setRight(serverVBox);
                         //kliens nem kezdhet uj jatekot es nem valtoztathat nehezseget
@@ -649,9 +663,6 @@ public class GUI extends Application {
         //ha van 9 akna, de valaki megtalalt 5-ot, akkor ne jatsszuk tovabb; csak paratlan szamu akna lehet
         if ((thisPlayer.getPoints() > (board.getNumOfMines() / 2)) || (otherPlayer.getPoints() > (board.getNumOfMines() / 2))) {
 
-            timer.setTimeElapsed();
-            timeElapsed = timer.getTimeElapsed();
-
             hasWonTheGame = thisPlayer.getPoints() > otherPlayer.getPoints();
             if (thisPlayer.isServer()) {
                 String[] options = new String[]{"Yes", "No"};
@@ -717,12 +728,13 @@ public class GUI extends Application {
                     //ha normalis kattintas a bal egergombbal
                     //ha az elso katt tortent, inditsd el a timert
                     if (revealedBlocks == 0) {
-                        timer.setTimeFirstClick();
+                    	animationTimer.start();
                     }
 
                     if (board.cells.get(clickedIndex).step() == -1) {
                         hasLostTheGame = true;
-
+                        animationTimer.stop();
+                        
                         for (Cell element : board.cells) {
                             if (element.step() == -1) {
                                 if (element.getMarked())
@@ -742,11 +754,11 @@ public class GUI extends Application {
                     } else {
                         revealBlock(clickedIndex);
                         if ((board.getBoardWidth() * board.getBoardHeight() - revealedBlocks) == board.getNumOfMines()) {
-                            timer.setTimeElapsed();
-                            timeElapsed = timer.getTimeElapsed();
+                        	int winTime = timeElapsed;
+                            animationTimer.stop(); //animationTimer lenullazza
 
                             hasWonTheGame = true;
-                            if (!HighScoresTestDrive.isOnTheList(timeElapsed, difficulty)) {
+                            if (!HighScoresTestDrive.isOnTheList(winTime, difficulty)) {
                                 //nyert, de nem kerult be a legjobbak koze
                                 String[] options = {"Yes", "No"};
                                 String choice = showDialog("You won!", "Congratulations! You won.\n"
@@ -765,7 +777,7 @@ public class GUI extends Application {
 
                                 Optional<String> result = dialog.showAndWait();
                                 if (result.isPresent()) {
-                                    int place = HighScoresTestDrive.insertData(new HighScores(result.get(), timeElapsed, difficulty));
+                                    int place = HighScoresTestDrive.insertData(new HighScores(result.get(), winTime, difficulty));
                                     HighScoresTestDrive.showTable(place - 1, difficulty);
                                 }
                             }
@@ -778,9 +790,6 @@ public class GUI extends Application {
 
     private void handleMultiplayerClick(int clickedIndex) {
         if (!board.cells.get(clickedIndex).getButton().isDisable() && (!hasWonTheGame)) {
-            if (revealedBlocks == 0) {
-                timer.setTimeFirstClick();
-            }
 
             if (board.cells.get(clickedIndex).step() == -1) {
                 thisPlayer.increasePoints();
@@ -824,6 +833,31 @@ public class GUI extends Application {
                 }
             }
         }
+    }
+    
+    public void initializeTimer() {
+        animationTimer = new AnimationTimer() {
+            private long firstClickTimestamp;
+            @Override
+            public void start() {
+            	firstClickTimestamp = System.currentTimeMillis();
+                super.start();
+            }
+
+            @Override
+            public void stop() {
+            	timeElapsed = 0;
+                elapsedTimeString.set(convertTime(timeElapsed));
+                super.stop();
+            }
+            
+            @Override
+            public void handle(long timestamp) {
+                long now = System.currentTimeMillis();
+                timeElapsed = (int) ((now - firstClickTimestamp)/ 1000 + 1);
+                elapsedTimeString.set(convertTime(timeElapsed));
+            }
+        };
     }
 
 }
