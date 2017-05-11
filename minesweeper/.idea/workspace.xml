@@ -3,13 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="78aa14d8-1c57-427b-b815-44b9d2b42569" name="Default" comment="">
       <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/gui/Timer.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/highscores.db" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/maven-archiver/pom.properties" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/minesweeper-1.0-SNAPSHOT-jar-with-dependencies.jar" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/minesweeper-1.0-SNAPSHOT.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/gui/Timer.class" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/highscores.db" afterPath="$PROJECT_DIR$/highscores.db" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/datamodel/DatabaseConnection.class" afterPath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/datamodel/DatabaseConnection.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/gui/GUI$1.class" afterPath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/gui/GUI$1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/gui/GUI$2.class" afterPath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/gui/GUI$2.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/gui/GUI$ButtonClickedHandler.class" afterPath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/gui/GUI$ButtonClickedHandler.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/gui/GUI$FxSocketListener.class" afterPath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/gui/GUI$FxSocketListener.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/gui/GUI$MenuItemHandler.class" afterPath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/gui/GUI$MenuItemHandler.class" />
@@ -19,24 +17,21 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/gui/HighScoresTestDrive$2.class" afterPath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/gui/HighScoresTestDrive$2.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/gui/HighScoresTestDrive.class" afterPath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/gui/HighScoresTestDrive.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/level/Board.class" afterPath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/level/Board.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/level/Cell.class" afterPath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/level/Cell.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/level/Mine.class" afterPath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/level/Mine.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/level/Nothing.class" afterPath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/level/Nothing.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/player/Player.class" afterPath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/player/Player.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/tcp/Network.class" afterPath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/tcp/Network.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/tcp/TcpClient$ReceiverThread.class" afterPath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/tcp/TcpClient$ReceiverThread.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/tcp/TcpClient.class" afterPath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/tcp/TcpClient.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/tcp/TcpServer$ReceiverThread.class" afterPath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/tcp/TcpServer$ReceiverThread.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/tcp/TcpServer.class" afterPath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/tcp/TcpServer.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/datamodel/DatabaseConnection.java" afterPath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/datamodel/DatabaseConnection.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/gui/GUI.java" afterPath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/gui/GUI.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/gui/HighScoresTestDrive.java" afterPath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/gui/HighScoresTestDrive.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Board.java" afterPath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Board.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Cell.java" afterPath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Cell.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Mine.java" afterPath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Mine.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Nothing.java" afterPath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Nothing.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/player/Player.java" afterPath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/player/Player.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/tcp/SocketListener.java" afterPath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/tcp/SocketListener.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/tcp/Network.java" afterPath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/tcp/Network.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/tcp/TcpClient.java" afterPath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/tcp/TcpClient.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/tcp/TcpServer.java" afterPath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/tcp/TcpServer.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -49,21 +44,38 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="GUI.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="GUI.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/gui/GUI.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-251">
-              <caret line="387" column="32" lean-forward="false" selection-start-line="387" selection-start-column="17" selection-end-line="387" selection-end-column="32" />
+            <state relative-caret-position="-42">
+              <caret line="58" column="35" lean-forward="false" selection-start-line="58" selection-start-column="35" selection-end-line="58" selection-end-column="35" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#2577#2578#0" expanded="true" />
-                <element signature="e#2605#2606#0" expanded="true" />
-                <element signature="e#2637#2638#0" expanded="true" />
-                <element signature="e#2692#2693#0" expanded="true" />
-                <element signature="e#14845#14846#0" expanded="true" />
-                <element signature="e#14914#14915#0" expanded="true" />
-                <element signature="e#15185#15763#0" expanded="true" />
-                <element signature="e#15762#15763#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="HighScores.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/datamodel/HighScores.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="561">
+              <caret line="33" column="22" lean-forward="false" selection-start-line="33" selection-start-column="22" selection-end-line="33" selection-end-column="22" />
+              <folding>
+                <element signature="e#910#911#0" expanded="true" />
+                <element signature="e#950#951#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TcpServer.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/tcp/TcpServer.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="901">
+              <caret line="55" column="37" lean-forward="false" selection-start-line="55" selection-start-column="37" selection-end-line="55" selection-end-column="37" />
+              <folding>
+                <element signature="imports" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -72,43 +84,41 @@
       <file leaf-file-name="Player.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/player/Player.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+            <state relative-caret-position="476">
+              <caret line="39" column="12" lean-forward="false" selection-start-line="39" selection-start-column="12" selection-end-line="39" selection-end-column="12" />
+              <folding>
+                <element signature="e#535#536#0" expanded="true" />
+                <element signature="e#571#572#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Main.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/main/Main.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="102">
+              <caret line="8" column="42" lean-forward="false" selection-start-line="8" selection-start-column="42" selection-end-line="8" selection-end-column="42" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TcpServer.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/tcp/TcpServer.java">
+      <file leaf-file-name="Nothing.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Nothing.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="516">
-              <caret line="91" column="0" lean-forward="false" selection-start-line="91" selection-start-column="0" selection-end-line="91" selection-end-column="0" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state relative-caret-position="34">
+              <caret line="2" column="13" lean-forward="false" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="HighScoresTestDrive.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/gui/HighScoresTestDrive.java">
+      <file leaf-file-name="Mine.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Mine.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="697">
-              <caret line="41" column="63" lean-forward="false" selection-start-line="41" selection-start-column="63" selection-end-line="41" selection-end-column="63" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <marker date="1494528700601" expanded="true" signature="6503:6510" ph="{...}" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TcpClient.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/tcp/TcpClient.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="578">
-              <caret line="36" column="0" lean-forward="false" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
+            <state relative-caret-position="442">
+              <caret line="28" column="0" lean-forward="false" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -119,11 +129,10 @@
       <file leaf-file-name="Cell.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Cell.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="918">
+            <state relative-caret-position="884">
               <caret line="58" column="0" lean-forward="false" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <marker date="1494528700607" expanded="true" signature="1804:1805" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -132,43 +141,22 @@
       <file leaf-file-name="Board.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Board.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1122">
-              <caret line="82" column="34" lean-forward="false" selection-start-line="82" selection-start-column="34" selection-end-line="82" selection-end-column="34" />
-              <folding>
-                <marker date="1494528700605" expanded="false" signature="1860:1866" ph=" }" />
-                <marker date="1494528700605" expanded="true" signature="1912:1972" ph="{...}" />
-                <marker date="1494528700605" expanded="false" signature="2014:2025" ph=" { " />
-                <marker date="1494528700605" expanded="false" signature="2044:2050" ph=" }" />
-                <marker date="1494528700605" expanded="true" signature="2096:2348" ph="{...}" />
-                <marker date="1494528700605" expanded="true" signature="2381:3582" ph="{...}" />
-              </folding>
+            <state relative-caret-position="-827">
+              <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DatabaseConnection.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/datamodel/DatabaseConnection.java">
+      <file leaf-file-name="HighScoresTestDrive.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/gui/HighScoresTestDrive.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2108">
-              <caret line="124" column="27" lean-forward="false" selection-start-line="124" selection-start-column="27" selection-end-line="124" selection-end-column="27" />
+            <state relative-caret-position="850">
+              <caret line="50" column="23" lean-forward="false" selection-start-line="50" selection-start-column="23" selection-end-line="50" selection-end-column="23" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <marker date="1494528700598" expanded="true" signature="919:963" ph="/**...*/" />
-                <marker date="1494528700598" expanded="true" signature="1002:1388" ph="{...}" />
-                <marker date="1494528700598" expanded="true" signature="1394:1612" ph="/**...*/" />
-                <marker date="1494528700598" expanded="true" signature="1703:1871" ph="{...}" />
-                <marker date="1494528700598" expanded="true" signature="1877:2060" ph="/**...*/" />
-                <marker date="1494528700598" expanded="true" signature="2138:2259" ph="{...}" />
-                <marker date="1494528700598" expanded="true" signature="2265:2398" ph="/**...*/" />
-                <marker date="1494528700598" expanded="true" signature="2475:2752" ph="{...}" />
-                <marker date="1494528700598" expanded="true" signature="2758:2963" ph="/**...*/" />
-                <marker date="1494528700598" expanded="true" signature="3035:3348" ph="{...}" />
-                <marker date="1494528700598" expanded="true" signature="3354:3559" ph="/**...*/" />
-                <marker date="1494528700598" expanded="true" signature="3634:3974" ph="{...}" />
-                <marker date="1494528700598" expanded="true" signature="3980:4173" ph="/**...*/" />
-                <marker date="1494528700598" expanded="true" signature="4256:4641" ph="{...}" />
-                <marker date="1494528700598" expanded="true" signature="4647:4771" ph="/**...*/" />
-                <marker date="1494528700598" expanded="true" signature="4812:5082" ph="{...}" />
+                <element signature="e#2070#2570#0" expanded="true" />
+                <element signature="e#2569#2570#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -261,19 +249,19 @@
         <option value="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/main/Main.java" />
         <option value="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/datamodel/HighScores.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/tcp/Network.java" />
         <option value="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/gui/Timer.java" />
         <option value="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Nothing.java" />
-        <option value="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Mine.java" />
-        <option value="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/gui/HighScoresTestDrive.java" />
-        <option value="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/gui/GUI.java" />
         <option value="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/tcp/SocketListener.java" />
         <option value="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/player/Player.java" />
         <option value="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Cell.java" />
+        <option value="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/tcp/Network.java" />
         <option value="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Board.java" />
         <option value="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/datamodel/DatabaseConnection.java" />
         <option value="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/tcp/TcpServer.java" />
         <option value="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/tcp/TcpClient.java" />
+        <option value="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Mine.java" />
+        <option value="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/gui/HighScoresTestDrive.java" />
+        <option value="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/gui/GUI.java" />
       </list>
     </option>
   </component>
@@ -613,10 +601,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="minesweeper" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="gui" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -1400,7 +1384,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="76813000" />
+    <option name="totallyTimeSpent" value="78983000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1412,7 +1396,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="2576" height="1416" extended-state="7" />
+    <frame x="-8" y="-8" width="2576" height="1416" extended-state="6" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -1533,37 +1517,13 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/gui/GUI.java</url>
-          <line>585</line>
+          <url>file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/tcp/TcpClient.java</url>
+          <line>81</line>
           <properties />
-          <option name="timeStamp" value="38" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/gui/GUI.java</url>
-          <line>586</line>
-          <properties />
-          <option name="timeStamp" value="39" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/gui/GUI.java</url>
-          <line>592</line>
-          <properties />
-          <option name="timeStamp" value="41" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/gui/GUI.java</url>
-          <line>594</line>
-          <properties />
-          <option name="timeStamp" value="42" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/gui/GUI.java</url>
-          <line>595</line>
-          <properties />
-          <option name="timeStamp" value="43" />
+          <option name="timeStamp" value="50" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="44" />
+      <option name="time" value="51" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1572,38 +1532,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Nothing.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="6" column="5" lean-forward="false" selection-start-line="6" selection-start-column="5" selection-end-line="6" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Mine.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="5" lean-forward="true" selection-start-line="5" selection-start-column="5" selection-end-line="5" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/gui/GUI.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="32" column="13" lean-forward="false" selection-start-line="32" selection-start-column="13" selection-end-line="32" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#2577#2578#0" expanded="true" />
-            <element signature="e#2605#2606#0" expanded="true" />
-            <element signature="e#2637#2638#0" expanded="true" />
-            <element signature="e#2692#2693#0" expanded="true" />
-            <element signature="e#14845#14846#0" expanded="true" />
-            <element signature="e#14914#14915#0" expanded="true" />
-            <element signature="e#15185#15763#0" expanded="true" />
-            <element signature="e#15762#15763#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1624,14 +1552,6 @@
           <caret line="35" column="7" lean-forward="false" selection-start-line="35" selection-start-column="7" selection-end-line="35" selection-end-column="7" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2577#2578#0" expanded="true" />
-            <element signature="e#2605#2606#0" expanded="true" />
-            <element signature="e#2637#2638#0" expanded="true" />
-            <element signature="e#2692#2693#0" expanded="true" />
-            <element signature="e#14845#14846#0" expanded="true" />
-            <element signature="e#14914#14915#0" expanded="true" />
-            <element signature="e#15185#15763#0" expanded="true" />
-            <element signature="e#15762#15763#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1668,14 +1588,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="850">
           <caret line="55" column="17" lean-forward="false" selection-start-line="55" selection-start-column="17" selection-end-line="55" selection-end-column="17" />
-          <folding>
-            <marker date="1494528700605" expanded="false" signature="1860:1866" ph=" }" />
-            <marker date="1494528700605" expanded="true" signature="1912:1972" ph="{...}" />
-            <marker date="1494528700605" expanded="false" signature="2014:2025" ph=" { " />
-            <marker date="1494528700605" expanded="false" signature="2044:2050" ph=" }" />
-            <marker date="1494528700605" expanded="true" signature="2096:2348" ph="{...}" />
-            <marker date="1494528700605" expanded="true" signature="2381:3582" ph="{...}" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1816,25 +1729,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/gui/Timer.java">
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_60/javafx-src.zip!/javafx/util/Pair.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="27" column="0" lean-forward="false" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
+        <state relative-caret-position="284">
+          <caret line="78" column="0" lean-forward="false" selection-start-line="78" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
+          <folding>
+            <element signature="e#1455#1456#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Nothing.java">
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_60/javafx-src.zip!/javafx/beans/property/StringPropertyBase.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="0" lean-forward="false" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
-          <folding />
+        <state relative-caret-position="428">
+          <caret line="145" column="0" lean-forward="false" selection-start-line="145" selection-start-column="0" selection-end-line="145" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Mine.java">
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_60/javafx-src.zip!/javafx/animation/AnimationTimer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="21" column="0" lean-forward="true" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
+        <state relative-caret-position="742">
+          <caret line="117" column="0" lean-forward="false" selection-start-line="117" selection-start-column="0" selection-end-line="117" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/datamodel/DatabaseConnection.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1445">
+          <caret line="85" column="14" lean-forward="false" selection-start-line="85" selection-start-column="14" selection-end-line="85" selection-end-column="14" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1851,92 +1773,26 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/tcp/Network.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="38" lean-forward="false" selection-start-line="4" selection-start-column="38" selection-end-line="4" selection-end-column="38" />
+        <state relative-caret-position="340">
+          <caret line="24" column="0" lean-forward="false" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/main/Main.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/tcp/TcpClient.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="8" column="42" lean-forward="false" selection-start-line="8" selection-start-column="42" selection-end-line="8" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/gui/HighScoresTestDrive.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="697">
-          <caret line="41" column="63" lean-forward="false" selection-start-line="41" selection-start-column="63" selection-end-line="41" selection-end-column="63" />
+        <state relative-caret-position="170">
+          <caret line="10" column="64" lean-forward="false" selection-start-line="10" selection-start-column="31" selection-end-line="10" selection-end-column="64" />
           <folding>
             <element signature="imports" expanded="true" />
-            <marker date="1494528700601" expanded="true" signature="6503:6510" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Cell.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="918">
-          <caret line="58" column="0" lean-forward="false" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <marker date="1494528700607" expanded="true" signature="1804:1805" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/datamodel/HighScores.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="561">
-          <caret line="33" column="22" lean-forward="false" selection-start-line="33" selection-start-column="22" selection-end-line="33" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Board.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1122">
-          <caret line="82" column="34" lean-forward="false" selection-start-line="82" selection-start-column="34" selection-end-line="82" selection-end-column="34" />
-          <folding>
-            <marker date="1494528700605" expanded="false" signature="1860:1866" ph=" }" />
-            <marker date="1494528700605" expanded="true" signature="1912:1972" ph="{...}" />
-            <marker date="1494528700605" expanded="false" signature="2014:2025" ph=" { " />
-            <marker date="1494528700605" expanded="false" signature="2044:2050" ph=" }" />
-            <marker date="1494528700605" expanded="true" signature="2096:2348" ph="{...}" />
-            <marker date="1494528700605" expanded="true" signature="2381:3582" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/datamodel/DatabaseConnection.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2108">
-          <caret line="124" column="27" lean-forward="false" selection-start-line="124" selection-start-column="27" selection-end-line="124" selection-end-column="27" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <marker date="1494528700598" expanded="true" signature="919:963" ph="/**...*/" />
-            <marker date="1494528700598" expanded="true" signature="1002:1388" ph="{...}" />
-            <marker date="1494528700598" expanded="true" signature="1394:1612" ph="/**...*/" />
-            <marker date="1494528700598" expanded="true" signature="1703:1871" ph="{...}" />
-            <marker date="1494528700598" expanded="true" signature="1877:2060" ph="/**...*/" />
-            <marker date="1494528700598" expanded="true" signature="2138:2259" ph="{...}" />
-            <marker date="1494528700598" expanded="true" signature="2265:2398" ph="/**...*/" />
-            <marker date="1494528700598" expanded="true" signature="2475:2752" ph="{...}" />
-            <marker date="1494528700598" expanded="true" signature="2758:2963" ph="/**...*/" />
-            <marker date="1494528700598" expanded="true" signature="3035:3348" ph="{...}" />
-            <marker date="1494528700598" expanded="true" signature="3354:3559" ph="/**...*/" />
-            <marker date="1494528700598" expanded="true" signature="3634:3974" ph="{...}" />
-            <marker date="1494528700598" expanded="true" signature="3980:4173" ph="/**...*/" />
-            <marker date="1494528700598" expanded="true" signature="4256:4641" ph="{...}" />
-            <marker date="1494528700598" expanded="true" signature="4647:4771" ph="/**...*/" />
-            <marker date="1494528700598" expanded="true" signature="4812:5082" ph="{...}" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/tcp/TcpServer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="516">
-          <caret line="91" column="0" lean-forward="false" selection-start-line="91" selection-start-column="0" selection-end-line="91" selection-end-column="0" />
+        <state relative-caret-position="901">
+          <caret line="55" column="37" lean-forward="false" selection-start-line="55" selection-start-column="37" selection-end-line="55" selection-end-column="37" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1945,36 +1801,96 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/player/Player.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+        <state relative-caret-position="476">
+          <caret line="39" column="12" lean-forward="false" selection-start-line="39" selection-start-column="12" selection-end-line="39" selection-end-column="12" />
+          <folding>
+            <element signature="e#535#536#0" expanded="true" />
+            <element signature="e#571#572#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/main/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="8" column="42" lean-forward="false" selection-start-line="8" selection-start-column="42" selection-end-line="8" selection-end-column="42" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/tcp/TcpClient.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Nothing.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="578">
-          <caret line="36" column="0" lean-forward="false" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
+        <state relative-caret-position="34">
+          <caret line="2" column="13" lean-forward="false" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Mine.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="28" column="0" lean-forward="false" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/gui/GUI.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Cell.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-251">
-          <caret line="387" column="32" lean-forward="false" selection-start-line="387" selection-start-column="17" selection-end-line="387" selection-end-column="32" />
+        <state relative-caret-position="884">
+          <caret line="58" column="0" lean-forward="false" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2577#2578#0" expanded="true" />
-            <element signature="e#2605#2606#0" expanded="true" />
-            <element signature="e#2637#2638#0" expanded="true" />
-            <element signature="e#2692#2693#0" expanded="true" />
-            <element signature="e#14845#14846#0" expanded="true" />
-            <element signature="e#14914#14915#0" expanded="true" />
-            <element signature="e#15185#15763#0" expanded="true" />
-            <element signature="e#15762#15763#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Board.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-827">
+          <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/gui/Timer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="6" column="6" lean-forward="false" selection-start-line="6" selection-start-column="6" selection-end-line="6" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/gui/HighScoresTestDrive.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="850">
+          <caret line="50" column="23" lean-forward="false" selection-start-line="50" selection-start-column="23" selection-end-line="50" selection-end-column="23" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#2070#2570#0" expanded="true" />
+            <element signature="e#2569#2570#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/gui/GUI.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-42">
+          <caret line="58" column="35" lean-forward="false" selection-start-line="58" selection-start-column="35" selection-end-line="58" selection-end-column="35" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/datamodel/HighScores.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="561">
+          <caret line="33" column="22" lean-forward="false" selection-start-line="33" selection-start-column="22" selection-end-line="33" selection-end-column="22" />
+          <folding>
+            <element signature="e#910#911#0" expanded="true" />
+            <element signature="e#950#951#0" expanded="true" />
           </folding>
         </state>
       </provider>

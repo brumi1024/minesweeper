@@ -37,7 +37,7 @@ public class TcpServer extends Network implements SocketListener {
     public void send(Object obj) {
         if (out == null)
             return;
-        Logger.getLogger(TcpServer.class.getName()).log(Level.INFO,("Sending index: " + obj + " to server"));
+        Logger.getLogger(TcpServer.class.getName()).log(Level.INFO, ("Sending: " + obj + " to server"));
         try {
             out.writeObject(obj);
             out.flush();
@@ -93,7 +93,6 @@ public class TcpServer extends Network implements SocketListener {
                 }
             } catch (Exception ex) {
                 Logger.getLogger(TcpServer.class.getName()).log(Level.SEVERE, "Client disconnected.", ex);
-                disconnect();
             } finally {
                 disconnect();
             }

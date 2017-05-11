@@ -6,7 +6,6 @@ hu\bme\minesweeper\tcp\SocketListener.class
 hu\bme\minesweeper\tcp\TcpClient.class
 hu\bme\minesweeper\tcp\TcpClient$1.class
 hu\bme\minesweeper\tcp\TcpServer$1.class
-hu\bme\minesweeper\gui\Timer.class
 hu\bme\minesweeper\main\Main.class
 hu\bme\minesweeper\level\Cell.class
 hu\bme\minesweeper\gui\GUI$MenuItemHandler.class

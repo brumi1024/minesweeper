@@ -23,6 +23,7 @@ public abstract class Network implements SocketListener {
         this.connected = connected;
     }
 
+    @Override
     public void onMessage(final Object data) {
         javafx.application.Platform.runLater(() -> fxListener.onMessage(data));
     }

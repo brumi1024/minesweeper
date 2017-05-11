@@ -32,13 +32,13 @@ public class TcpClient extends Network implements SocketListener {
             rec.start();
             super.setConnected(true);
         } catch (UnknownHostException e) {
+            disconnect();
             Logger.getLogger(TcpClient.class.getName()).log(Level.SEVERE,
                     "Client connection error: unknown host.", e);
         } catch (IOException ex) {
+            disconnect();
             Logger.getLogger(TcpClient.class.getName()).log(Level.SEVERE,
                     "Client connection error: error getting streams.", ex);
-        } finally {
-            disconnect();
         }
     }
 
@@ -46,14 +46,13 @@ public class TcpClient extends Network implements SocketListener {
     public void send(Object obj) {
         if (out == null)
             return;
-        Logger.getLogger(TcpClient.class.getName()).log(Level.INFO, "Sending index: " + obj + " to server");
+        Logger.getLogger(TcpClient.class.getName()).log(Level.INFO, "Sending: " + obj + " to server");
         try {
             out.writeObject(obj);
             out.flush();
         } catch (IOException ex) {
             Logger.getLogger(TcpClient.class.getName()).log(Level.SEVERE,
                     "Client sending error: cannot send index.", ex);
-            disconnect();
         }
     }
 
@@ -85,7 +84,6 @@ public class TcpClient extends Network implements SocketListener {
             } catch (Exception ex) {
                 Logger.getLogger(TcpClient.class.getName()).log(Level.SEVERE,
                         "Server disconnected.", ex);
-                disconnect();
             } finally {
                 disconnect();
             }

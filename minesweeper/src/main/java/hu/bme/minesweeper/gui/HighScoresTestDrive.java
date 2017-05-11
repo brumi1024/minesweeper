@@ -38,7 +38,6 @@ public class HighScoresTestDrive extends Application {
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         TableColumn numberCol = new TableColumn("#");
-        //numberCol.setMinWidth(20);
         numberCol.setCellValueFactory(new Callback<CellDataFeatures<HighScores, HighScores>, ObservableValue<HighScores>>() {
             @Override
             public ObservableValue<HighScores> call(CellDataFeatures<HighScores, HighScores> p) {
@@ -66,21 +65,20 @@ public class HighScoresTestDrive extends Application {
 
         TableColumn<HighScores, String> colName = new TableColumn<>();
 
-        if (difficulty == "easy") {
+        if (Objects.equals(difficulty, "easy")) {
             colName.setText("Easy");
-        } else if (difficulty == "medium") {
+        } else if (Objects.equals(difficulty, "medium")) {
             colName.setText("Medium");
         } else {
             colName.setText("Hard");
         }
 
         colName.setMinWidth(100);
-        colName.setCellValueFactory(new PropertyValueFactory<HighScores, String>("Name"));
+        colName.setCellValueFactory(new PropertyValueFactory<>("Name"));
         colName.setSortable(false);
 
         TableColumn<HighScores, String> colTime = new TableColumn<>("Time");
-        //colTime.setMinWidth(50);
-        colTime.setCellValueFactory(new PropertyValueFactory<HighScores, String>("Time"));
+        colTime.setCellValueFactory(new PropertyValueFactory<>("Time"));
         colTime.setSortable(false);
 
         table.getColumns().addAll(numberCol, colName, colTime);

@@ -69,6 +69,7 @@ public class DatabaseConnection {
     /**
      * Write out the data to the database.
      *
+     * @param difficulty the game's difficulty
      * @throws SQLException throws an exception if an SQL error occured
      */
     public static void deleteLastOne(String difficulty) throws SQLException {
@@ -80,9 +81,10 @@ public class DatabaseConnection {
     }
 
     /**
-     * Read the slowest recorded completion time based on difficulty.
+     * Read the number of elements based on difficulty.
      *
-     * @return slowest time of the database
+     * @param difficulty the game's difficulty
+     * @return number of elements
      * @throws SQLException throws an exception if an SQL error occurred
      */
     public static int readCount(String difficulty) throws SQLException {
@@ -98,6 +100,7 @@ public class DatabaseConnection {
     /**
      * Read the slowest recorded completion time based on difficulty.
      *
+     * @param difficulty the game's difficulty
      * @return slowest time of the database
      * @throws SQLException throws an exception if an SQL error occurred
      */
@@ -113,6 +116,7 @@ public class DatabaseConnection {
     /**
      * Read all the data from the database.
      *
+     * @param difficulty the game's difficulty
      * @return an List<HighScores> that contains the rows.
      * @throws SQLException throws an exception if an SQL error occured
      */

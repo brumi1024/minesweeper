@@ -9,8 +9,6 @@ public class Board {
     private int boardWidth; //szelesseg
     private int boardHeight; //magassag
     private int numOfMines; //aknaszam
-    private int mineLeft; //maradek bomba (lehet ez inkabb csak gui)
-    private boolean isSingle; //egy- vagy tobbjatekos mod
 
     public Board() {
         cells = new ArrayList<>();
@@ -38,10 +36,10 @@ public class Board {
             mineIndices = mineIndicesParam;
         } else {
             mineIndices = new HashSet<>();
-            this.placeMines(numOfMines); //fetoltjuk
+            this.placeMines(numOfMines);
         }
 
-        this.createCells(); //megcsinalja a cellakat + be is linkeli a szomszedokat
+        this.createCells();
 
     }
 
@@ -89,27 +87,23 @@ public class Board {
             if (mineIndices.add(k)) {
                 j++;
             }
-
         }
     }
 
     private void createCells() {
         for (int i = 0; i < boardHeight * boardWidth; i++) { //height, then width! height = number of rows
             if (mineIndices.contains(i)) {
-                cells.add(i, new Mine()); //berakjuk a listaba
+                cells.add(i, new Mine());
             } else {
-                cells.add(i, new Nothing()); //berakjuk a listaba
+                cells.add(i, new Nothing());
             }
         }
-
-        //fel van toltve elemekkel az ArrayList<Cell> cells; mar csak be kell linkelgetni a szomszedokat
 
         for (int rowIndex = 0; rowIndex < boardHeight; rowIndex++) {
             for (int colIndex = 0; colIndex < boardWidth; colIndex++) {
                 for (int i = -1; i <= 1; i++) {
                     for (int j = -1; j <= 1; j++) {
                         if (rowIndex + i >= 0 && rowIndex + i < boardHeight && colIndex + j >= 0 && colIndex + j < boardWidth) {
-                            //ha leteznek ezek a szomszedok
                             if (!((i == 0) && (j == 0))) {
                                 cells.get(rowIndex * boardWidth + colIndex).getNeighbours().add(cells.get((rowIndex + i) * boardWidth + (colIndex + j)));
                             }

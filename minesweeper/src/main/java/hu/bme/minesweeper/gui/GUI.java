@@ -53,10 +53,10 @@ public class GUI extends Application {
     private HBox clientBorderBox;
 
     private String difficulty;
-    private int numOfFlagsLeft; //ez nem kell, a Board.mineLeft eleme
+    private int numOfFlagsLeft;
     private StringProperty message;
     private StringProperty elapsedTimeString;
-    private boolean hasLostTheGame; //erre majd vigyazni kell, hogy uj jatek kezdesekor vissza kell allitani false-ra!
+    private boolean hasLostTheGame;
     private boolean hasWonTheGame;
     private boolean isMultiplayer = false;
     private short revealedBlocks;
@@ -402,6 +402,7 @@ public class GUI extends Application {
 
                     if (isCancelled()) {
                         networkController.disconnect();
+                        menuItemMode.fire();
                         break;
                     }
                 }
@@ -412,13 +413,10 @@ public class GUI extends Application {
         task.setOnRunning(e1 -> {
             alert.setTitle("Information Dialog");
             alert.setHeaderText(null);
-            Optional<ButtonType> cancelled = alert.showAndWait();
+            alert.showAndWait();
 
-            if (cancelled.get() == ButtonType.CANCEL) {
-                task.cancel();
-                menuItemMode.fire();
-            }
-
+            final Button cancel = (Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL);
+            cancel.addEventFilter(ActionEvent.ACTION, event -> task.cancel());
         });
 
         task.setOnSucceeded(e1 -> {
@@ -817,7 +815,6 @@ public class GUI extends Application {
         }
     }
 
-    //when clicked on a cell
     private class ButtonClickedHandler implements EventHandler<MouseEvent> {
 
         @Override
