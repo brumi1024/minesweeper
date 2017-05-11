@@ -71,26 +71,26 @@ public class HighScoresTestDrive extends Application {
             }
         });
 
-        TableColumn<HighScores, String> colTitle = new TableColumn();
+        TableColumn<HighScores, String> colName = new TableColumn();
 
         if (difficulty == "easy") {
-            colTitle.setText("Easy");
+            colName.setText("Easy");
         } else if (difficulty == "medium") {
-            colTitle.setText("Medium");
+            colName.setText("Medium");
         } else {
-            colTitle.setText("Hard");
+            colName.setText("Hard");
         }
 
-        colTitle.setMinWidth(100);
-        colTitle.setCellValueFactory(new PropertyValueFactory<HighScores, String>("Name"));
-        colTitle.setSortable(false);
+        colName.setMinWidth(100);
+        colName.setCellValueFactory(new PropertyValueFactory<HighScores, String>("Name"));
+        colName.setSortable(false);
 
-        TableColumn<HighScores, String> colYear = new TableColumn("Time");
-        //colYear.setMinWidth(50);
-        colYear.setCellValueFactory(new PropertyValueFactory<HighScores, String>("Time"));
-        colYear.setSortable(false);
+        TableColumn<HighScores, String> colTime = new TableColumn("Time");
+        //colTime.setMinWidth(50);
+        colTime.setCellValueFactory(new PropertyValueFactory<HighScores, String>("Time"));
+        colTime.setSortable(false);
 
-        table.getColumns().addAll(numberCol, colTitle, colYear);
+        table.getColumns().addAll(numberCol, colName, colTime);
 
         return table;
     }
