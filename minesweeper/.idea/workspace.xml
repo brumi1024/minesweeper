@@ -2,51 +2,163 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="78aa14d8-1c57-427b-b815-44b9d2b42569" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/datamodel/DatabaseConnection.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/datamodel/HighScores.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/gui/GUI$1.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/gui/GUI$2.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/gui/GUI$ButtonClickedHandler.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/gui/GUI$FxSocketListener.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/gui/GUI$MenuItemHandler.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/gui/GUI.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/gui/HighScoresTestDrive$1.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/gui/HighScoresTestDrive$2$1.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/gui/HighScoresTestDrive$2.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/gui/HighScoresTestDrive.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/level/Board.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/level/Cell.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/level/Mine.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/level/Nothing.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/main/Main.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/player/Player.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/tcp/Network.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/tcp/SocketListener.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/tcp/TcpClient$1.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/tcp/TcpClient$ReceiverThread.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/tcp/TcpClient.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/tcp/TcpServer$1.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/tcp/TcpServer$ReceiverThread.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/hu/bme/minesweeper/tcp/TcpServer.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/images/clientPerson.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/images/flower2.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/images/orange_background2.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/images/serverPerson.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/logging.properties" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/datamodel/HighScores.java" afterPath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/datamodel/HighScores.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/gui/GUI.java" afterPath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/gui/GUI.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/gui/HighScoresTestDrive.java" afterPath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/gui/HighScoresTestDrive.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Board.java" afterPath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Board.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Cell.java" afterPath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Cell.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Mine.java" afterPath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Mine.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Nothing.java" afterPath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/level/Nothing.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/main/Main.java" afterPath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/main/Main.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/player/Player.java" afterPath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/player/Player.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/tcp/Network.java" afterPath="$PROJECT_DIR$/src/main/java/hu/bme/minesweeper/tcp/Network.java" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/allclasses-frame.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/allclasses-noframe.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/constant-values.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/deprecated-list.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/datamodel/DatabaseConnection.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/datamodel/HighScores.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/datamodel/class-use/DatabaseConnection.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/datamodel/class-use/HighScores.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/datamodel/package-frame.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/datamodel/package-summary.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/datamodel/package-tree.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/datamodel/package-use.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/gui/GUI.ButtonClickedHandler.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/gui/GUI.FxSocketListener.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/gui/GUI.MenuItemHandler.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/gui/GUI.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/gui/HighScoresTestDrive.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/gui/class-use/GUI.ButtonClickedHandler.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/gui/class-use/GUI.FxSocketListener.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/gui/class-use/GUI.MenuItemHandler.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/gui/class-use/GUI.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/gui/class-use/HighScoresTestDrive.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/gui/package-frame.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/gui/package-summary.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/gui/package-tree.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/gui/package-use.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/level/Board.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/level/Cell.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/level/Mine.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/level/Nothing.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/level/class-use/Board.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/level/class-use/Cell.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/level/class-use/Mine.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/level/class-use/Nothing.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/level/package-frame.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/level/package-summary.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/level/package-tree.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/level/package-use.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/main/Main.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/main/class-use/Main.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/main/package-frame.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/main/package-summary.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/main/package-tree.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/main/package-use.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/player/Player.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/player/class-use/Player.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/player/package-frame.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/player/package-summary.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/player/package-tree.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/player/package-use.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/tcp/Network.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/tcp/SocketListener.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/tcp/TcpClient.ReceiverThread.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/tcp/TcpClient.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/tcp/TcpServer.ReceiverThread.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/tcp/TcpServer.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/tcp/class-use/Network.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/tcp/class-use/SocketListener.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/tcp/class-use/TcpClient.ReceiverThread.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/tcp/class-use/TcpClient.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/tcp/class-use/TcpServer.ReceiverThread.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/tcp/class-use/TcpServer.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/tcp/package-frame.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/tcp/package-summary.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/tcp/package-tree.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/hu/bme/minesweeper/tcp/package-use.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/index-all.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/index.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/javadoc.bat" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/options" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/overview-frame.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/overview-summary.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/overview-tree.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/package-list" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/packages" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/script.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/apidocs/stylesheet.css" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/javadoc-bundle-options/javadoc-options-javadoc-resources.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/javadoc-bundle-options/package-list" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/minesweeper-1.0-SNAPSHOT-javadoc.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/allclasses-frame.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/allclasses-noframe.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/constant-values.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/deprecated-list.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/datamodel/DatabaseConnection.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/datamodel/HighScores.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/datamodel/class-use/DatabaseConnection.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/datamodel/class-use/HighScores.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/datamodel/package-frame.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/datamodel/package-summary.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/datamodel/package-tree.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/datamodel/package-use.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/gui/GUI.ButtonClickedHandler.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/gui/GUI.FxSocketListener.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/gui/GUI.MenuItemHandler.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/gui/GUI.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/gui/HighScoresTestDrive.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/gui/class-use/GUI.ButtonClickedHandler.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/gui/class-use/GUI.FxSocketListener.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/gui/class-use/GUI.MenuItemHandler.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/gui/class-use/GUI.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/gui/class-use/HighScoresTestDrive.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/gui/package-frame.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/gui/package-summary.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/gui/package-tree.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/gui/package-use.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/level/Board.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/level/Cell.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/level/Mine.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/level/Nothing.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/level/class-use/Board.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/level/class-use/Cell.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/level/class-use/Mine.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/level/class-use/Nothing.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/level/package-frame.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/level/package-summary.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/level/package-tree.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/level/package-use.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/main/Main.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/main/class-use/Main.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/main/package-frame.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/main/package-summary.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/main/package-tree.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/main/package-use.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/player/Player.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/player/class-use/Player.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/player/package-frame.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/player/package-summary.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/player/package-tree.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/player/package-use.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/tcp/Network.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/tcp/SocketListener.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/tcp/TcpClient.ReceiverThread.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/tcp/TcpClient.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/tcp/TcpServer.ReceiverThread.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/tcp/TcpServer.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/tcp/class-use/Network.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/tcp/class-use/SocketListener.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/tcp/class-use/TcpClient.ReceiverThread.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/tcp/class-use/TcpClient.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/tcp/class-use/TcpServer.ReceiverThread.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/tcp/class-use/TcpServer.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/tcp/package-frame.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/tcp/package-summary.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/tcp/package-tree.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/hu/bme/minesweeper/tcp/package-use.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/index-all.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/index.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/javadoc.bat" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/options" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/overview-frame.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/overview-summary.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/overview-tree.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/package-list" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/packages" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/script.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/site/apidocs/stylesheet.css" afterPath="" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -1456,7 +1568,7 @@
       <workItem from="1494520926482" duration="684000" />
       <workItem from="1494527601354" duration="862000" />
       <workItem from="1494779863949" duration="1371000" />
-      <workItem from="1494781566091" duration="1984000" />
+      <workItem from="1494781566091" duration="2584000" />
     </task>
     <task id="LOCAL-00001" summary="Bugfix.">
       <created>1494148250683</created>
@@ -1469,7 +1581,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="83311000" />
+    <option name="totallyTimeSpent" value="83911000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
