@@ -1,8 +1,8 @@
 /**
- * GUI is the class responsible for displaying the graphical user 
+ * GUI is the class responsible for displaying the graphical user
  * interface for the minesweeper game. It also acts as the control.
  * GUI was written using JavaFX.
-*/
+ */
 
 package hu.bme.minesweeper.gui;
 
@@ -74,17 +74,17 @@ public class GUI extends Application {
     private AnimationTimer animationTimer;
 
     private int timeElapsed = 0;
-    
-    /** 
+
+    /**
      * Lauches the application by calling the <code>start</code> method.
-     * 
-     * @param args      command-line arguments
+     *
+     * @param args command-line arguments
      */
     public static void main(String[] args) {
         launch(args);
     }
 
-    /** 
+    /**
      * Displays the table containing the high scores be calling the
      * static <code>showTable</code> method of class HighScoresTestDrive.
      */
@@ -92,13 +92,13 @@ public class GUI extends Application {
         HighScoresTestDrive.showTable(-1, null);
     }
 
-    /** 
-     * Shows a popup dialog window with two options to chose from.
+    /**
+     * Shows a popup dialog window with two options to choose from.
      *
-     * @param title     the title of the window
-     * @param text      the text displayed in the window
-     * @param buttons   the text to be displayed on the buttons
-     * @return          the chosen option 
+     * @param title   the title of the window
+     * @param text    the text displayed in the window
+     * @param buttons the text to be displayed on the buttons
+     * @return the chosen option
      */
     private String showDialog(String title, String text, String[] buttons) {
         Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -121,15 +121,15 @@ public class GUI extends Application {
         }
     }
 
-    /** 
+    /**
      * This method is called when starting a new game. It initializes
      * certain variables, creates a new <code>Board</code> according to the
      * specified difficulty, and whether it's a new single- or a multiplayer
      * game. It places the <code>Buttons</code> representing the <code>Cells</code>
      * in a <code>GridPane</code>.
      *
-     * @param difficulty     the difficulty level of the new game
-     * @param mineIndices    the indices of the mines to be placed         
+     * @param difficulty  the difficulty level of the new game
+     * @param mineIndices the indices of the mines to be placed
      */
     private void startNewGame(String difficulty, Set<Integer> mineIndices) {
 
@@ -189,14 +189,14 @@ public class GUI extends Application {
         stage.sizeToScene();
     }
 
-    /** 
+    /**
      * Initializes the graphical layout for both the single- and the
-     * multiplayer game. Its sets the layout for single-player. It defines what
+     * multiplayer game. Its sets the layout for singleplayer. It defines what
      * methods are to be called when certain <code>MenuItems</code> are
      * clicked on.
      *
-     * @param primaryStage     the top-level JavaFX container constructed by
-     * 						   the platform
+     * @param primaryStage the top-level JavaFX container constructed by
+     *                     the platform
      */
     private void initializeGUI(Stage primaryStage) {
         initializeTimer();
@@ -414,12 +414,12 @@ public class GUI extends Application {
             }
         });
     }
-    
-    /** 
+
+    /**
      * The method called by the <code>launch</code> method in <code>main</code>.
-     * 
-     *@param primaryStage     the top-level JavaFX container constructed by
-     * 						  the platform
+     *
+     * @param primaryStage the top-level JavaFX container constructed by
+     *                     the platform
      */
     @Override
     public void start(Stage primaryStage) {
@@ -427,20 +427,20 @@ public class GUI extends Application {
         initializeGUI(primaryStage);
     }
 
-    /** 
+    /**
      * Converts time given in seconds to a minutes:seconds format.
-     * 
-     * @param sec       time given in seconds
-     * @param String    time in a minutes:seconds format
+     *
+     * @param sec time given in seconds
+     * @return String time in a minutes:seconds format
      */
     private String convertTime(int sec) {
         return String.format("%02d:%02d", sec / 60, sec % 60);
     }
 
-    /** 
-     * Teke Benjamin
+    /**
+     * Creates an alert while trying to connect to the other party.
      *
-     * @param ipAddress      
+     * @param ipAddress Other players IP address. It is ignored in server mode.
      */
     private void createWaitAlert(String ipAddress) {
         String contentText = thisPlayer.isServer() ? "Waiting for connection..." : "Connecting...";
@@ -496,16 +496,16 @@ public class GUI extends Application {
         new Thread(task).start();
     }
 
-    /** 
-     * Called when the user, changing to multiplayer mode,  clicks on
+    /**
+     * Called when the user - changing to multiplayer mode - clicks on
      * the 'I'm gonna be a server!' button. Creates a popup window,
      * prompts the user for a name. When successful, a new
-     * <code>TcpServer</code> and a new <code>Player</code> is created, 
+     * <code>TcpServer</code> and a new <code>Player</code> is created,
      * and the program waits for a client to connect.
      *
-     * @return          <code>true</code> if the user has succesfully
-     * 					given a username; 
-     *                  <code>false</code> otherwise.
+     * @return <code>true</code> if the user has succesfully
+     * given a username;
+     * <code>false</code> otherwise.
      */
     private boolean handleStartServer() {
         TextInputDialog dialog = new TextInputDialog();
@@ -536,16 +536,16 @@ public class GUI extends Application {
         }
     }
 
-    /** 
+    /**
      * Called when the user, changing to multiplayer mode, clicks on
      * the 'I'm gonna be a client!' button. Creates a popup window,
      * prompts the user for a name and for the ip address of the server.
      * When successful, a new <code>TcpClient</code> and a new <code>Player</code>
      * is created.
      *
-     * @return          <code>true</code> if the user has succesfully
-     * 					given a username; 
-     *                  <code>false</code> otherwise.
+     * @return <code>true</code> if the user has succesfully
+     * given a username;
+     * <code>false</code> otherwise.
      */
     private boolean handleStartClient() {
         //I am going to be a CLIENT
@@ -605,7 +605,7 @@ public class GUI extends Application {
         }
     }
 
-    /** 
+    /**
      * When in multiplayer mode, the active <code>Player</code> should always have a
      * green border around the user picture, indicating that it's his/her turn.
      */
@@ -631,14 +631,14 @@ public class GUI extends Application {
         }
     }
 
-    /** 
+    /**
      * When clicked on a <code>Cell</code>, if the <code>Cell</code> wasn't a
      * <code>Mine</code>, it reveals certain <code>Cell</code>s surrounding the
      * clicked one. It uses an iterative algorithm, and the revealed block has
      * elements with zero neighbouring mines on the inside, and is bounded by
      * elements with nonzero neighbouring mines.
      *
-     * @param index    the index of the <code>Cell</code> that was clicked on
+     * @param index the index of the <code>Cell</code> that was clicked on
      */
     private void revealBlock(int index) {
         revealedBlocks++;
@@ -653,11 +653,10 @@ public class GUI extends Application {
         }
     }
 
-    /** 
-     * Teke Benjamin
-     * Handles data coming from the client. The data includes the name of
-     * the client side player, and the move it made.
-     * @param data      
+    /**
+     * Handles the incoming data on server side. The data is a Pair, and it can be a name or a move.
+     *
+     * @param data Incoming data param.
      */
     private void handleServerData(Object data) {
         if (data instanceof Pair) {
@@ -674,10 +673,10 @@ public class GUI extends Application {
         }
     }
 
-    /** 
-     * Teke Benjamin
-     * Handles data coming from the server.
-     * @param data      
+    /**
+     * Handles the incoming data on client side. The data is a Pair,  it can be a name, a move or the board's params.
+     *
+     * @param data Incoming data param.
      */
     private void handleClientData(Object data) {
         if (data instanceof Pair) {
@@ -700,12 +699,12 @@ public class GUI extends Application {
         }
     }
 
-    /** 
-     * Teke Benjamin
+    /**
      * This method is called when the other player makes a move in multiplayer mode. The method refreshes
      * the displayed data. If the other player has clicked on a mine, the method makes sure that the player
      * can only reveal three mines in a row.
-     * @param clickedIndex    the index of the <code>Cell</code> clicked by the other player      
+     *
+     * @param clickedIndex the index of the <code>Cell</code> clicked by the other player
      */
     private void handleOtherPlayerMovement(int clickedIndex) {
         if (board.cells.get(clickedIndex).step() == -1) {
@@ -736,10 +735,8 @@ public class GUI extends Application {
         revealBlock(clickedIndex);
         handleMultiplayerGameEnding();
     }
-    
-    /** 
-     * Teke Benjamin
-     * 
+
+    /**
      * Handles the end phase of a multiplayer game. The game is over when the outcome is sure based
      * on the number of revealed mines. It notifies the user about who won, and the server side player
      * is offered to start a new game.
@@ -771,9 +768,9 @@ public class GUI extends Application {
         }
     }
 
-    /** 
-     * This method is responsible for the control of the single-player game. The player
-     * can mark a <code>Cell</code> with the right mouse button, or click on one with 
+    /**
+     * This method is responsible for the control of the singleplayer game. The player
+     * can mark a <code>Cell</code> with the right mouse button, or click on one with
      * the left mouse button. The first left mouse click starts a timer, which stops
      * when the game is over. When the game is over, the player is notified whether
      * he/she has won/lost the game.
@@ -781,9 +778,9 @@ public class GUI extends Application {
      * If the player has made a new high score, the <code>showDialog</code> method is
      * called.
      *
-     * @param buttonType       with which mouse button has the player clicked the
-     * 						   <code>Button</code>
-     * @param clickedIndex    the index of the <code>Button</code> clicked by the player  
+     * @param buttonType   with which mouse button has the player clicked the
+     *                     <code>Button</code>
+     * @param clickedIndex the index of the <code>Button</code> clicked by the player
      */
     private void handleSinglePlayerClick(boolean buttonType, int clickedIndex) {
 
@@ -861,8 +858,11 @@ public class GUI extends Application {
     }
 
 
-    /** 
-     * Teke Benjamin
+    /**
+     * This method is responsible for the control of the multiplayer game. It checks the field for mines, adjacent mines
+     * and counts the found mines in one round.
+     *
+     * @param clickedIndex index of the clicked field.
      */
     private void handleMultiplayerClick(int clickedIndex) {
         if (!board.cells.get(clickedIndex).getButton().isDisable() && (!hasWonTheGame)) {
@@ -895,26 +895,11 @@ public class GUI extends Application {
     }
 
 
-    /** 
+    /**
      * This method is called when the player clicks with the left mouse
      * button on a <code>Button</code>. It measures the time elapsed between
      * this first click and the current time. It updates the <code>timeElapsedLabel</code>'s
-     * <code>SimpleStringProperty</code>. 
-     *
-     * @param img       the image to be drawn
-     * @param x         the x-coordinate of the northwest corner
-     *                  of the destination rectangle in pixels
-     * @param y         the y-coordinate of the northwest corner
-     *                  of the destination rectangle in pixels
-     * @param observer  the image observer to be notified as more
-     *                  of the image is converted.  May be 
-     *                  <code>null</code>
-     * @return          <code>true</code> if the image is completely 
-     *                  loaded and was painted successfully; 
-     *                  <code>false</code> otherwise.
-     * @see             Image
-     * @see             ImageObserver
-     * @since           1.0
+     * <code>SimpleStringProperty</code>.
      */
     private void initializeTimer() {
         animationTimer = new AnimationTimer() {
@@ -943,11 +928,16 @@ public class GUI extends Application {
     }
 
 
-    /** 
-     * Teke Benjamin
+    /**
+     * A Socketlistener interface to handle the network data.
      */
     class FxSocketListener implements SocketListener {
 
+        /**
+         * Calls the appropriate methods on incoming data.
+         *
+         * @param data Incoming data param.
+         */
         @Override
         public void onMessage(Object data) {
             if (data != null && thisPlayer.isServer()) {
@@ -957,6 +947,11 @@ public class GUI extends Application {
             }
         }
 
+        /**
+         * Handles the disconnect event.
+         *
+         * @param isClosed A closed status flag.
+         */
         @Override
         public void onDisconnectedStatus(boolean isClosed) {
             if (isClosed) {
@@ -981,13 +976,13 @@ public class GUI extends Application {
      */
     private class ButtonClickedHandler implements EventHandler<MouseEvent> {
 
-        /** 
+        /**
          * Recognises which <code>Button</code> was clicked with which
          * mouse button, and calls the appropriate handling function.
          * When in multiplayer mode, it sends the clickedIndex
          * to the other player.
-         * 
-         * @param event    an event triggered by a mouseclick
+         *
+         * @param event an event triggered by a mouseclick
          */
         @Override
         public void handle(MouseEvent event) {
@@ -1008,9 +1003,9 @@ public class GUI extends Application {
         }
     }
 
-    /**Handles when the <code>MenuItem</code> Exit is clicked. It propmts the
+    /**
+     * Handles when the <code>MenuItem</code> Exit is clicked. It propmts the
      * player whether he/she is sure about his/her choice to exit the game.
-     * 
      */
     private class MenuItemHandler implements EventHandler<ActionEvent> {
 

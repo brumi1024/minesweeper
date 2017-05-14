@@ -5,6 +5,10 @@ import hu.bme.minesweeper.gui.GUI;
 import javafx.application.Application;
 
 public class Main {
+    /**
+     * Main method.
+     * @param args Command line args
+     */
     public static void main(String[] args) {
         DatabaseConnection.initDatabase();
 

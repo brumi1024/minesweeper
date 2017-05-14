@@ -1,4 +1,3 @@
-
 package hu.bme.minesweeper.gui;
 
 
@@ -28,49 +27,25 @@ import java.util.logging.Logger;
  * HighScoresTestDrive is the class responsible for displaying
  * the database containing the high scores, and updating it's
  * content.
-*/
+ */
 public class HighScoresTestDrive extends Application {
     private final static Logger LOGGER = Logger.getLogger(HighScoresTestDrive.class.getName());
 
-    /** 
-     * Draws as much of the specified image as is currently available
-     * with its northwest corner at the specified coordinate (x, y).
-     * This method will return immediately in all cases, even if the
-     * entire image has not yet been scaled, dithered and converted
-     * for the current output device.
-     * <p>
-     * If the current output representation is not yet complete then
-     * the method will return false and the indicated 
-     * {@link ImageObserver} object will be notified as the
-     * conversion process progresses.
-     *
-     * @param img       the image to be drawn
-     * @param x         the x-coordinate of the northwest corner
-     *                  of the destination rectangle in pixels
-     * @param y         the y-coordinate of the northwest corner
-     *                  of the destination rectangle in pixels
-     * @param observer  the image observer to be notified as more
-     *                  of the image is converted.  May be 
-     *                  <code>null</code>
-     * @return          <code>true</code> if the image is completely 
-     *                  loaded and was painted successfully; 
-     *                  <code>false</code> otherwise.
-     * @see             Image
-     * @see             ImageObserver
-     * @since           1.0
+    /**
+     * Main method.
      */
     public static void main(String[] args) throws FileNotFoundException {
         launch(args);
     }
 
-    /** 
-     * Creates a table containing columns for the number of the high 
+    /**
+     * Creates a table containing columns for the number of the high
      * scores, tha player names and the time. The height is set to
-     * display 8 high scores. 
+     * display 8 high scores.
      *
-     * @param difficulty    the difficulty level of the results displayed
-     * 						in this table
-     * @return          	the created table
+     * @param difficulty the difficulty level of the results displayed
+     *                   in this table
+     * @return the created table
      */
     private static TableView<HighScores> createTable(String difficulty) {
         TableView<HighScores> table = new TableView<HighScores>();
@@ -128,13 +103,13 @@ public class HighScoresTestDrive extends Application {
         return table;
     }
 
-    /** 
+    /**
      * Displays three tables for the three difficulty levels
      * in a popup window.
-     *  
-     * @param place          the place of the last result, so that the player
-     * 						 can see his/her results focused on
-     * @param difficulty     the difficulty level of the last result
+     *
+     * @param place      the place of the last result, so that the player
+     *                   can see his/her results focused on
+     * @param difficulty the difficulty level of the last result
      */
     static void showTable(int place, String difficulty) {
 
@@ -178,11 +153,11 @@ public class HighScoresTestDrive extends Application {
         alert.showAndWait();
     }
 
-    /** 
+    /**
      * Loads the data from the database to an <code>ObservableList</code>.
      *
-     * @param difficulty       the difficulty level
-     * @return          	   the data loaded to an <code>ObservableList</code>
+     * @param difficulty the difficulty level
+     * @return the data loaded to an <code>ObservableList</code>
      */
     private static ObservableList<HighScores> loadData(String difficulty) {
         ObservableList<HighScores> data = FXCollections.observableArrayList();
@@ -197,15 +172,15 @@ public class HighScoresTestDrive extends Application {
         return data;
     }
 
-    /** 
-     * Checks whether the database containt a certain time result with
+    /**
+     * Checks whether the database contains a certain time result with
      * the given difficulty level.
      *
-     * @param timeElapsed       the elapsed time
-     * @param difficulty        the difficulty level of the played game
-     *                  of the destination rectangle in pixels
-     * @return          <code>true</code> if the result is on the list;
-     * 	 				<code>false</code> otherwise.
+     * @param timeElapsed the elapsed time
+     * @param difficulty  the difficulty level of the played game
+     *                    of the destination rectangle in pixels
+     * @return <code>true</code> if the result is on the list;
+     * <code>false</code> otherwise.
      */
     static boolean isOnTheList(int timeElapsed, String difficulty) {
         try {
@@ -217,14 +192,14 @@ public class HighScoresTestDrive extends Application {
         }
     }
 
-    /** 
+    /**
      * It places the new result in the database according to the difficulty
      * and the elapsed time. It checks whether it's a new high scores, and
      * indicates the reached place.
      *
-     * @param newResult       the new Result made by the player
-     * @return          	  -1 if the time result wasn't a new high score; 
-     *                        place in the high scores list otherwise
+     * @param newResult the new Result made by the player
+     * @return -1 if the time result wasn't a new high score;
+     * place in the high scores list otherwise
      */
     static int insertData(HighScores newResult) {
         ObservableList<HighScores> data = loadData(newResult.getDifficulty());
@@ -246,7 +221,7 @@ public class HighScoresTestDrive extends Application {
 
     }
 
-    /** 
+    /**
      * This method doesn't need to do anything.
      */
     @Override
