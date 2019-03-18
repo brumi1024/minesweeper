@@ -1,2 +1,2 @@
 # minesweeper
-Basic java minesweeper game.
+Basic Java minesweeper game.
