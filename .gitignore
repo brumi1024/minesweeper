@@ -1,3 +1,4 @@
 /minesweeper/target/*
 /minesweeper/highscores.db
 .idea
+target
