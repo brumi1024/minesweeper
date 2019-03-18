@@ -1,2 +1,2 @@
 # minesweeper
-Beágyazott rendszerek szoftvertechnológiája házi.
+Basic java minesweeper game.
